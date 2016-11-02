@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BibTex Editor
+Bundle-SymbolicName: edu.uchicago.cs.hao.bibeditor;singleton:=true
+Bundle-Version: 0.0.1
+Bundle-Activator: edu.uchicago.cs.hao.bibeditor.Activator
+Bundle-Vendor: Hao Jiang
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ org.junit
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

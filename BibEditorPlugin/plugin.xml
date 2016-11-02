@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="BibTex Editor"
+            extensions="bib"
+            icon="icons/bib_icon.jpg"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="edu.uchicago.cs.hao.bibeditor.editors.BibEditor"
+            id="edu.uchicago.cs.hao.bibeditor.editors.BibEditor">
+      </editor>
+   </extension>
+
+</plugin>

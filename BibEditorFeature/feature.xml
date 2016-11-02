@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="edu.uchicago.cs.hao.bibeditor"
+      label="BibTex Editor"
+      version="0.0.1"
+      provider-name="Hao Jiang"
+      plugin="edu.uchicago.cs.hao.bibeditor">
+
+   <description url="http://people.cs.uchicago.edu/~hajiang/bibeditor/">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <url>
+      <update label="BibTex Editor UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/bibeditor/updatesite"/>
+   </url>
+
+   <plugin
+         id="edu.uchicago.cs.hao.bibeditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.1"
+         unpack="false"/>
+
+</feature>

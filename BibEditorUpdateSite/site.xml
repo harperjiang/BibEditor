@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="BibEditor UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/bibeditor/updatesite">
+      BibEditor UpdateSite
+   </description>
+   <feature url="features/edu.uchicago.cs.hao.bibeditor_0.0.1.jar" id="edu.uchicago.cs.hao.bibeditor" version="0.0.1"/>
+</site>
