@@ -124,4 +124,10 @@ public class BibParserTest {
 		assertEquals("new_entry",model.getEntries().get(0).getId());
 		
 	}
+	
+	@Test
+	public void testEmpty() throws Exception {
+		BibModel model = new BibParser().parse("");
+		assertEquals(0,model.getEntries().size());
+	}
 }

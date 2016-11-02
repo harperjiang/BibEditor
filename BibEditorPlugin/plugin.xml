@@ -52,7 +52,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.menus">
-      <menuContribution
+      <!--menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
                id="edu.uchicago.cs.hao.bibeditor.menus.mainMenu"
@@ -73,8 +73,8 @@
                   style="push">
             </command>
          </menu>
-      </menuContribution>
-      <menuContribution
+      </menuContribution-->
+      <!--menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
                id="edu.uchicago.cs.hao.bibeditor.toolbars.mainToolbar">
@@ -95,7 +95,7 @@
                   tooltip="Remove BibTex Entry">
             </command>
          </toolbar>
-      </menuContribution>
+      </menuContribution-->
       <menuContribution
             allPopups="false"
             locationURI="popup:edu.uchicago.cs.hao.bibeditor.editors.BibEditor?after=additions">

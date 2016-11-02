@@ -1,5 +1,6 @@
 package edu.uchicago.cs.hao.bibeditor.editors;
 
+import java.beans.IndexedPropertyChangeEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -135,15 +136,23 @@ public class EditorUI implements PropertyChangeListener {
 			if ("addEntry".equals(evt.getPropertyName())) {
 				// Disable comparator
 				table.setComparator(null);
-				table.refresh();
+				table.insert(evt.getNewValue(), model.getEntries().size() - 1);
 				table.setSelection(new StructuredSelection(evt.getNewValue()));
 				updateTextContent(evt.getNewValue().toString());
 			}
 			if ("removeEntry".equals(evt.getPropertyName())) {
-				table.refresh();
+				table.remove(evt.getOldValue());
+				if (model.getEntries().size() > 0) {
+					BibEntry first = model.getEntries().get(0);
+					table.setSelection(new StructuredSelection(first));
+					updateTextContent(first.toString());
+				} else {
+					updateTextContent("");
+				}
 			}
 			if ("entries".equals(evt.getPropertyName())) {
-				table.refresh();
+				IndexedPropertyChangeEvent ipc = (IndexedPropertyChangeEvent) evt;
+				table.replace(ipc.getNewValue(), ipc.getIndex());
 			}
 			setDirty(true);
 		}
@@ -254,7 +263,8 @@ public class EditorUI implements PropertyChangeListener {
 		tableColumnLayout.setColumnData(yearColumn, new ColumnPixelData(50));
 		tableColumnLayout.setColumnData(authorColumn, new ColumnWeightData(40, 400, true));
 
-		table.setInput(model.getEntries());
+		if (!model.getEntries().isEmpty())
+			table.setInput(model.getEntries());
 		table.getTable().setLinesVisible(true);
 		table.getTable().setHeaderVisible(true);
 

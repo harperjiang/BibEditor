@@ -56,7 +56,8 @@ public class BibParser {
 				break;
 			}
 		}
-		model.addEntry(entry);
+		if (null != entry)
+			model.addEntry(entry);
 		input.close();
 		return model;
 	}
@@ -206,9 +207,9 @@ public class BibParser {
 				case AFTER_PROPVAL:
 					if (',' == character) {
 						state = State.READ_PROPKEY;
-					} else if('}' == character) {
+					} else if ('}' == character) {
 						state = State.READ_ENTRY;
-					}else
+					} else
 						throw new BibParseException(charCounter);
 					break;
 				default:
