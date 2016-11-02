@@ -4,10 +4,16 @@
       label="BibTex Editor"
       version="0.0.1"
       provider-name="Hao Jiang"
-      plugin="edu.uchicago.cs.hao.bibeditor">
+      plugin="edu.uchicago.cs.hao.bibeditor"
+      license-feature="edu.uchicago.cs.hao.license"
+      license-feature-version="1.0.0.qualifier">
 
    <description url="http://people.cs.uchicago.edu/~hajiang/bibeditor/">
-      [Enter Feature Description here.]
+      BibTex Editor is an editor for viewing and maintaining BibTex files. 
+Current Version is 0.0.1
+
+The GitHub page for the plug-in is https://github.com/harperjiang/BibEditor.
+Please report any issues or requests you have there.
    </description>
 
    <copyright url="http://www.example.com/copyright">

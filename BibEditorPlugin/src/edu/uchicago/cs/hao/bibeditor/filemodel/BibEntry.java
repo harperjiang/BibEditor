@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BibEntry {
-	String type;
+	String type = "unknown";
 
 	String id;
 
@@ -50,7 +50,7 @@ public class BibEntry {
 
 	public String getProperty(String key) {
 		BibProp prop = propIndex.get(key);
-		return null == prop ? null : prop.getValue();
+		return null == prop ? "" : prop.getValue();
 	}
 
 	public String toString() {

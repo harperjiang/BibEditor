@@ -13,5 +13,105 @@
             id="edu.uchicago.cs.hao.bibeditor.editors.BibEditor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="edu.uchicago.cs.hao.bibeditor.commands.category"
+            name="BibTex Editor Category">
+      </category>
+      <command
+            categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+            name="Add BibTex Entry">
+      </command>
+      <command
+            categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
+            name="Remove BibTex Entry">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="edu.uchicago.cs.hao.bibeditor.handlers.AddEntryHandler"
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand">
+      </handler>
+      <handler
+            class="edu.uchicago.cs.hao.bibeditor.handlers.RemoveEntryHandler"
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+6">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="edu.uchicago.cs.hao.bibeditor.menus.mainMenu"
+               label="BibTex Editor"
+               mnemonic="M">
+            <command
+                  commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+                  icon="icons/toolbar_plus.gif"
+                  id="edu.uchicago.cs.hao.bibeditor.menus.addEntryCommand"
+                  label="Add BibTex Entry"
+                  mnemonic="S">
+            </command>
+            <command
+                  commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
+                  icon="icons/toolbar_minus.gif"
+                  id="edu.uchicago.cs.hao.bibeditor.menus.removeEntryCommand"
+                  label="Remove BibTex Entry"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="edu.uchicago.cs.hao.bibeditor.toolbars.mainToolbar">
+            <command
+                  commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+                  icon="icons/toolbar_plus.gif"
+                  id="edu.uchicago.cs.hao.bibeditor.toolbars.addEntryCommand"
+                  label="Add BibTex Entry"
+                  style="push"
+                  tooltip="Add BibTex Entry">
+            </command>
+            <command
+                  commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
+                  icon="icons/toolbar_minus.gif"
+                  id="edu.uchicago.cs.hao.bibeditor.toolbars.addEntryCommand"
+                  label="Remove BibTex Entry"
+                  style="push"
+                  tooltip="Remove BibTex Entry">
+            </command>
+         </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:edu.uchicago.cs.hao.bibeditor.editors.BibEditor?after=additions">
+         <command
+               commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+               icon="icons/toolbar_plus.gif"
+               label="Add Entry"
+               style="push">
+         </command>
+         <command
+               commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
+               icon="icons/toolbar_minus.gif"
+               label="Remove Entry"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
 
 </plugin>

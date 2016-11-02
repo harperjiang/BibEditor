@@ -92,17 +92,17 @@ public class BibParserTest {
 		assertEquals("dremel", token.content);
 		assertEquals(TokenType.KEY, token.type);
 		assertEquals(15, token.from);
-		
+
 		token = i.next();
 		assertEquals("title", token.content);
 		assertEquals(TokenType.PROP_KEY, token.type);
 		assertEquals(24, token.from);
-		
+
 		token = i.next();
 		assertEquals("{Dremel: Interactive Analysis of Web-Scale Datasets}", token.content);
 		assertEquals(TokenType.PROP_VAL, token.type);
 		assertEquals(33, token.from);
-		
+
 		token = i.next();
 		assertEquals("author", token.content);
 		token = i.next();
@@ -113,5 +113,15 @@ public class BibParserTest {
 		assertEquals("year", token.content);
 		token = i.next();
 		assertEquals("2010", token.content);
+	}
+
+	@Test
+	public void testParse2() throws Exception {
+		String input = "@unknown{new_entry, name=Abc,user=Good boy, title={{Dremel}}}";
+		BibModel model = new BibParser().parse(input);
+	
+		assertEquals(1,model.getEntries().size());
+		assertEquals("new_entry",model.getEntries().get(0).getId());
+		
 	}
 }

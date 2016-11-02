@@ -1,5 +1,6 @@
 package edu.uchicago.cs.hao.bibeditor.filemodel;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,6 +13,10 @@ public class BibParser {
 	}
 
 	private static int BUFFER_SIZE = 8192;
+
+	public BibModel parse(String input) throws IOException {
+		return parse(new ByteArrayInputStream(input.getBytes("UTF-8")));
+	}
 
 	public BibModel parse(InputStream input) throws IOException {
 		BibModel model = new BibModel();
@@ -26,7 +31,7 @@ public class BibParser {
 			switch (token.type) {
 			case TokenType.TYPE:
 				if (null != entry)
-					model.getEntries().add(entry);
+					model.addEntry(entry);
 				entry = new BibEntry();
 				entry.setType(token.content);
 				expected = TokenType.KEY;
@@ -51,7 +56,8 @@ public class BibParser {
 				break;
 			}
 		}
-		model.getEntries().add(entry);
+		model.addEntry(entry);
+		input.close();
 		return model;
 	}
 
@@ -200,7 +206,9 @@ public class BibParser {
 				case AFTER_PROPVAL:
 					if (',' == character) {
 						state = State.READ_PROPKEY;
-					} else
+					} else if('}' == character) {
+						state = State.READ_ENTRY;
+					}else
 						throw new BibParseException(charCounter);
 					break;
 				default:
