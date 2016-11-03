@@ -19,6 +19,8 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -26,9 +28,11 @@ import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
+import edu.uchicago.cs.hao.bibeditor.Activator;
 import edu.uchicago.cs.hao.bibeditor.filemodel.BibModel;
 import edu.uchicago.cs.hao.bibeditor.filemodel.BibParseException;
 import edu.uchicago.cs.hao.bibeditor.filemodel.BibParser;
+import edu.uchicago.cs.hao.bibeditor.preferences.PreferenceConstants;
 
 public class BibEditor extends EditorPart implements PropertyChangeListener {
 
@@ -77,10 +81,10 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 	public void createPartControl(Composite parent) {
 		ui.createUI(parent);
 
-        // register the menu with the framework
-        getSite().registerContextMenu(ui.getMenuManager(), ui.getTable());
-        // make the viewer selection available
-        getSite().setSelectionProvider(ui.getTable());
+		// register the menu with the framework
+		getSite().registerContextMenu(ui.getMenuManager(), ui.getTable());
+		// make the viewer selection available
+		getSite().setSelectionProvider(ui.getTable());
 	}
 
 	@Override
@@ -90,7 +94,10 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 
 	@Override
 	public void doSave(IProgressMonitor pm) {
-		ui.save(((IPathEditorInput) getEditorInput()).getPath().toFile());
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+		boolean preserveCase = prefs.getBoolean(PreferenceConstants.P_PRESERVE_CASE, false);
+		
+		ui.save(((IPathEditorInput) getEditorInput()).getPath().toFile(), preserveCase);
 	}
 
 	@Override

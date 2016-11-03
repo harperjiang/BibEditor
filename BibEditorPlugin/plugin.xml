@@ -29,6 +29,11 @@
             id="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
             name="Remove BibTex Entry">
       </command>
+      <command
+            categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand"
+            name="Copy Cite Command">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -39,6 +44,10 @@
       <handler
             class="edu.uchicago.cs.hao.bibeditor.handlers.RemoveEntryHandler"
             commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand">
+      </handler>
+      <handler
+            class="edu.uchicago.cs.hao.bibeditor.handlers.CopyCiteHandler"
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand">
       </handler>
    </extension>
    <extension
@@ -111,7 +120,26 @@
                label="Remove Entry"
                style="push">
          </command>
+         <command
+               commandId="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand"
+               label="Copy Cite Command"
+               style="push">
+         </command>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="edu.uchicago.cs.hao.bibeditor.preferences.BibEditorPreferencePage"
+            id="edu.uchicago.cs.hao.bibeditor.preferences.BibEditorPreferencePage"
+            name="BibTex Editor">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="edu.uchicago.cs.hao.bibeditor.preferences.PreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>

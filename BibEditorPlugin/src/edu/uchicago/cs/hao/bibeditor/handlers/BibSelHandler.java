@@ -20,13 +20,10 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import edu.uchicago.cs.hao.bibeditor.editors.BibEditor;
 import edu.uchicago.cs.hao.bibeditor.filemodel.BibEntry;
 
-/**
- * Our sample handler extends AbstractHandler, an IHandler base class.
- * 
- * @see org.eclipse.core.commands.IHandler
- * @see org.eclipse.core.commands.AbstractHandler
- */
-public class RemoveEntryHandler extends BibHandler {
+public abstract class BibSelHandler extends BibHandler {
+
+	protected abstract Object executeWithSelection(ExecutionEvent event, BibEditor editor, BibEntry selection)
+			throws ExecutionException;
 
 	@Override
 	public Object executeWithEditor(ExecutionEvent event, BibEditor editor) throws ExecutionException {
@@ -34,10 +31,11 @@ public class RemoveEntryHandler extends BibHandler {
 
 		BibEntry entry = editor.getUi().selected();
 		if (null != entry) {
-			editor.getUi().getModel().removeEntry(entry);
+			return executeWithSelection(event, editor, entry);
 		} else {
-			MessageDialog.openWarning(window.getShell(), "No entry selected", "Please select an entry to delete");
+			MessageDialog.openWarning(window.getShell(), "No entry selected", "Please select an entry to operate on");
+			return null;
 		}
-		return null;
 	}
+
 }

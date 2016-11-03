@@ -61,7 +61,10 @@ public class EditorUI implements PropertyChangeListener {
 	private BibModel model;
 
 	public BibEntry selected() {
-		return (BibEntry) ((StructuredSelection) table.getSelection()).getFirstElement();
+		StructuredSelection sel = (StructuredSelection) table.getSelection();
+		if (sel.isEmpty())
+			return null;
+		return (BibEntry) sel.getFirstElement();
 	}
 
 	private boolean dirty;
@@ -215,17 +218,23 @@ public class EditorUI implements PropertyChangeListener {
 		support.firePropertyChange("dirty", oldDirty, dirty);
 	}
 
-	public void save(File target) {
+	public void save(File target, boolean preserveCase) {
 		try {
 			PrintWriter output = new PrintWriter(new FileOutputStream(target));
 
 			for (BibEntry entry : model.getEntries()) {
+				entry.setPreserveCase(preserveCase);
 				output.println(entry.toString());
 			}
-
 			output.close();
-
 			setDirty(false);
+
+			table.refresh(true);
+
+			BibEntry selected = selected();
+			if (selected != null)
+				updateTextContent(selected.toString());
+
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

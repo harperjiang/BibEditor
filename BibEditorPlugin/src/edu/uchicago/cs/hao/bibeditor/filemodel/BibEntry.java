@@ -72,7 +72,16 @@ public class BibEntry {
 			builder.append(MessageFormat.format("{0} = '{'{1}'}',\n", p.key, p.value));
 		}
 		builder.append('}');
-		
+
 		return builder.toString();
+	}
+
+	public void setPreserveCase(boolean preserveCase) {
+		if (preserveCase) {
+			String title = this.getProperty("title");
+			if (!title.isEmpty() && !(title.charAt(0) == '{' && title.charAt(title.length() - 1) == '}')) {
+				propIndex.get("title").setValue("{" + title + "}");
+			}
+		}
 	}
 }

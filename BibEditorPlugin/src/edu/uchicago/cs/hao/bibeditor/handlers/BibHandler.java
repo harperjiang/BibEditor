@@ -14,7 +14,6 @@ package edu.uchicago.cs.hao.bibeditor.handlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -34,7 +33,8 @@ public abstract class BibHandler extends AbstractHandler {
 		if (editor instanceof BibEditor) {
 			return executeWithEditor(event, (BibEditor) editor);
 		} else {
-			MessageDialog.openWarning(window.getShell(), "No BibTex Editor Found", "Please open a BibTex file");
+			// MessageDialog.openWarning(window.getShell(), "No BibTex Editor
+			// Found", "Please open a BibTex file");
 			return null;
 		}
 	}
