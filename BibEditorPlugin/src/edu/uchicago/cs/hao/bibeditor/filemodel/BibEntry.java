@@ -17,7 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BibEntry {
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
+
+public class BibEntry implements IAdaptable {
 	String type = "unknown";
 
 	String id;
@@ -83,5 +88,71 @@ public class BibEntry {
 				propIndex.get("title").setValue("{" + title + "}");
 			}
 		}
+	}
+
+	private EntryPropertySource psource = new EntryPropertySource();
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
+		if (adapter == IPropertySource.class) {
+			return (T) psource;
+		}
+		return null;
+	}
+
+	public class EntryPropertySource implements IPropertySource {
+
+		static final int PID_TYPE = 0;
+		static final int PID_ID = 1;
+		static final int PID_TITLE = 2;
+		static final int PID_AUTHOR = 3;
+		static final int PID_YEAR = 4;
+
+		@Override
+		public IPropertyDescriptor[] getPropertyDescriptors() {
+			return new PropertyDescriptor[] { new PropertyDescriptor(PID_TYPE, "Type"),
+					new PropertyDescriptor(PID_ID, "cite_id"), new PropertyDescriptor(PID_TITLE, "Title"),
+					new PropertyDescriptor(PID_AUTHOR, "Author"), new PropertyDescriptor(PID_YEAR, "Year"), };
+		}
+
+		@Override
+		public Object getPropertyValue(Object id) {
+			switch ((int) id) {
+			case PID_TYPE:
+				return getType();
+			case PID_ID:
+				return getId();
+			case PID_TITLE:
+				return getProperty("title");
+			case PID_AUTHOR:
+				return getProperty("author");
+			case PID_YEAR:
+				return getProperty("year");
+			default:
+				return null;
+			}
+		}
+
+		@Override
+		public Object getEditableValue() {
+			return null;
+		}
+
+		@Override
+		public void resetPropertyValue(Object id) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean isPropertySet(Object id) {
+			return false;
+		}
+
+		@Override
+		public void setPropertyValue(Object id, Object value) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 }

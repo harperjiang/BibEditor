@@ -66,6 +66,18 @@ public class EditorUI implements PropertyChangeListener {
 			return null;
 		return (BibEntry) sel.getFirstElement();
 	}
+	
+	public BibEntry[] allSelected() {
+		StructuredSelection sel = (StructuredSelection) table.getSelection();
+		if (sel == null || sel.isEmpty())
+			return null;
+		Object[] sels = sel.toArray();
+		BibEntry[] allsels = new BibEntry[sels.length];
+		for(int i = 0 ; i < sels.length ;i++) {
+			allsels[i] = (BibEntry)sels[i];
+		}
+		return allsels;
+	}
 
 	private boolean dirty;
 
@@ -192,17 +204,12 @@ public class EditorUI implements PropertyChangeListener {
 
 		form.setWeights(new int[] { 70, 30 });
 
-		menuManager = new MenuManager();
-		Menu menu = menuManager.createContextMenu(table.getTable());
-		// set the menu on the SWT widget
-		table.getTable().setMenu(menu);
+		createMenu();
 	}
 
 	public void dispose() {
+		// Release all used resources
 		pool.dispose();
-
-		// plusIcon.dispose();
-		// minusIcon.dispose();
 
 		table = null;
 		editText = null;
@@ -234,85 +241,9 @@ public class EditorUI implements PropertyChangeListener {
 			BibEntry selected = selected();
 			if (selected != null)
 				updateTextContent(selected.toString());
-
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private void createTable(Composite form) {
-		Composite tablePanel = new Composite(form, SWT.NONE);
-		TableColumnLayout tableColumnLayout = new TableColumnLayout();
-		tablePanel.setLayout(tableColumnLayout);
-
-		table = new TableViewer(tablePanel, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
-		table.setContentProvider(new ArrayContentProvider());
-
-		TableColumn keyColumn = new TableColumn(table.getTable(), SWT.NONE);
-		keyColumn.setText("cite_key");
-		TableViewerColumn keyColumnViewer = new TableViewerColumn(table, keyColumn);
-		keyColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(0));
-		keyColumn.addSelectionListener(new ColumnSelectionListener(0));
-
-		TableColumn typeColumn = new TableColumn(table.getTable(), SWT.NONE);
-		typeColumn.setText("Type");
-		TableViewerColumn typeColumnViewer = new TableViewerColumn(table, typeColumn);
-		typeColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(1));
-		typeColumn.addSelectionListener(new ColumnSelectionListener(1));
-
-		TableColumn titleColumn = new TableColumn(table.getTable(), SWT.NONE);
-		titleColumn.setText("Title");
-		TableViewerColumn titleColumnViewer = new TableViewerColumn(table, titleColumn);
-		titleColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(2));
-		titleColumn.addSelectionListener(new ColumnSelectionListener(2));
-
-		TableColumn yearColumn = new TableColumn(table.getTable(), SWT.NONE);
-		yearColumn.setText("Year");
-		TableViewerColumn yearColumnViewer = new TableViewerColumn(table, yearColumn);
-		yearColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(3));
-		yearColumn.addSelectionListener(new ColumnSelectionListener(3));
-
-		TableColumn authorColumn = new TableColumn(table.getTable(), SWT.NONE);
-		authorColumn.setText("Author");
-		TableViewerColumn authorColumnViewer = new TableViewerColumn(table, authorColumn);
-		authorColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(4));
-
-		tableColumnLayout.setColumnData(keyColumn, new ColumnWeightData(5, 150, true));
-		tableColumnLayout.setColumnData(typeColumn, new ColumnWeightData(5, 150, true));
-		tableColumnLayout.setColumnData(titleColumn, new ColumnWeightData(50, 400, true));
-		tableColumnLayout.setColumnData(yearColumn, new ColumnPixelData(50));
-		tableColumnLayout.setColumnData(authorColumn, new ColumnWeightData(40, 400, true));
-
-		if (!model.getEntries().isEmpty())
-			table.setInput(model.getEntries());
-		table.getTable().setLinesVisible(true);
-		table.getTable().setHeaderVisible(true);
-
-		table.getTable().addSelectionListener(new SelectionListener() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				Object selection = ((StructuredSelection) table.getSelection()).getFirstElement();
-				if (null != selection) {
-					updateTextContent(selection.toString());
-				}
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent event) {
-				widgetSelected(event);
-			}
-		});
-		// Supporting Table Sorting, only when clicking
-		tableComparator = new ColumnViewerComparator();
-		table.setComparator(null);
-	}
-
-	private void createEditPanel(Composite parent) {
-		Composite editPanel = new Composite(parent, SWT.NONE);
-		editPanel.setLayout(new FillLayout());
-		editText = new StyledText(editPanel, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-
-		editText.addModifyListener(textModifyListener);
 	}
 
 	private void updateTextContent(String content) {
@@ -459,5 +390,91 @@ public class EditorUI implements PropertyChangeListener {
 		public void widgetDefaultSelected(SelectionEvent e) {
 
 		}
+	}
+
+	/*
+	 * =======================================================================
+	 * UI Section
+	 * =======================================================================
+	 */
+	private void createTable(Composite form) {
+		Composite tablePanel = new Composite(form, SWT.NONE);
+		TableColumnLayout tableColumnLayout = new TableColumnLayout();
+		tablePanel.setLayout(tableColumnLayout);
+
+		table = new TableViewer(tablePanel, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
+		table.setContentProvider(new ArrayContentProvider());
+
+		TableColumn keyColumn = new TableColumn(table.getTable(), SWT.NONE);
+		keyColumn.setText("cite_key");
+		TableViewerColumn keyColumnViewer = new TableViewerColumn(table, keyColumn);
+		keyColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(0));
+		keyColumn.addSelectionListener(new ColumnSelectionListener(0));
+
+		TableColumn typeColumn = new TableColumn(table.getTable(), SWT.NONE);
+		typeColumn.setText("Type");
+		TableViewerColumn typeColumnViewer = new TableViewerColumn(table, typeColumn);
+		typeColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(1));
+		typeColumn.addSelectionListener(new ColumnSelectionListener(1));
+
+		TableColumn titleColumn = new TableColumn(table.getTable(), SWT.NONE);
+		titleColumn.setText("Title");
+		TableViewerColumn titleColumnViewer = new TableViewerColumn(table, titleColumn);
+		titleColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(2));
+		titleColumn.addSelectionListener(new ColumnSelectionListener(2));
+
+		TableColumn yearColumn = new TableColumn(table.getTable(), SWT.NONE);
+		yearColumn.setText("Year");
+		TableViewerColumn yearColumnViewer = new TableViewerColumn(table, yearColumn);
+		yearColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(3));
+		yearColumn.addSelectionListener(new ColumnSelectionListener(3));
+
+		TableColumn authorColumn = new TableColumn(table.getTable(), SWT.NONE);
+		authorColumn.setText("Author");
+		TableViewerColumn authorColumnViewer = new TableViewerColumn(table, authorColumn);
+		authorColumnViewer.setLabelProvider(new BibEntryColumnLabelProvider(4));
+
+		tableColumnLayout.setColumnData(keyColumn, new ColumnWeightData(5, 150, true));
+		tableColumnLayout.setColumnData(typeColumn, new ColumnWeightData(5, 150, true));
+		tableColumnLayout.setColumnData(titleColumn, new ColumnWeightData(50, 400, true));
+		tableColumnLayout.setColumnData(yearColumn, new ColumnPixelData(50));
+		tableColumnLayout.setColumnData(authorColumn, new ColumnWeightData(40, 400, true));
+
+		table.setInput(model.getEntries());
+		table.getTable().setLinesVisible(true);
+		table.getTable().setHeaderVisible(true);
+
+		table.getTable().addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				Object selection = ((StructuredSelection) table.getSelection()).getFirstElement();
+				if (null != selection) {
+					updateTextContent(selection.toString());
+				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent event) {
+				widgetSelected(event);
+			}
+		});
+		// Supporting Table Sorting, only when clicking
+		tableComparator = new ColumnViewerComparator();
+		table.setComparator(null);
+	}
+
+	private void createEditPanel(Composite parent) {
+		Composite editPanel = new Composite(parent, SWT.NONE);
+		editPanel.setLayout(new FillLayout());
+		editText = new StyledText(editPanel, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+
+		editText.addModifyListener(textModifyListener);
+	}
+
+	private void createMenu() {
+		menuManager = new MenuManager();
+		Menu menu = menuManager.createContextMenu(table.getTable());
+		// set the menu on the SWT widget
+		table.getTable().setMenu(menu);
 	}
 }

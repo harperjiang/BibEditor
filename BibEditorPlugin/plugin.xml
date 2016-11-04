@@ -22,17 +22,22 @@
       <command
             categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
             id="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
-            name="Add BibTex Entry">
+            name="&amp;Add BibTex Entry">
       </command>
       <command
             categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
             id="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
-            name="Remove BibTex Entry">
+            name="&amp;Remove BibTex Entry">
       </command>
       <command
             categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
             id="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand"
-            name="Copy Cite Command">
+            name="&amp;Copy Cite Command">
+      </command>
+      <command
+            categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand"
+            name="Search &amp;Google for PDF file">
       </command>
    </extension>
    <extension
@@ -48,6 +53,10 @@
       <handler
             class="edu.uchicago.cs.hao.bibeditor.handlers.CopyCiteHandler"
             commandId="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand">
+      </handler>
+      <handler
+            class="edu.uchicago.cs.hao.bibeditor.handlers.SearchPdfHandler"
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand">
       </handler>
    </extension>
    <extension
@@ -106,23 +115,26 @@
          </toolbar>
       </menuContribution-->
       <menuContribution
-            allPopups="false"
+            allPopups="true"
             locationURI="popup:edu.uchicago.cs.hao.bibeditor.editors.BibEditor?after=additions">
          <command
                commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
-               icon="icons/toolbar_plus.gif"
-               label="Add Entry"
+               label="Add BibTex Entry"
                style="push">
          </command>
          <command
                commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
-               icon="icons/toolbar_minus.gif"
-               label="Remove Entry"
+               label="Remove BibTex Entry"
                style="push">
          </command>
          <command
                commandId="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand"
                label="Copy Cite Command"
+               style="push">
+         </command>
+         <command
+               commandId="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand"
+               label="Search Google for PDF files"
                style="push">
          </command>
       </menuContribution>

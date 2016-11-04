@@ -30,10 +30,15 @@ import edu.uchicago.cs.hao.bibeditor.filemodel.BibEntry;
 public class CopyCiteHandler extends BibSelHandler {
 
 	@Override
-	protected Object executeWithSelection(ExecutionEvent event, BibEditor editor, BibEntry selection)
+	protected Object executeWithSelection(ExecutionEvent event, BibEditor editor, BibEntry[] selection)
 			throws ExecutionException {
 		Clipboard cb = new Clipboard(Display.getCurrent());
-		cb.setContents(new Object[] { MessageFormat.format("\\cite'{'{0}'}'", selection.getId()) },
+		StringBuilder sb = new StringBuilder();
+		for (BibEntry sel : selection) {
+			sb.append(sel.getId()).append(",");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		cb.setContents(new Object[] { MessageFormat.format("\\cite'{'{0}'}'", sb.toString()) },
 				new Transfer[] { TextTransfer.getInstance() });
 		return null;
 	}
