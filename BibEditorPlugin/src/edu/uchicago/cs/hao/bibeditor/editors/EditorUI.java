@@ -25,6 +25,9 @@ import java.util.function.Consumer;
 
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.resource.ColorRegistry;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnPixelData;
@@ -42,12 +45,17 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
 
 import edu.uchicago.cs.hao.bibeditor.filemodel.BibEntry;
 import edu.uchicago.cs.hao.bibeditor.filemodel.BibModel;
@@ -66,15 +74,15 @@ public class EditorUI implements PropertyChangeListener {
 			return null;
 		return (BibEntry) sel.getFirstElement();
 	}
-	
+
 	public BibEntry[] allSelected() {
 		StructuredSelection sel = (StructuredSelection) table.getSelection();
 		if (sel == null || sel.isEmpty())
 			return null;
 		Object[] sels = sel.toArray();
 		BibEntry[] allsels = new BibEntry[sels.length];
-		for(int i = 0 ; i < sels.length ;i++) {
-			allsels[i] = (BibEntry)sels[i];
+		for (int i = 0; i < sels.length; i++) {
+			allsels[i] = (BibEntry) sels[i];
 		}
 		return allsels;
 	}
@@ -107,7 +115,7 @@ public class EditorUI implements PropertyChangeListener {
 					EditorUI.this.setDirty(true);
 					editText.setBackground(null);
 				} catch (Exception ex) {
-					editText.setBackground(warnBackground);
+					editText.setBackground(Resources.color(Resources.COLOR_WARNBACK));
 				}
 
 			}
@@ -122,17 +130,6 @@ public class EditorUI implements PropertyChangeListener {
 	private StyledText editText;
 
 	private MenuManager menuManager;
-
-	// Resources
-	private ResourcePool pool = new ResourcePool();
-
-	private Color brown;
-
-	private Color darkBlue;
-
-	private Color magenta;
-
-	private Color warnBackground;
 
 	public MenuManager getMenuManager() {
 		return menuManager;
@@ -185,12 +182,7 @@ public class EditorUI implements PropertyChangeListener {
 	}
 
 	public void createUI(Composite parent) {
-		brown = new Color(Display.getCurrent(), 147, 2, 22);
-		darkBlue = new Color(Display.getCurrent(), 6, 45, 107);
-		magenta = new Color(Display.getCurrent(), 66, 6, 14);
-		warnBackground = new Color(Display.getCurrent(), 255, 188, 196);
-		pool.add(brown, darkBlue, magenta, warnBackground);
-
+		prepareColors();
 		// plusIcon = new Image(Display.getCurrent(), "icons/toolbar_plus.gif");
 		// minusIcon = new Image(Display.getCurrent(),
 		// "icons/toolbar_minus.gif");
@@ -208,9 +200,6 @@ public class EditorUI implements PropertyChangeListener {
 	}
 
 	public void dispose() {
-		// Release all used resources
-		pool.dispose();
-
 		table = null;
 		editText = null;
 	}
@@ -259,13 +248,16 @@ public class EditorUI implements PropertyChangeListener {
 				public void accept(Token t) {
 					switch (t.getType()) {
 					case TokenType.KEY:
-						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(), brown, null, SWT.BOLD));
+						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(),
+								Resources.color(Resources.COLOR_BROWN), null, SWT.BOLD));
 						break;
 					case TokenType.TYPE:
-						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(), darkBlue, null, SWT.BOLD));
+						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(),
+								Resources.color(Resources.COLOR_DARKBLUE), null, SWT.BOLD));
 						break;
 					case TokenType.PROP_KEY:
-						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(), magenta, null, SWT.BOLD));
+						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(),
+								Resources.color(Resources.COLOR_MAGENTA), null, SWT.BOLD));
 						break;
 					default:
 						break;
@@ -467,8 +459,31 @@ public class EditorUI implements PropertyChangeListener {
 		Composite editPanel = new Composite(parent, SWT.NONE);
 		editPanel.setLayout(new FillLayout());
 		editText = new StyledText(editPanel, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-
+		editText.setFont(JFaceResources.getTextFont());
 		editText.addModifyListener(textModifyListener);
+		JFaceResources.getFontRegistry().addListener(new IPropertyChangeListener() {
+			@Override
+			public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
+				if (JFaceResources.getFontRegistry().equals(event.getSource())
+						&& JFaceResources.TEXT_FONT.equals(event.getProperty())) {
+					editText.setFont(JFaceResources.getTextFont());
+				}
+				return;
+			}
+		});
+	}
+
+	private MessageConsole findConsole(String name) {
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		IConsole[] existing = conMan.getConsoles();
+		for (int i = 0; i < existing.length; i++)
+			if (name.equals(existing[i].getName()))
+				return (MessageConsole) existing[i];
+		// no console found, so create a new one
+		MessageConsole myConsole = new MessageConsole(name, null);
+		conMan.addConsoles(new IConsole[] { myConsole });
+		return myConsole;
 	}
 
 	private void createMenu() {
@@ -476,5 +491,17 @@ public class EditorUI implements PropertyChangeListener {
 		Menu menu = menuManager.createContextMenu(table.getTable());
 		// set the menu on the SWT widget
 		table.getTable().setMenu(menu);
+	}
+
+	private void prepareColors() {
+		ColorRegistry reg = JFaceResources.getColorRegistry();
+		if (null == reg.get(Resources.COLOR_BROWN))
+			reg.put(Resources.COLOR_BROWN, new RGB(147, 2, 22));
+		if (null == reg.get(Resources.COLOR_DARKBLUE))
+			reg.put(Resources.COLOR_DARKBLUE, new RGB(6, 45, 107));
+		if (null == reg.get(Resources.COLOR_MAGENTA))
+			reg.put(Resources.COLOR_MAGENTA, new RGB(66, 6, 14));
+		if (null == reg.get(Resources.COLOR_WARNBACK))
+			reg.put(Resources.COLOR_WARNBACK, new RGB(255, 188, 196));
 	}
 }

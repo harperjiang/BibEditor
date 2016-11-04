@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Oct 2016 Hao Jiang.
+ * Copyright (c) 2016 Hao Jiang.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,29 +11,24 @@
 
 package edu.uchicago.cs.hao.bibeditor.editors;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.graphics.Color;
 
-import org.eclipse.swt.graphics.Resource;
+/**
+ * @author Hao Jiang
+ *
+ */
+public class Resources {
 
-public class ResourcePool {
+	static String COLOR_BROWN = "brown";
 
-	List<Resource> pool = new ArrayList<Resource>();
+	static String COLOR_DARKBLUE = "darkBlue";
 
-	public void add(Resource... rs) {
-		for (Resource r : rs)
-			pool.add(r);
-	}
+	static String COLOR_MAGENTA = "magenta";
 
-	public void remove(Resource r) {
-		pool.remove(r);
-	}
+	static String COLOR_WARNBACK = "warnBackground";
 
-	public void dispose() {
-		for (Resource r : pool) {
-			if (null != r) {
-				r.dispose();
-			}
-		}
+	static Color color(String name) {
+		return JFaceResources.getColorRegistry().get(name);
 	}
 }

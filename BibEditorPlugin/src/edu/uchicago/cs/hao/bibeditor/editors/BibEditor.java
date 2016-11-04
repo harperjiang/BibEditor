@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -80,7 +81,6 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 	@Override
 	public void createPartControl(Composite parent) {
 		ui.createUI(parent);
-
 		// register the menu with the framework
 		getSite().registerContextMenu(ui.getMenuManager(), ui.getTable());
 		// make the viewer selection available
