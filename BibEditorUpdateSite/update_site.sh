@@ -1,7 +1,7 @@
 #!/bin/sh
 
 USITE_REPO=/home/harper/Repositories/BibEditor/BibEditorUpdateSite
-WEBSITE_REPO=/home/harper/Repositories/websites/personal/bibeditor/updatesite
+WEBSITE_REPO=/home/harper/Repositories/websites/personal/WebContent/bibeditor/updatesite
 
 rm -r $WEBSITE_REPO/features
 rm -r $WEBSITE_REPO/plugins

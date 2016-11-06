@@ -2,7 +2,7 @@
 <feature
       id="edu.uchicago.cs.hao.bibeditor"
       label="BibTex Editor"
-      version="0.0.1.alpha1"
+      version="0.0.1.alpha_20161104"
       provider-name="Hao Jiang"
       plugin="edu.uchicago.cs.hao.bibeditor"
       license-feature="edu.uchicago.cs.hao.license"
