@@ -21,12 +21,16 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPathEditorInput;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.EditorPart;
 
 import edu.uchicago.cs.hao.bibeditor.Activator;
@@ -78,6 +82,8 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 
 	}
 
+	private ContextManager contextManager;
+
 	@Override
 	public void createPartControl(Composite parent) {
 		ui.createUI(parent);
@@ -85,30 +91,35 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		getSite().registerContextMenu(ui.getMenuManager(), ui.getTable());
 		// make the viewer selection available
 		getSite().setSelectionProvider(ui.getTable());
-	}
 
-	@Override
-	public void setFocus() {
+		contextManager = new ContextManager();
 
-	}
-
-	@Override
-	public void doSave(IProgressMonitor pm) {
-		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
-		boolean preserveCase = prefs.getBoolean(PreferenceConstants.P_PRESERVE_CASE, false);
-		
-		ui.save(((IPathEditorInput) getEditorInput()).getPath().toFile(), preserveCase);
-	}
-
-	@Override
-	public void doSaveAs() {
-
+		getSite().getPage().addPartListener(contextManager);
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
 		ui.dispose();
+
+		getSite().getPage().removePartListener(contextManager);
+	}
+
+	@Override
+	public void setFocus() {
+	}
+
+	@Override
+	public void doSave(IProgressMonitor pm) {
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+		boolean preserveCase = prefs.getBoolean(PreferenceConstants.P_PRESERVE_CASE, false);
+
+		ui.save(((IPathEditorInput) getEditorInput()).getPath().toFile(), preserveCase);
+	}
+
+	@Override
+	public void doSaveAs() {
+
 	}
 
 	@Override
@@ -129,4 +140,31 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		return ui;
 	}
 
+	static class ContextManager extends PartListenerSupport {
+		IContextActivation activation = null;
+
+		public void activateContext() {
+			IContextService contextService = (IContextService) PlatformUI.getWorkbench()
+					.getService(IContextService.class);
+			if (contextService != null)
+				activation = contextService.activateContext(Constants.CONTEXT_ID);
+		}
+
+		public void deactivateContext() {
+			IContextService contextService = (IContextService) PlatformUI.getWorkbench()
+					.getService(IContextService.class);
+			if (contextService != null && activation != null)
+				contextService.deactivateContext(activation);
+		}
+
+		@Override
+		public void partVisible(IWorkbenchPartReference partRef) {
+			if (Constants.EDITOR_ID.equals(partRef.getId())) {
+				activateContext();
+			} else if (partRef.getPart(false) instanceof IEditorPart) {
+				// Other Editor is activated
+				deactivateContext();
+			}
+		}
+	};
 }

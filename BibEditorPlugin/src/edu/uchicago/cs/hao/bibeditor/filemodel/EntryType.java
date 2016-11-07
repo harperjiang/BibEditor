@@ -9,30 +9,16 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.bibeditor.editors;
-
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.swt.graphics.Color;
+package edu.uchicago.cs.hao.bibeditor.filemodel;
 
 /**
  * @author Hao Jiang
  *
  */
-public class Resources {
+public interface EntryType {
 
-	static final String COLOR_HIGHLIGHT = "highlight";
-
-	static String COLOR_BROWN = "brown";
-
-	static String COLOR_DARKBLUE = "darkBlue";
-
-	static String COLOR_MAGENTA = "magenta";
-	
-	static String COLOR_GRASS = "grass";
-
-	static String COLOR_WARNBACK = "warnBackground";
-
-	static Color color(String name) {
-		return JFaceResources.getColorRegistry().get(name);
-	}
+	String title = "title";
+	String author = "author";
+	String keywords = "keywords";
+	String year = "year";
 }

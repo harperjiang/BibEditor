@@ -23,6 +23,8 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 public class BibEntry implements IAdaptable {
+
+	// Data Model
 	String type = "unknown";
 
 	String id;
@@ -30,6 +32,9 @@ public class BibEntry implements IAdaptable {
 	List<BibProp> properties;
 
 	Map<String, BibProp> propIndex;
+
+	// UI Property
+	boolean highlight = false;
 
 	public BibEntry() {
 		super();
@@ -83,11 +88,19 @@ public class BibEntry implements IAdaptable {
 
 	public void setPreserveCase(boolean preserveCase) {
 		if (preserveCase) {
-			String title = this.getProperty("title");
+			String title = this.getProperty(EntryType.title);
 			if (!title.isEmpty() && !(title.charAt(0) == '{' && title.charAt(title.length() - 1) == '}')) {
-				propIndex.get("title").setValue("{" + title + "}");
+				propIndex.get(EntryType.title).setValue("{" + title + "}");
 			}
 		}
+	}
+
+	public boolean isHighlight() {
+		return highlight;
+	}
+
+	public void setHighlight(boolean highlight) {
+		this.highlight = highlight;
 	}
 
 	private EntryPropertySource psource = new EntryPropertySource();
@@ -124,11 +137,11 @@ public class BibEntry implements IAdaptable {
 			case PID_ID:
 				return getId();
 			case PID_TITLE:
-				return getProperty("title");
+				return getProperty(EntryType.title);
 			case PID_AUTHOR:
-				return getProperty("author");
+				return getProperty(EntryType.author);
 			case PID_YEAR:
-				return getProperty("year");
+				return getProperty(EntryType.year);
 			default:
 				return null;
 			}

@@ -11,28 +11,12 @@
 
 package edu.uchicago.cs.hao.bibeditor.editors;
 
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.swt.graphics.Color;
-
 /**
  * @author Hao Jiang
  *
  */
-public class Resources {
-
-	static final String COLOR_HIGHLIGHT = "highlight";
-
-	static String COLOR_BROWN = "brown";
-
-	static String COLOR_DARKBLUE = "darkBlue";
-
-	static String COLOR_MAGENTA = "magenta";
-	
-	static String COLOR_GRASS = "grass";
-
-	static String COLOR_WARNBACK = "warnBackground";
-
-	static Color color(String name) {
-		return JFaceResources.getColorRegistry().get(name);
-	}
+public interface Constants {
+	final String EDITOR_ID = "edu.uchicago.cs.hao.bibeditor.editors.BibEditor";
+	final String CONTEXT_ID = "edu.uchicago.cs.hao.bibeditor.editorContext";
+	final String CONSOLE_NAME = "BibTex Console";
 }

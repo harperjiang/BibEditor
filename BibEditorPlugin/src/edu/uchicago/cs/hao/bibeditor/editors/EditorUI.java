@@ -45,8 +45,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -63,6 +62,7 @@ import edu.uchicago.cs.hao.bibeditor.filemodel.BibParser;
 import edu.uchicago.cs.hao.bibeditor.filemodel.BibParser.Token;
 import edu.uchicago.cs.hao.bibeditor.filemodel.BibParser.TokenType;
 import edu.uchicago.cs.hao.bibeditor.filemodel.BibProp;
+import edu.uchicago.cs.hao.bibeditor.filemodel.EntryType;
 
 public class EditorUI implements PropertyChangeListener {
 
@@ -247,17 +247,21 @@ public class EditorUI implements PropertyChangeListener {
 				@Override
 				public void accept(Token t) {
 					switch (t.getType()) {
-					case TokenType.KEY:
+					case TokenType.TYPE:
 						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(),
 								Resources.color(Resources.COLOR_BROWN), null, SWT.BOLD));
 						break;
-					case TokenType.TYPE:
+					case TokenType.KEY:
 						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(),
-								Resources.color(Resources.COLOR_DARKBLUE), null, SWT.BOLD));
+								Resources.color(Resources.COLOR_MAGENTA), null, SWT.BOLD));
 						break;
 					case TokenType.PROP_KEY:
 						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(),
-								Resources.color(Resources.COLOR_MAGENTA), null, SWT.BOLD));
+								Resources.color(Resources.COLOR_DARKBLUE), null, SWT.BOLD));
+						break;
+					case TokenType.PROP_VAL:
+						editText.setStyleRange(new StyleRange(t.getFrom(), t.getLength(),
+								Resources.color(Resources.COLOR_GRASS), null, SWT.NORMAL));
 						break;
 					default:
 						break;
@@ -317,6 +321,13 @@ public class EditorUI implements PropertyChangeListener {
 			default:
 				return "";
 			}
+		}
+
+		@Override
+		public Color getBackground(Object element) {
+			if (element instanceof BibEntry && ((BibEntry) element).isHighlight())
+				return Resources.color(Resources.COLOR_HIGHLIGHT);
+			return super.getBackground(element);
 		}
 	}
 
@@ -473,15 +484,15 @@ public class EditorUI implements PropertyChangeListener {
 		});
 	}
 
-	private MessageConsole findConsole(String name) {
+	public MessageConsole getConsole() {
 		ConsolePlugin plugin = ConsolePlugin.getDefault();
 		IConsoleManager conMan = plugin.getConsoleManager();
 		IConsole[] existing = conMan.getConsoles();
 		for (int i = 0; i < existing.length; i++)
-			if (name.equals(existing[i].getName()))
+			if (Constants.CONSOLE_NAME.equals(existing[i].getName()))
 				return (MessageConsole) existing[i];
 		// no console found, so create a new one
-		MessageConsole myConsole = new MessageConsole(name, null);
+		MessageConsole myConsole = new MessageConsole(Constants.CONSOLE_NAME, null);
 		conMan.addConsoles(new IConsole[] { myConsole });
 		return myConsole;
 	}
@@ -496,12 +507,41 @@ public class EditorUI implements PropertyChangeListener {
 	private void prepareColors() {
 		ColorRegistry reg = JFaceResources.getColorRegistry();
 		if (null == reg.get(Resources.COLOR_BROWN))
-			reg.put(Resources.COLOR_BROWN, new RGB(147, 2, 22));
+			reg.put(Resources.COLOR_BROWN, new RGB(66, 6, 14));
 		if (null == reg.get(Resources.COLOR_DARKBLUE))
 			reg.put(Resources.COLOR_DARKBLUE, new RGB(6, 45, 107));
 		if (null == reg.get(Resources.COLOR_MAGENTA))
-			reg.put(Resources.COLOR_MAGENTA, new RGB(66, 6, 14));
+			reg.put(Resources.COLOR_MAGENTA, new RGB(147, 2, 22));
+		if (null == reg.get(Resources.COLOR_GRASS))
+			reg.put(Resources.COLOR_GRASS, new RGB(92, 114, 39));
 		if (null == reg.get(Resources.COLOR_WARNBACK))
 			reg.put(Resources.COLOR_WARNBACK, new RGB(255, 188, 196));
+		if (null == reg.get(Resources.COLOR_HIGHLIGHT))
+			reg.put(Resources.COLOR_HIGHLIGHT, new RGB(255, 250, 196));
+	}
+
+	/**
+	 * Search for the given text in title, author and keyword
+	 * 
+	 * @param text
+	 *            Keyword to search
+	 */
+	public void search(String text) {
+		if (text == null || text.isEmpty()) {
+			// Clear all searches
+			for (BibEntry entry : model.getEntries()) {
+				entry.setHighlight(false);
+				table.refresh(entry);
+			}
+		} else {
+			String keyword = text.toLowerCase();
+			for (BibEntry entry : model.getEntries()) {
+				boolean highlight = entry.getProperty(EntryType.title).toLowerCase().contains(keyword)
+						|| entry.getProperty(EntryType.author).toLowerCase().contains(keyword)
+						|| entry.getProperty(EntryType.keywords).toLowerCase().contains(keyword);
+				entry.setHighlight(highlight);
+				table.refresh(entry);
+			}
+		}
 	}
 }

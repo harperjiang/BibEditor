@@ -5,12 +5,12 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="BibTex Editor"
-            extensions="bib"
-            icon="icons/bib_icon.jpg"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="edu.uchicago.cs.hao.bibeditor.editors.BibEditor"
-            id="edu.uchicago.cs.hao.bibeditor.editors.BibEditor">
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="bib"
+            icon="icons/bib_icon.png"
+            id="edu.uchicago.cs.hao.bibeditor.editors.BibEditor"
+            name="BibTex Editor">
       </editor>
    </extension>
    <extension
@@ -39,6 +39,10 @@
             id="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand"
             name="Search &amp;Google for PDF file">
       </command>
+      <command
+            id="edu.uchicago.cs.hao.bibeditor.commands.findCommand"
+            name="Find By &amp;Keyword">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -58,14 +62,42 @@
             class="edu.uchicago.cs.hao.bibeditor.handlers.SearchPdfHandler"
             commandId="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand">
       </handler>
+      <handler
+            class="edu.uchicago.cs.hao.bibeditor.handlers.FindKeywordHandler"
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.findCommand">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
-            contextId="org.eclipse.ui.contexts.window"
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.findCommand"
+            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+6">
+            sequence="M1+F">
+      </key>
+      <key
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+A">
+      </key>
+      <key
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
+            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="DEL">
+      </key>
+      <key
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand"
+            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+C">
+      </key>
+      <key
+            commandId="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand"
+            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+X">
       </key>
    </extension>
    <extension
@@ -119,22 +151,27 @@
             locationURI="popup:edu.uchicago.cs.hao.bibeditor.editors.BibEditor?after=additions">
          <command
                commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
-               label="Add BibTex Entry"
+               label="&amp;Add BibTex Entry"
                style="push">
          </command>
          <command
                commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
-               label="Remove BibTex Entry"
+               label="&amp;Remove BibTex Entry"
                style="push">
          </command>
          <command
                commandId="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand"
-               label="Copy Cite Command"
+               label="Copy &amp;Cite Command"
                style="push">
          </command>
          <command
                commandId="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand"
-               label="Search Google for PDF files"
+               label="Search &amp;Google for PDF files"
+               style="push">
+         </command>
+         <command
+               commandId="edu.uchicago.cs.hao.bibeditor.commands.findCommand"
+               label="Find By &amp;Keyword"
                style="push">
          </command>
       </menuContribution>
@@ -152,6 +189,14 @@
       <initializer
             class="edu.uchicago.cs.hao.bibeditor.preferences.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="edu.uchicago.cs.hao.bibeditor.editorContext"
+            name="BibTex Editor Context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
    </extension>
 
 </plugin>
