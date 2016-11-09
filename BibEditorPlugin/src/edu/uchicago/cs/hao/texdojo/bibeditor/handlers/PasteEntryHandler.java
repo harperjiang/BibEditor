@@ -20,7 +20,10 @@ public class PasteEntryHandler extends BibHandler {
 
 		EditorUI ui = editor.getUi();
 		// Determine Focus
-		if (ui.getTable().getTable().isFocusControl()) {
+		if (ui.getText().isFocusControl()) {
+			// Paste Text
+			ui.getText().paste();
+		} else {
 			// Paste Entry
 			String data = (String) cb.getContents(TextTransfer.getInstance());
 
@@ -32,11 +35,6 @@ public class PasteEntryHandler extends BibHandler {
 			} catch (Exception e) {
 				// TODO Log the exception
 			}
-		} else if (ui.getText().isFocusControl()) {
-			// Paste Text
-			ui.getText().paste();
-		} else {
-			// Do nothing
 		}
 
 		return null;

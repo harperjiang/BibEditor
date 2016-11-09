@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="BibTex Editor UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/bibeditor/updatesite">
-      BibTex Editor UpdateSite
+   <description name="TeXDojo Editor UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/texdojo/updatesite">
+      TeXDojo Editor UpdateSite
    </description>
-   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.1.alpha_20161108.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.1.alpha_20161108"/>
+   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.1.alpha_20161109.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.1.alpha_20161109"/>
 </site>
