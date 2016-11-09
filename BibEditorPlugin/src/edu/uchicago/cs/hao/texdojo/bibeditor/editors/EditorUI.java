@@ -59,10 +59,10 @@ import org.eclipse.ui.console.MessageConsole;
 import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibEntry;
 import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibModel;
 import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibParser;
-import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibProp;
-import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.EntryType;
 import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibParser.Token;
 import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibParser.TokenType;
+import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibProp;
+import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.EntryType;
 
 public class EditorUI implements PropertyChangeListener {
 
@@ -137,6 +137,10 @@ public class EditorUI implements PropertyChangeListener {
 
 	public TableViewer getTable() {
 		return table;
+	}
+
+	public StyledText getText() {
+		return editText;
 	}
 
 	public EditorUI() {

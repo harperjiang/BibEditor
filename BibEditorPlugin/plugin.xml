@@ -21,13 +21,13 @@
       </category>
       <command
             categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            id="texdojo.edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
-            name="&amp;Add BibTex Entry">
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
+            name="&amp;Add Entry">
       </command>
       <command
             categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
             id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
-            name="&amp;Remove BibTex Entry">
+            name="&amp;Remove Entry">
       </command>
       <command
             categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
@@ -42,6 +42,16 @@
       <command
             id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand"
             name="Find By &amp;Keyword">
+      </command>
+      <command
+            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyEntryCommand"
+            name="Copy Entry">
+      </command>
+      <command
+            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.pasteEntryCommand"
+            name="Paste Entry">
       </command>
    </extension>
    <extension
@@ -66,6 +76,14 @@
             class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.FindKeywordHandler"
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand">
       </handler>
+      <handler
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.CopyEntryHandler"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyEntryCommand">
+      </handler>
+      <handler
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.PasteEntryHandler"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.pasteEntryCommand">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -79,7 +97,7 @@
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
             contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+D">
+            sequence="M2+A">
       </key>
       <key
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
@@ -91,13 +109,25 @@
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand"
             contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+C">
+            sequence="M2+C">
       </key>
       <key
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
             contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+X">
+            sequence="M2+S">
+      </key>
+      <key
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyEntryCommand"
+            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+C">
+      </key>
+      <key
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.pasteEntryCommand"
+            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+V">
       </key>
    </extension>
    <extension
