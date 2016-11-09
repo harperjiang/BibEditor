@@ -5,97 +5,97 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="edu.uchicago.cs.hao.bibeditor.editors.BibEditor"
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.editors.BibEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             extensions="bib"
             icon="icons/bib_icon.png"
-            id="edu.uchicago.cs.hao.bibeditor.editors.BibEditor"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.editors.BibEditor"
             name="BibTex Editor">
       </editor>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <category
-            id="edu.uchicago.cs.hao.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
             name="BibTex Editor Category">
       </category>
       <command
-            categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
+            id="texdojo.edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
             name="&amp;Add BibTex Entry">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
+            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
             name="&amp;Remove BibTex Entry">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand"
+            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand"
             name="&amp;Copy Cite Command">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand"
+            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
             name="Search &amp;Google for PDF file">
       </command>
       <command
-            id="edu.uchicago.cs.hao.bibeditor.commands.findCommand"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand"
             name="Find By &amp;Keyword">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="edu.uchicago.cs.hao.bibeditor.handlers.AddEntryHandler"
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand">
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.AddEntryHandler"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.bibeditor.handlers.RemoveEntryHandler"
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand">
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.RemoveEntryHandler"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.bibeditor.handlers.CopyCiteHandler"
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand">
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.CopyCiteHandler"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.bibeditor.handlers.SearchPdfHandler"
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand">
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.SearchPdfHandler"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.bibeditor.handlers.FindKeywordHandler"
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.findCommand">
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.FindKeywordHandler"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand">
       </handler>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.findCommand"
-            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand"
+            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+F">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
-            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
+            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+A">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
-            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
+            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="DEL">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand"
-            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand"
+            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+C">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand"
-            contextId="edu.uchicago.cs.hao.bibeditor.editorContext"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
+            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+X">
       </key>
@@ -105,20 +105,20 @@
       <!--menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
-               id="edu.uchicago.cs.hao.bibeditor.menus.mainMenu"
+               id="edu.uchicago.cs.hao.texdojo.bibeditor.menus.mainMenu"
                label="BibTex Editor"
                mnemonic="M">
             <command
-                  commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
                   icon="icons/toolbar_plus.gif"
-                  id="edu.uchicago.cs.hao.bibeditor.menus.addEntryCommand"
+                  id="edu.uchicago.cs.hao.texdojo.bibeditor.menus.addEntryCommand"
                   label="Add BibTex Entry"
                   mnemonic="S">
             </command>
             <command
-                  commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
+                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
                   icon="icons/toolbar_minus.gif"
-                  id="edu.uchicago.cs.hao.bibeditor.menus.removeEntryCommand"
+                  id="edu.uchicago.cs.hao.texdojo.bibeditor.menus.removeEntryCommand"
                   label="Remove BibTex Entry"
                   style="push">
             </command>
@@ -127,19 +127,19 @@
       <!--menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
-               id="edu.uchicago.cs.hao.bibeditor.toolbars.mainToolbar">
+               id="edu.uchicago.cs.hao.texdojo.bibeditor.toolbars.mainToolbar">
             <command
-                  commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
                   icon="icons/toolbar_plus.gif"
-                  id="edu.uchicago.cs.hao.bibeditor.toolbars.addEntryCommand"
+                  id="edu.uchicago.cs.hao.texdojo.bibeditor.toolbars.addEntryCommand"
                   label="Add BibTex Entry"
                   style="push"
                   tooltip="Add BibTex Entry">
             </command>
             <command
-                  commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
+                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
                   icon="icons/toolbar_minus.gif"
-                  id="edu.uchicago.cs.hao.bibeditor.toolbars.addEntryCommand"
+                  id="edu.uchicago.cs.hao.texdojo.bibeditor.toolbars.addEntryCommand"
                   label="Remove BibTex Entry"
                   style="push"
                   tooltip="Remove BibTex Entry">
@@ -148,29 +148,29 @@
       </menuContribution-->
       <menuContribution
             allPopups="true"
-            locationURI="popup:edu.uchicago.cs.hao.bibeditor.editors.BibEditor?after=additions">
+            locationURI="popup:edu.uchicago.cs.hao.texdojo.bibeditor.editors.BibEditor?after=additions">
          <command
-               commandId="edu.uchicago.cs.hao.bibeditor.commands.addEntryCommand"
+               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
                label="&amp;Add BibTex Entry"
                style="push">
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.bibeditor.commands.removeEntryCommand"
+               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
                label="&amp;Remove BibTex Entry"
                style="push">
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.bibeditor.commands.copyCiteCommand"
+               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand"
                label="Copy &amp;Cite Command"
                style="push">
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.bibeditor.commands.searchPdfCommand"
+               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
                label="Search &amp;Google for PDF files"
                style="push">
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.bibeditor.commands.findCommand"
+               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand"
                label="Find By &amp;Keyword"
                style="push">
          </command>
@@ -179,21 +179,21 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="edu.uchicago.cs.hao.bibeditor.preferences.BibEditorPreferencePage"
-            id="edu.uchicago.cs.hao.bibeditor.preferences.BibEditorPreferencePage"
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.BibEditorPreferencePage"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.BibEditorPreferencePage"
             name="BibTex Editor">
       </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="edu.uchicago.cs.hao.bibeditor.preferences.PreferenceInitializer">
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.PreferenceInitializer">
       </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.contexts">
       <context
-            id="edu.uchicago.cs.hao.bibeditor.editorContext"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             name="BibTex Editor Context"
             parentId="org.eclipse.ui.contexts.window">
       </context>

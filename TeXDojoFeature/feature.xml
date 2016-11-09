@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="edu.uchicago.cs.hao.texdojo"
+      label="TeX Dojo"
+      version="0.0.1.alpha_20161108"
+      provider-name="Hao Jiang"
+      plugin="edu.uchicago.cs.hao.bibeditor"
+      license-feature="edu.uchicago.cs.hao.license"
+      license-feature-version="1.0.0.qualifier">
+
+   <description url="http://people.cs.uchicago.edu/~hajiang/bibeditor/">
+      BibTex Editor is an editor for viewing and maintaining BibTex files. 
+Current Version is 0.0.1
+
+The GitHub page for the plug-in is https://github.com/harperjiang/BibEditor.
+Please report any issues or requests you have there.
+   </description>
+
+   <copyright>
+      Copyright (c) Oct 2016 Hao Jiang.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License
+v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+Contributors:
+Hao Jiang - initial API and implementation and/or initial documentation
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <url>
+      <update label="BibTex Editor UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/bibeditor/updatesite"/>
+   </url>
+
+   <plugin
+         id="edu.uchicago.cs.hao.bibeditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: BibTex Editor
-Bundle-SymbolicName: edu.uchicago.cs.hao.bibeditor;singleton:=true
-Bundle-Version: 0.0.1.alpha_20161106
-Bundle-Activator: edu.uchicago.cs.hao.bibeditor.Activator
+Bundle-Name: BibTeX Editor
+Bundle-SymbolicName: edu.uchicago.cs.hao.texdojo.bibeditor;singleton:=true
+Bundle-Version: 0.0.1.alpha_20161108
+Bundle-Activator: edu.uchicago.cs.hao.texdojo.bibeditor.Activator
 Bundle-Vendor: Hao Jiang
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
