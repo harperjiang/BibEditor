@@ -9,8 +9,8 @@
             extensions="xml"
             icon="icons/sample.gif"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="edu.uchicago.cs.hao.latexeditor.editors.XMLEditor"
-            id="edu.uchicago.cs.hao.latexeditor.editors.XMLEditor">
+            class="edu.uchicago.cs.hao.texdojo.latexeditor.editors.XMLEditor"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.editors.XMLEditor">
       </editor>
    </extension>
 

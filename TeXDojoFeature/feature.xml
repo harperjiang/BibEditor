@@ -9,7 +9,8 @@
       license-feature-version="1.0.0.qualifier">
 
    <description url="http://people.cs.uchicago.edu/~hajiang/bibeditor/">
-      BibTex Editor is an editor for viewing and maintaining BibTex files. 
+      TeXDojo is a LaTeX/BibTeX editor for viewing and maintaining LaTeX files. 
+
 Current Version is 0.0.1
 
 The GitHub page for the plug-in is https://github.com/harperjiang/BibEditor.
@@ -36,7 +37,14 @@ Hao Jiang - initial API and implementation and/or initial documentation
    </url>
 
    <plugin
-         id="edu.uchicago.cs.hao.bibeditor"
+         id="edu.uchicago.cs.hao.texdojo.latexeditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="edu.uchicago.cs.hao.texdojo.bibeditor"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -1,4 +1,4 @@
-package edu.uchicago.cs.hao.latexeditor.editors;
+package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;

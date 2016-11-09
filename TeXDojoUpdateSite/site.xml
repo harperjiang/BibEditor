@@ -3,5 +3,5 @@
    <description name="BibTex Editor UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/bibeditor/updatesite">
       BibTex Editor UpdateSite
    </description>
-   <feature url="features/edu.uchicago.cs.hao.bibeditor_0.0.1.alpha_20161108.jar" id="edu.uchicago.cs.hao.bibeditor" version="0.0.1.alpha_20161108"/>
+   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.1.alpha_20161108.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.1.alpha_20161108"/>
 </site>

@@ -1,4 +1,4 @@
-package edu.uchicago.cs.hao.latexeditor.editors;
+package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 
 import org.eclipse.swt.graphics.RGB;
 

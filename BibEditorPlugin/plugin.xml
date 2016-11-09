@@ -79,7 +79,7 @@
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
             contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+A">
+            sequence="M1+D">
       </key>
       <key
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"

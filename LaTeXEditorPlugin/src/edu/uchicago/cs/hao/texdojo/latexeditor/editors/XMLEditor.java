@@ -1,4 +1,4 @@
-package edu.uchicago.cs.hao.latexeditor.editors;
+package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 
 import org.eclipse.ui.editors.text.TextEditor;
 
@@ -12,6 +12,7 @@ public class XMLEditor extends TextEditor {
 		setSourceViewerConfiguration(new XMLConfiguration(colorManager));
 		setDocumentProvider(new XMLDocumentProvider());
 	}
+	
 	@Override
 	public void dispose() {
 		colorManager.dispose();
