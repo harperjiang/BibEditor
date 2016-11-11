@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * @author Cathy
+ * @author Hao Jiang
  *
  */
 public class SearchDialog extends Dialog {

@@ -5,11 +5,11 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="Sample XML Editor"
-            extensions="xml"
-            icon="icons/sample.gif"
+            name="LaTeX Editor"
+            extensions="tex"
+            icon="icons/tex_icon.png"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="edu.uchicago.cs.hao.texdojo.latexeditor.editors.XMLEditor"
+            class="edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor"
             id="edu.uchicago.cs.hao.texdojo.latexeditor.editors.XMLEditor">
       </editor>
    </extension>

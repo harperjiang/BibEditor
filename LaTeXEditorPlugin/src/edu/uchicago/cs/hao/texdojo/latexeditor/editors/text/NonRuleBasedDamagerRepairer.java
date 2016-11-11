@@ -1,4 +1,15 @@
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
+/*******************************************************************************
+ * Copyright (c) 2016 Hao Jiang.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Hao Jiang - initial API and implementation and/or initial documentation
+ *******************************************************************************/
+
+package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
@@ -13,6 +24,11 @@ import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.custom.StyleRange;
 
+/**
+ * 
+ * @author Hao Jiang
+ *
+ */
 public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPresentationRepairer {
 
 	/** The document this object works on */
