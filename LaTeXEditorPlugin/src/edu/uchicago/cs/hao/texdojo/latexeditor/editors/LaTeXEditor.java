@@ -13,7 +13,6 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 
 import org.eclipse.ui.editors.text.TextEditor;
 
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXConfiguration;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXDocumentProvider;
 
 /**

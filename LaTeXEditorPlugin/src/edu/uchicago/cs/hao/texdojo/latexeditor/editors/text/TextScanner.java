@@ -30,11 +30,10 @@ public class TextScanner extends RuleBasedScanner {
 	public TextScanner() {
 		IToken token = new Token(new TextAttribute(ColorConstants.get(ColorConstants.DEFAULT)));
 
-		IRule[] rules = new IRule[2];
+		IRule[] rules = new IRule[1];
 		
-		rules[0] = 
 		// Add generic whitespace rule.
-		rules[1] = new WhitespaceRule(new WhitespaceDetector());
+		rules[0] = new WhitespaceRule(new WhitespaceDetector());
 
 		setRules(rules);
 		setDefaultReturnToken(token);

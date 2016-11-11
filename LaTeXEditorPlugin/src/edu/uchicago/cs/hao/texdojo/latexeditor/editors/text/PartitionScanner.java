@@ -11,6 +11,7 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
 
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
@@ -33,7 +34,8 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 
 		IToken command = new Token(LATEX_COMMAND);
 		IToken arg = new Token(LATEX_ARG);
-
+		IToken text = new Token(IDocument.DEFAULT_CONTENT_TYPE);
+		
 		IPredicateRule[] rules = new IPredicateRule[3];
 
 		rules[0] = new MultiLineRule("{", "}", arg);
@@ -41,5 +43,6 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 		rules[2] = new WordPatternRule(new WordDetector(), "\\", null, command);
 
 		setPredicateRules(rules);
+		setDefaultReturnToken(text);
 	}
 }

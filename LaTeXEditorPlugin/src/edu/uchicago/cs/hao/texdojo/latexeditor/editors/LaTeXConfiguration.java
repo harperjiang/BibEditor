@@ -9,16 +9,23 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
+package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 
-import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LaTeXContentAssistant;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.CommandArgScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.CommandScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.DoubleClickStrategy;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.TextScanner;
 
 /**
  * 
@@ -29,10 +36,10 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 
 	private DoubleClickStrategy doubleClickStrategy = new DoubleClickStrategy();
 
-	private IAutoEditStrategy[] editStrategy = new IAutoEditStrategy[] { new AutoCompleteStrategy() };
+	private LaTeXContentAssistant contentAssistant = new LaTeXContentAssistant();
 
 	public LaTeXConfiguration() {
-
+		super();
 	}
 
 	@Override
@@ -47,8 +54,8 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 	}
 
 	@Override
-	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
-		return editStrategy;
+	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+		return contentAssistant;
 	}
 
 	@Override
@@ -66,12 +73,6 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 		dr = new DefaultDamagerRepairer(new TextScanner());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-
-		// NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(
-		// new
-		// TextAttribute(colorManager.getColor(ColorConstants.XML_COMMENT)));
-		// reconciler.setDamager(ndr, PartitionScanner.XML_COMMENT);
-		// reconciler.setRepairer(ndr, PartitionScanner.XML_COMMENT);
 
 		return reconciler;
 	}
