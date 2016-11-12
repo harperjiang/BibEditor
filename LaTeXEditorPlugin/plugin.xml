@@ -13,5 +13,20 @@
             id="edu.uchicago.cs.hao.texdojo.latexeditor.editors.XMLEditor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="edu.uchicago.cs.hao.texdojo.preferences.PreferencePage"
+            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            name="LaTeX Editor Settings">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

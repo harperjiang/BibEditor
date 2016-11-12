@@ -8,6 +8,9 @@ Bundle-Vendor: Hao Jiang
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.eclipse.ui.console,
+ edu.uchicago.cs.hao.texdojo.bibeditor,
+ org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

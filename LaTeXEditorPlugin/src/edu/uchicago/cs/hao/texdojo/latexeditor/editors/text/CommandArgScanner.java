@@ -19,8 +19,6 @@ import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.ColorConstants;
-
 /**
  * 
  * @author Hao Jiang

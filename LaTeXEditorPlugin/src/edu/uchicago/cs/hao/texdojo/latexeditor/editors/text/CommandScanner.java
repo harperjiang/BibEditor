@@ -20,8 +20,6 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordPatternRule;
 import org.eclipse.swt.SWT;
 
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.ColorConstants;
-
 /**
  * 
  * @author Hao Jiang
