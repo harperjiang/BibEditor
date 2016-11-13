@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.IOConsole;
 
 /**
  * @author Hao Jiang
@@ -30,7 +30,7 @@ import org.eclipse.ui.console.MessageConsole;
  */
 public class LaTeXCompiler {
 
-	public static synchronized void compile(String latexExe, String bibExe, File inputFile, MessageConsole console,
+	public static synchronized void compile(String latexExe, String bibExe, File inputFile, IOConsole console,
 			boolean runbib) {
 		Job job = new CompileJob(latexExe, bibExe, inputFile, console, runbib);
 		job.schedule();
@@ -44,7 +44,7 @@ public class LaTeXCompiler {
 
 		File inputFile;
 
-		org.eclipse.ui.console.MessageConsole console;
+		IOConsole console;
 
 		boolean runbib;
 
@@ -56,7 +56,7 @@ public class LaTeXCompiler {
 		 * @param inputFile
 		 * @param output
 		 */
-		public CompileJob(String latexExe, String bibExe, File inputFile, MessageConsole console, boolean runbib) {
+		public CompileJob(String latexExe, String bibExe, File inputFile, IOConsole console, boolean runbib) {
 			super("TeXDojo Compile Job");
 			this.latexExe = latexExe;
 			this.bibExe = bibExe;
@@ -66,12 +66,22 @@ public class LaTeXCompiler {
 		}
 
 		private void copyStream(InputStream in, OutputStream output) throws IOException {
+			try {
+				if (in.available() <= 0)
+					return;
+			} catch (IOException e) {
+				// It is closed
+				return;
+			}
 			byte[] buffer = new byte[1000];
 			int readcount = 0;
 			while ((readcount = in.read(buffer)) == buffer.length) {
 				output.write(buffer);
 			}
-			output.write(buffer, 0, readcount);
+			if (readcount != -1) {
+				output.write(buffer, 0, readcount);
+				output.flush();
+			}
 		}
 
 		public void run() {
@@ -89,7 +99,9 @@ public class LaTeXCompiler {
 			console.clearConsole();
 
 			OutputStream output = console.newOutputStream();
-			ProcessBuilder latexBuilder = new ProcessBuilder().command(latexExe, inputFile.getName())
+
+			ProcessBuilder latexBuilder = new ProcessBuilder()
+					.command(latexExe, "-interaction=nonstopmode", inputFile.getName())
 					.directory(inputFile.getParentFile()).redirectErrorStream(true);
 			ProcessBuilder bibBuilder = new ProcessBuilder().command(bibExe, inputFile.getName())
 					.directory(inputFile.getParentFile()).redirectErrorStream(true);
@@ -97,9 +109,8 @@ public class LaTeXCompiler {
 
 				monitor.beginTask("Compiling LaTeX Files", 80);
 				monitor.subTask("Invoking LaTeX");
-				Process process = latexBuilder.start();
-				process.waitFor();
-				copyStream(process.getInputStream(), output);
+
+				connect(latexBuilder.start(), console);
 
 				monitor.worked(20);
 
@@ -109,45 +120,45 @@ public class LaTeXCompiler {
 				if (runbib) {
 					monitor.subTask("Invoking BibTeX");
 
-					process = bibBuilder.start();
-					process.waitFor();
-					copyStream(process.getInputStream(), output);
-
+					connect(bibBuilder.start(), console);
 					monitor.worked(20);
 
 					if (cancelled)
 						return Status.CANCEL_STATUS;
 
 					monitor.subTask("Invoking LaTeX");
-
-					process = latexBuilder.start();
-					process.waitFor();
-					copyStream(process.getInputStream(), output);
-
+					connect(latexBuilder.start(), console);
 					monitor.worked(20);
 
 					if (cancelled)
 						return Status.CANCEL_STATUS;
 
 					monitor.subTask("Invoking LaTeX");
-
-					process = latexBuilder.start();
-					process.waitFor();
-					copyStream(process.getInputStream(), output);
-
+					connect(latexBuilder.start(), console);
 					monitor.worked(20);
 
 					if (cancelled)
 						return Status.CANCEL_STATUS;
 				}
 
-				// Remove temporary files
-
 				monitor.done();
 			} catch (Exception e) {
 				e.printStackTrace(new PrintStream(output));
 			}
 			return Status.OK_STATUS;
+		}
+
+		void connect(Process p, IOConsole console) throws IOException, InterruptedException {
+			OutputStream output = console.newOutputStream();
+
+			while (p.isAlive()) {
+				copyStream(p.getInputStream(), output);
+				copyStream(console.getInputStream(), p.getOutputStream());
+				Thread.sleep(500);
+			}
+			copyStream(p.getInputStream(), output);
+			copyStream(console.getInputStream(), p.getOutputStream());
+			output.close();
 		}
 	}
 

@@ -19,7 +19,7 @@
             category="edu.uchicago.cs.hao.texdojo.preferences.PreferencePage"
             class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
             id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
-            name="LaTeX Editor Settings">
+            name="LaTeX Editor">
       </page>
       <page
             category="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"

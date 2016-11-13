@@ -12,6 +12,7 @@
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.PrintWriter;
 
 import org.eclipse.core.runtime.CoreException;
@@ -30,7 +31,7 @@ import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.editors.text.TextEditor;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
@@ -40,6 +41,7 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXModel;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXDocumentProvider;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants;
+import edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer;
 
 /**
  * 
@@ -49,10 +51,6 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants;
 public class LaTeXEditor extends TextEditor {
 
 	private static final String CONSOLE_NAME = "TeXDojo";
-
-	private static final String DEFAULT_LATEX_EXE = "pdflatex";
-
-	private static final String DEFAULT_BIB_EXE = "bibtex";
 
 	private LaTeXModel model = new LaTeXModel();
 
@@ -76,25 +74,58 @@ public class LaTeXEditor extends TextEditor {
 	}
 
 	protected void compile() {
+		// Check to see whether to compile current file
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
-		String executable = prefs.get(PreferenceConstants.P_LATEX_EXE, DEFAULT_LATEX_EXE);
-		String bibexe = prefs.get(PreferenceConstants.P_BIBTEX_EXE, DEFAULT_BIB_EXE);
-
 		File inputFile = ((IPathEditorInput) getEditorInput()).getPath().toFile();
+
+		boolean compileDoc = prefs.getBoolean(PreferenceConstants.P_COMPILE_DOC,
+				PreferenceInitializer.DEFAULT_COMPILE_DOCUMENT);
+		String mainTex = prefs.get(PreferenceConstants.P_MAIN_TEX, PreferenceInitializer.DEFAULT_MAIN_TEX);
+
+		if (compileDoc) {
+			if (!model.has("document"))
+				return;
+		} else if (!mainTex.equals(inputFile.getName())) {
+			return;
+		}
+
+		String executable = prefs.get(PreferenceConstants.P_LATEX_EXE, PreferenceInitializer.DEFAULT_LATEX_EXE);
+		String bibexe = prefs.get(PreferenceConstants.P_BIBTEX_EXE, PreferenceInitializer.DEFAULT_BIB_EXE);
 
 		// Detect whether the file contains an bib command
 		LaTeXCompiler.compile(executable, bibexe, inputFile, getConsole(), model.has(LaTeXConstant.EXTERNAL_BIB));
+
+		// Remove temporary files
+		File dir = inputFile.getParentFile();
+		String tempFiles = prefs.get(PreferenceConstants.P_TEMP_FILE, PreferenceInitializer.DEFAULT_TEMP_FILE);
+		String[] tfs = tempFiles.split(",");
+		File[] candidates = dir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File d, String name) {
+				if (!dir.equals(d))
+					return false;
+				for (String tf : tfs) {
+					if (name.matches(tf.replace(".", "\\.").replace("*", ".*")))
+						return true;
+				}
+				return false;
+			}
+		});
+		for (File can : candidates) {
+			can.delete();
+		}
 	}
 
-	protected static MessageConsole getConsole() {
+	protected static IOConsole getConsole() {
 		ConsolePlugin plugin = ConsolePlugin.getDefault();
 		IConsoleManager conMan = plugin.getConsoleManager();
+
 		IConsole[] existing = conMan.getConsoles();
 		for (int i = 0; i < existing.length; i++)
 			if (CONSOLE_NAME.equals(existing[i].getName()))
-				return (MessageConsole) existing[i];
+				return (IOConsole) existing[i];
 		// no console found, so create a new one
-		MessageConsole myConsole = new MessageConsole(CONSOLE_NAME, null);
+		IOConsole myConsole = new IOConsole(CONSOLE_NAME, null);
 		conMan.addConsoles(new IConsole[] { myConsole });
 		return myConsole;
 	}
@@ -110,12 +141,7 @@ public class LaTeXEditor extends TextEditor {
 				IDocument doc = event.getDocument();
 				ITypedRegion[] tokens = doc.getDocumentPartitioner().computePartitioning(scanRegion.getOffset(),
 						scanRegion.getLength());
-				for (ITypedRegion token : tokens) {
-					if (PartitionScanner.LATEX_COMMAND.equals(token.getType())
-							|| PartitionScanner.LATEX_ARG.equals(token.getType())) {
-						model.add(doc.get(token.getOffset(), token.getLength()), token.getOffset());
-					}
-				}
+				model.update(doc, tokens);
 			} catch (BadLocationException e) {
 				e.printStackTrace(new PrintWriter(getConsole().newOutputStream()));
 			}
@@ -134,8 +160,8 @@ public class LaTeXEditor extends TextEditor {
 					scanRegion = new Region(headRegion.getOffset(), tailRegion.getOffset() + tailRegion.getLength()
 							- headRegion.getOffset() - event.getLength() + event.getText().length());
 
-					// Clear affected token
-					model.remove(headRegion.getOffset(),
+					// Clear affected command
+					model.clear(headRegion.getOffset(),
 							tailRegion.getOffset() + tailRegion.getLength() - headRegion.getOffset());
 				} else {
 					scanRegion = doc.getPartition(event.getOffset());

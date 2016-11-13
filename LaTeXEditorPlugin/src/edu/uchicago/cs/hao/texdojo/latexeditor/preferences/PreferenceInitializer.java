@@ -21,17 +21,23 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#
-	 * initializeDefaultPreferences()
-	 */
+	public static final String DEFAULT_LATEX_EXE = "pdflatex";
+
+	public static final String DEFAULT_BIB_EXE = "bibtex";
+
+	public static final String DEFAULT_TEMP_FILE = "*.aux,*.log";
+
+	public static final boolean DEFAULT_COMPILE_DOCUMENT = true;
+
+	public static final String DEFAULT_MAIN_TEX = "main.tex";
+
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.P_LATEX_EXE, "pdflatex");
-		store.setDefault(PreferenceConstants.P_BIBTEX_EXE, "bibtex");
-		store.setDefault(PreferenceConstants.P_TEMP_FILE, "*.aux,*.log");
+		store.setDefault(PreferenceConstants.P_LATEX_EXE, DEFAULT_LATEX_EXE);
+		store.setDefault(PreferenceConstants.P_BIBTEX_EXE, DEFAULT_BIB_EXE);
+		store.setDefault(PreferenceConstants.P_TEMP_FILE, DEFAULT_TEMP_FILE);
+		store.setDefault(PreferenceConstants.P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
+		store.setDefault(PreferenceConstants.P_MAIN_TEX, DEFAULT_MAIN_TEX);
 	}
 
 }

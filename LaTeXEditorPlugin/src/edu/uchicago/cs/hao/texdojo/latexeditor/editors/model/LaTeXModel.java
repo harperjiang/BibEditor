@@ -12,89 +12,106 @@
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITypedRegion;
+
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
 
 /**
- * This model manage a sequence of COMMAND and ARGs
+ * This model manage document as collections of <code>LaTeXNode</code>
  * 
  * @author Hao Jiang
  *
  */
 public class LaTeXModel {
 
-	private List<Token> tokens = new ArrayList<Token>();
+	private List<LaTeXNode> nodes = new ArrayList<LaTeXNode>();
 
-	private HashMap<String, Set<Integer>> occurance = new HashMap<String, Set<Integer>>();
-
-	public void add(String value, int offset) {
-		this.add(new Token(value, offset));
+	/**
+	 * @param offset
+	 * @param length
+	 */
+	public void clear(int offset, int length) {
+		List<LaTeXNode> newnodes = new ArrayList<LaTeXNode>();
+		for (LaTeXNode node : nodes) {
+			if (node.overlap(offset, length)) {
+				newnodes.addAll(node.decompose());
+			} else {
+				newnodes.add(node);
+			}
+		}
+		nodes.clear();
+		for (LaTeXNode node : newnodes) {
+			if (!node.overlap(offset, length)) {
+				nodes.add(node);
+			}
+		}
 	}
 
 	/**
-	 * This method does not guarantee no overlap between tokens. User should
-	 * remove duplicated tokens before insert new one.
-	 * 
-	 * @param token
+	 * @param tokens
 	 */
-	public void add(Token token) {
-		tokens.add(token);
-		if (!occurance.containsKey(token.value)) {
-			occurance.put(token.value, new HashSet<Integer>());
-		}
-		occurance.get(token.value).add(token.offset);
-	}
+	public void update(IDocument doc, ITypedRegion[] tokens) throws BadLocationException {
+		if (tokens.length == 0)
+			return;
+		// Parse Tokens
+		List<LaTeXNode> newnodes = parseTokens(doc, tokens);
 
-	public void remove(int offset, int length) {
-		int startToken = -1;
-		int endToken = -1;
-		for (int i = 0; i < tokens.size(); i++) {
-			Token t = tokens.get(i);
-			if (t.contains(offset) && startToken == -1) {
-				startToken = i;
-			}
-			if (t.contains(offset + length - 1)) {
-				endToken = i;
-				break;
-			}
-			if (t.offset > offset + length) {
-				endToken = i - 1;
-				break;
+		int offset = tokens[0].getOffset();
+		int insertIndex = 0;
+
+		if (nodes.get(0).getOffset() > offset)
+			insertIndex = 0;
+		else if (nodes.get(nodes.size() - 1).getEnd() <= offset)
+			insertIndex = nodes.size();
+		else {
+			for (int i = 0; i < nodes.size() - 1; i++) {
+				if (nodes.get(i).getOffset() < offset && nodes.get(i + 1).getOffset() > offset) {
+					insertIndex = i + 1;
+					break;
+				}
 			}
 		}
-		if (endToken == -1) {
-			endToken = tokens.size() - 1;
-		}
-		if (startToken != -1 && endToken != -1) {
-			for (int i = 0; i < endToken - startToken + 1; i++) {
-				Token removed = tokens.remove(startToken);
-				occurance.get(removed.value).remove(removed.offset);
+		nodes.addAll(insertIndex, newnodes);
+
+		parseNodes();
+	}
+
+	public boolean has(String command) {
+
+	}
+
+	protected void parseNodes() {
+		List<LaTeXNode> newnodes = new ArrayList<LaTeXNode>();
+		Stack<LaTeXNode> stacks = new 
+	}
+
+	protected List<LaTeXNode> parseTokens(IDocument doc, ITypedRegion[] tokens) throws BadLocationException {
+		List<LaTeXNode> newnodes = new ArrayList<LaTeXNode>();
+		for (ITypedRegion token : tokens) {
+			String data = doc.get(token.getOffset(), token.getLength());
+			if (PartitionScanner.LATEX_COMMAND.equals(token.getType())) {
+				if (LaTeXConstant.BEGIN.equals(data)) {
+					newnodes.add(new BeginNode(null, token.getOffset(), token.getLength()));
+				} else if (LaTeXConstant.END.equals(data)) {
+					newnodes.add(new EndNode(null, token.getOffset(), token.getLength()));
+				} else {
+					newnodes.add(new CommandNode(data, token.getOffset(), token.getLength()));
+				}
+			} else if (PartitionScanner.LATEX_ARG.equals(token.getType())) {
+				newnodes.add(new ArgNode(data, token.getOffset(), token.getLength()));
+			} else if (PartitionScanner.LATEX_OPTION.equals(token.getType())) {
+				newnodes.add(new OptionNode(data, token.getOffset(), token.getLength()));
+			} else if (IDocument.DEFAULT_CONTENT_TYPE.equals(token.getType())) {
+				newnodes.add(new TextNode(data, token.getOffset(), token.getLength()));
+			} else {
+				throw new IllegalArgumentException("Unrecognized item type:" + token.getType());
 			}
 		}
+		return newnodes;
 	}
 
-	public List<Token> tokens() {
-		return Collections.unmodifiableList(tokens);
-	}
-
-	public boolean has(String key) {
-		return occurance.containsKey(key) && occurance.get(key).size() != 0;
-	}
-
-	public static class Token {
-		String value;
-		int offset;
-
-		public Token(String v, int o) {
-			this.value = v;
-			this.offset = o;
-		}
-
-		public boolean contains(int offset) {
-			return this.offset <= offset && (this.offset + value.length()) > offset;
-		}
-	}
 }

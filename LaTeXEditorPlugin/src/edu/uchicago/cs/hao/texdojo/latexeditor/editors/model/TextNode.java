@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Oct 2016 Hao Jiang.
+ * Copyright (c) 2016 Hao Jiang.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,21 +9,15 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.preferences;
+package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
 
 /**
- * Constant definitions for plug-in preferences
+ * @author Hao Jiang
+ *
  */
-public class PreferenceConstants {
+public class TextNode extends LaTeXNode {
 
-	public static final String P_LATEX_EXE = "pdflatexExecutable";
-
-	public static final String P_BIBTEX_EXE = "bibtexExecutable";
-
-	public static final String P_TEMP_FILE = "tempFiles";
-
-	public static final String P_COMPILE_DOC = "compileDoc";
-
-	public static final String P_MAIN_TEX = "mainTex";
-
+	public TextNode(String content, int offset, int length) {
+		super(content, offset, length);
+	}
 }

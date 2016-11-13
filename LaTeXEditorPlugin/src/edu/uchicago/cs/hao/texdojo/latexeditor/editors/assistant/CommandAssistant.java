@@ -218,23 +218,25 @@ public class CommandAssistant implements IContentAssistProcessor {
 
 		// itemize
 		String data = MessageFormat.format("\\begin'{'itemize'}'\n{0}\\end'{'itemize'}'", listBuilder.toString());
-		results[0] = new CompletionProposal(data, offset, length, offset + data.length(), null, "itemize", null, null);
+		results[0] = new CompletionProposal(data, offset, length, offset + data.length(), null,
+				"\\begin{itemize}...\\end{itemize}", null, null);
 
 		// enumerate
 		data = MessageFormat.format("\\begin'{'enumerate'}'\n{0}\\end'{'enumerate'}'\n", listBuilder.toString());
 
-		results[1] = new CompletionProposal(data, offset, length, offset + data.length(), null, "enumerate", null,
-				null);
+		results[1] = new CompletionProposal(data, offset, length, data.length(), null,
+				"\\begin{enumerate}...\\end{enumerate}", null, null);
 
 		// description
 		data = MessageFormat.format("\\begin'{'description'}'\n{0}\\end'{'description'}'", listBuilder.toString());
-		results[2] = new CompletionProposal(data, offset, length, offset + data.length(), null, "description", null,
-				null);
+		results[2] = new CompletionProposal(data, offset, length, data.length(), null,
+				"\\begin{description}...\\end{description}", null, null);
 
 		// tabular
 		data = MessageFormat.format("\\begin'{'tabular'}'{0}\n{1}\\end'{'tabular'}'", colDef.toString(),
 				tableBuilder.toString());
-		results[3] = new CompletionProposal(data, offset, length, offset + data.length(), null, "tabular", null, null);
+		results[3] = new CompletionProposal(data, offset, length, data.length(), null,
+				"\\begin{tabular}...\\end{tabular}", null, null);
 
 		return results;
 	}
