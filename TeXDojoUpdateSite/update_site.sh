@@ -3,7 +3,7 @@
 #USITE_REPO=/home/harper/Repositories/BibEditor/BibEditorUpdateSite
 #WEBSITE_REPO=/home/harper/Repositories/websites/personal/WebContent/bibeditor/updatesite
 
-USITE_REPO=/home/Cathy/c/workspace/BibEditor/BibEditorUpdateSite
+USITE_REPO=/home/Cathy/c/workspace/TeXDojo/TeXDojoUpdateSite
 WEBSITE_REPO=/home/Cathy/c/workspace/website-personal/WebContent/bibeditor/updatesite
 
 rm -rf $WEBSITE_REPO/features

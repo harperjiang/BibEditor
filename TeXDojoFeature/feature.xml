@@ -2,7 +2,7 @@
 <feature
       id="edu.uchicago.cs.hao.texdojo"
       label="TeX Dojo"
-      version="0.0.1.alpha_20161109"
+      version="0.0.1.alpha_20161113"
       provider-name="Hao Jiang"
       plugin="edu.uchicago.cs.hao.bibeditor"
       license-feature="edu.uchicago.cs.hao.license"
@@ -38,6 +38,13 @@ Hao Jiang - initial API and implementation and/or initial documentation
 
    <plugin
          id="edu.uchicago.cs.hao.texdojo.bibeditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="edu.uchicago.cs.hao.texdojo.latexeditor"
          download-size="0"
          install-size="0"
          version="0.0.0"

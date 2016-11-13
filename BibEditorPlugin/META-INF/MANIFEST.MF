@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: BibTeX Editor
 Bundle-SymbolicName: edu.uchicago.cs.hao.texdojo.bibeditor;singleton:=true
-Bundle-Version: 0.0.1.alpha_20161109
+Bundle-Version: 0.0.1.alpha_20161113
 Bundle-Activator: edu.uchicago.cs.hao.texdojo.bibeditor.Activator
 Bundle-Vendor: Hao Jiang
 Require-Bundle: org.eclipse.ui,
