@@ -11,8 +11,6 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 /**
@@ -29,17 +27,7 @@ public class LaTeXModelTest {
 	public void testAddToken() {
 		LaTeXModel model = new LaTeXModel();
 
-		model.add("a1", 0);
-		model.add("a3", 4);
-
-		model.add("a5", 10);
-		model.add("a3", 20);
-
-		assertEquals(4, model.tokens().size());
-
-		assertTrue(model.has("a1"));
-		assertTrue(model.has("a3"));
-		assertTrue(model.has("a5"));
+		
 	}
 
 	/**
@@ -50,18 +38,7 @@ public class LaTeXModelTest {
 	public void testRemove() {
 		LaTeXModel model = new LaTeXModel();
 
-		model.add("a1", 0);
-		model.add("a3", 4);
-
-		model.add("a5", 10);
-		model.add("a3", 20);
-
-		model.remove(4, 10);
-
-		assertEquals(2, model.tokens().size());
-		assertTrue(model.has("a1"));
-		assertTrue(model.has("a3"));
-		assertFalse(model.has("a5"));
+		
 	}
 
 }

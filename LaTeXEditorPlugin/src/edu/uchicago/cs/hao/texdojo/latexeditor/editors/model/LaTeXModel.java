@@ -81,12 +81,15 @@ public class LaTeXModel {
 	}
 
 	public boolean has(String command) {
-
+		for(LaTeXNode node:nodes) {
+			if(node.has(command))
+				return true;
+		}
+		return false;
 	}
 
 	protected void parseNodes() {
-		List<LaTeXNode> newnodes = new ArrayList<LaTeXNode>();
-		Stack<LaTeXNode> stacks = new 
+		nodes = new LaTeXParser().parse(nodes);
 	}
 
 	protected List<LaTeXNode> parseTokens(IDocument doc, ITypedRegion[] tokens) throws BadLocationException {

@@ -73,4 +73,8 @@ public abstract class LaTeXNode {
 		nodes.add(this);
 		return nodes;
 	}
+
+	public boolean has(String command) {
+		return getContent() != null && getContent().equals(command);
+	}
 }

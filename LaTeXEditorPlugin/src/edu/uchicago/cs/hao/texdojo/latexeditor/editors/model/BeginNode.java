@@ -20,5 +20,9 @@ public class BeginNode extends LaTeXNode {
 	public BeginNode(String env, int offset, int length) {
 		super(env, offset, length);
 	}
+	
+	public void append(ArgNode arg) {
+		this.setContent(arg.getContent());
+	}
 
 }
