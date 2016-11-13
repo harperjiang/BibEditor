@@ -16,9 +16,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.console.MessageConsole;
 
 /**
@@ -27,26 +30,13 @@ import org.eclipse.ui.console.MessageConsole;
  */
 public class LaTeXCompiler {
 
-	private static Queue<CompileTask> waitQueue = new ConcurrentLinkedQueue<CompileTask>();
-
-	private static Thread thread = new CompileThread();
-
-	static {
-		thread.start();
-	}
-
 	public static synchronized void compile(String latexExe, String bibExe, File inputFile, MessageConsole console,
 			boolean runbib) {
-		// Will not insert duplicate tasks for the same file
-		for (CompileTask task : waitQueue) {
-			if (task.inputFile.equals(inputFile)) {
-				return;
-			}
-		}
-		waitQueue.offer(new CompileTask(latexExe, bibExe, inputFile, console, runbib));
+		Job job = new CompileJob(latexExe, bibExe, inputFile, console, runbib);
+		job.schedule();
 	}
 
-	private static class CompileTask {
+	public static class CompileJob extends Job {
 
 		String latexExe;
 
@@ -58,13 +48,16 @@ public class LaTeXCompiler {
 
 		boolean runbib;
 
+		boolean cancelled = false;
+
 		/**
 		 * @param latexExe
 		 * @param bibExe
 		 * @param inputFile
 		 * @param output
 		 */
-		public CompileTask(String latexExe, String bibExe, File inputFile, MessageConsole console, boolean runbib) {
+		public CompileJob(String latexExe, String bibExe, File inputFile, MessageConsole console, boolean runbib) {
+			super("TeXDojo Compile Job");
 			this.latexExe = latexExe;
 			this.bibExe = bibExe;
 			this.inputFile = inputFile;
@@ -81,62 +74,81 @@ public class LaTeXCompiler {
 			output.write(buffer, 0, readcount);
 		}
 
-		public void execute() {
+		public void run() {
+			run(new NullProgressMonitor());
+		}
+
+		@Override
+		protected void canceling() {
+			super.canceling();
+			cancelled = true;
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
 			console.clearConsole();
+
 			OutputStream output = console.newOutputStream();
 			ProcessBuilder latexBuilder = new ProcessBuilder().command(latexExe, inputFile.getName())
 					.directory(inputFile.getParentFile()).redirectErrorStream(true);
 			ProcessBuilder bibBuilder = new ProcessBuilder().command(bibExe, inputFile.getName())
 					.directory(inputFile.getParentFile()).redirectErrorStream(true);
 			try {
+
+				monitor.beginTask("Compiling LaTeX Files", 80);
+				monitor.subTask("Invoking LaTeX");
 				Process process = latexBuilder.start();
 				process.waitFor();
 				copyStream(process.getInputStream(), output);
+
+				monitor.worked(20);
+
+				if (cancelled)
+					return Status.CANCEL_STATUS;
+
 				if (runbib) {
+					monitor.subTask("Invoking BibTeX");
+
 					process = bibBuilder.start();
 					process.waitFor();
 					copyStream(process.getInputStream(), output);
+
+					monitor.worked(20);
+
+					if (cancelled)
+						return Status.CANCEL_STATUS;
+
+					monitor.subTask("Invoking LaTeX");
+
 					process = latexBuilder.start();
 					process.waitFor();
 					copyStream(process.getInputStream(), output);
+
+					monitor.worked(20);
+
+					if (cancelled)
+						return Status.CANCEL_STATUS;
+
+					monitor.subTask("Invoking LaTeX");
+
 					process = latexBuilder.start();
 					process.waitFor();
 					copyStream(process.getInputStream(), output);
+
+					monitor.worked(20);
+
+					if (cancelled)
+						return Status.CANCEL_STATUS;
 				}
+
+				// Remove temporary files
+
+				monitor.done();
 			} catch (Exception e) {
 				e.printStackTrace(new PrintStream(output));
 			}
+			return Status.OK_STATUS;
 		}
 	}
 
-	private static class CompileThread extends Thread {
-
-		@Override
-		public void run() {
-			while (true) {
-				CompileTask task = null;
-				try {
-					LaTeXCompiler.class.wait();
-					if (!waitQueue.isEmpty()) {
-						task = waitQueue.poll();
-					}
-				} catch (InterruptedException e) {
-
-				} finally {
-					LaTeXCompiler.class.notify();
-				}
-
-				if (task != null) {
-					task.execute();
-				}
-
-				// Sleep for a while
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-
-				}
-			}
-		}
-	}
 }

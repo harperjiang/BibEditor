@@ -31,6 +31,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(PreferenceConstants.P_LATEX_EXE, "pdflatex");
 		store.setDefault(PreferenceConstants.P_BIBTEX_EXE, "bibtex");
+		store.setDefault(PreferenceConstants.P_TEMP_FILE, "*.aux,*.log");
 	}
 
 }

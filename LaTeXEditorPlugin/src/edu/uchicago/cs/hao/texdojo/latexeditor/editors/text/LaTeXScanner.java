@@ -14,27 +14,38 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
+import org.eclipse.jface.text.rules.WordPatternRule;
+import org.eclipse.swt.SWT;
 
 /**
  * 
  * @author Hao Jiang
  *
  */
-public class TextScanner extends RuleBasedScanner {
+public class LaTeXScanner extends RuleBasedScanner {
 
-	public TextScanner() {
-		IToken token = new Token(new TextAttribute(ColorConstants.get(ColorConstants.DEFAULT)));
+	public LaTeXScanner() {
+		IToken text = new Token(new TextAttribute(ColorConstants.get(ColorConstants.DEFAULT)));
+		IToken arg = new Token(new TextAttribute(ColorConstants.get(ColorConstants.COMMAND_ARG)));
+		IToken command = new Token(new TextAttribute(ColorConstants.get(ColorConstants.COMMAND), null, SWT.BOLD));
+		IToken option = new Token(new TextAttribute(ColorConstants.get(ColorConstants.OPTION)));
 
-		IRule[] rules = new IRule[1];
-		
+		IRule[] rules = new IRule[4];
+
+		// Add rule for keyword
+		rules[0] = new WordPatternRule(new WordDetector(), "\\", null, command);
+		// Add rule for command args
+		rules[1] = new MultiLineRule("{", "}", arg);
+		rules[2] = new MultiLineRule("[", "]", option);
 		// Add generic whitespace rule.
-		rules[0] = new WhitespaceRule(new WhitespaceDetector());
+		rules[3] = new WhitespaceRule(new WhitespaceDetector());
 
 		setRules(rules);
-		setDefaultReturnToken(token);
+		setDefaultReturnToken(text);
 	}
 
 }

@@ -11,6 +11,7 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 
+import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
@@ -20,12 +21,13 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.BeginEndStrategy;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LaTeXContentAssistant;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.CommandArgScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.CommandScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.DoubleClickStrategy;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.TextScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXScanner;
 
 /**
  * 
@@ -38,6 +40,8 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 
 	private LaTeXContentAssistant contentAssistant = new LaTeXContentAssistant();
 
+	private IAutoEditStrategy[] strategies = new IAutoEditStrategy[] { new BeginEndStrategy() };
+
 	public LaTeXConfiguration() {
 		super();
 	}
@@ -45,7 +49,7 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return new String[] { IDocument.DEFAULT_CONTENT_TYPE, PartitionScanner.LATEX_COMMAND,
-				PartitionScanner.LATEX_ARG };
+				PartitionScanner.LATEX_ARG, PartitionScanner.LATEX_OPTION };
 	}
 
 	@Override
@@ -59,18 +63,27 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 	}
 
 	@Override
+	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
+		return strategies;
+	}
+
+	@Override
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
 
-		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(new CommandScanner());
+		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(new LaTeXScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_COMMAND);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_COMMAND);
 
-		dr = new DefaultDamagerRepairer(new CommandArgScanner());
+		dr = new DefaultDamagerRepairer(new LaTeXScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_ARG);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_ARG);
 
-		dr = new DefaultDamagerRepairer(new TextScanner());
+		dr = new DefaultDamagerRepairer(new LaTeXScanner());
+		reconciler.setDamager(dr, PartitionScanner.LATEX_OPTION);
+		reconciler.setRepairer(dr, PartitionScanner.LATEX_OPTION);
+
+		dr = new DefaultDamagerRepairer(new LaTeXScanner());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 

@@ -30,16 +30,19 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 
 	public final static String LATEX_ARG = "__latex_arg";
 
+	public final static String LATEX_OPTION = "__latex_option";
+
 	public PartitionScanner() {
 
 		IToken command = new Token(LATEX_COMMAND);
 		IToken arg = new Token(LATEX_ARG);
+		IToken option = new Token(LATEX_OPTION);
 		IToken text = new Token(IDocument.DEFAULT_CONTENT_TYPE);
-		
+
 		IPredicateRule[] rules = new IPredicateRule[3];
 
 		rules[0] = new MultiLineRule("{", "}", arg);
-		rules[1] = new MultiLineRule("[", "]", arg);
+		rules[1] = new MultiLineRule("[", "]", option);
 		rules[2] = new WordPatternRule(new WordDetector(), "\\", null, command);
 
 		setPredicateRules(rules);

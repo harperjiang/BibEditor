@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.ui.console,
  edu.uchicago.cs.hao.texdojo.bibeditor,
- org.junit
+ org.junit,
+ org.eclipse.ui.workbench
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

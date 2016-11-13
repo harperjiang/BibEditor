@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2016 Hao Jiang.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Hao Jiang - initial API and implementation and/or initial documentation
+ *******************************************************************************/
+
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant;
 
 import java.io.BufferedReader;
@@ -12,25 +23,52 @@ import java.util.List;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.eclipse.swt.graphics.Point;
 
-public class CommandProcessor implements IContentAssistProcessor {
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
+
+public class CommandAssistant implements IContentAssistProcessor {
 
 	List<Command> commands = new ArrayList<Command>();
 
 	@Override
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-		IDocument doc = viewer.getDocument();
-		// Retrieve qualifier
-		String qualifier = getQualifier(doc, offset);
-		ICompletionProposal[] proposals = findProposals(qualifier, offset);
+		try {
+			IDocument doc = viewer.getDocument();
 
-		// Return the proposals
-		return proposals;
+			ITypedRegion partition = doc.getPartition(offset);
+			Point selectedRange = viewer.getSelectedRange();
+
+			if (selectedRange.y > 0) {
+				// Have selection, current implementation try to generate table
+				// or
+				// itemize
+
+				String selected = doc.get(selectedRange.x, selectedRange.y);
+				ICompletionProposal[] proposals = findSelectionProposals(selected, selectedRange.x, selectedRange.y);
+				return proposals;
+
+			} else if (PartitionScanner.LATEX_COMMAND.equals(partition.getType())
+					|| PartitionScanner.LATEX_ARG.equals(partition.getType())) {
+				// Retrieve qualifier
+				String qualifier = getQualifier(doc, offset);
+				ICompletionProposal[] proposals = findProposals(qualifier, offset);
+
+				// Return the proposals
+				return proposals;
+			} else {
+				return new ICompletionProposal[0];
+			}
+		} catch (BadLocationException e) {
+			// Do nothing
+			return new ICompletionProposal[0];
+		}
 	}
 
 	@Override
@@ -152,6 +190,55 @@ public class CommandProcessor implements IContentAssistProcessor {
 		return proparray;
 	}
 
+	private ICompletionProposal[] findSelectionProposals(String selection, int offset, int length) {
+		String[] lines = selection.split("[\\r\\n]+");
+
+		StringBuilder listBuilder = new StringBuilder();
+		StringBuilder tableBuilder = new StringBuilder();
+		int maxColumn = 0;
+		for (String line : lines) {
+			listBuilder.append(MessageFormat.format("\t\\item {0}\n", line));
+			String[] cells = line.split("\\s+");
+			maxColumn = Math.max(maxColumn, cells.length);
+			for (String cell : cells) {
+				tableBuilder.append(cell).append(" & ");
+			}
+			tableBuilder.delete(tableBuilder.length() - 2, tableBuilder.length()).append("\\\\\n");
+			tableBuilder.append("\\hline\n");
+		}
+
+		StringBuilder colDef = new StringBuilder();
+		colDef.append("{|");
+		for (int i = 0; i < maxColumn; i++) {
+			colDef.append("c|");
+		}
+		colDef.append("}");
+
+		ICompletionProposal[] results = new ICompletionProposal[4];
+
+		// itemize
+		String data = MessageFormat.format("\\begin'{'itemize'}'\n{0}\\end'{'itemize'}'", listBuilder.toString());
+		results[0] = new CompletionProposal(data, offset, length, offset + data.length(), null, "itemize", null, null);
+
+		// enumerate
+		data = MessageFormat.format("\\begin'{'enumerate'}'\n{0}\\end'{'enumerate'}'\n", listBuilder.toString());
+
+		results[1] = new CompletionProposal(data, offset, length, offset + data.length(), null, "enumerate", null,
+				null);
+
+		// description
+		data = MessageFormat.format("\\begin'{'description'}'\n{0}\\end'{'description'}'", listBuilder.toString());
+		results[2] = new CompletionProposal(data, offset, length, offset + data.length(), null, "description", null,
+				null);
+
+		// tabular
+		data = MessageFormat.format("\\begin'{'tabular'}'{0}\n{1}\\end'{'tabular'}'", colDef.toString(),
+				tableBuilder.toString());
+		results[3] = new CompletionProposal(data, offset, length, offset + data.length(), null, "tabular", null, null);
+
+		return results;
+	}
+
 	private static class Command {
 		String key;
 		String display;
@@ -163,7 +250,7 @@ public class CommandProcessor implements IContentAssistProcessor {
 
 	}
 
-	public CommandProcessor() {
+	public CommandAssistant() {
 
 		BufferedReader br = null;
 		try {

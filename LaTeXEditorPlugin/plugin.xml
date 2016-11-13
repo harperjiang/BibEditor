@@ -21,6 +21,12 @@
             id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
             name="LaTeX Editor Settings">
       </page>
+      <page
+            category="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TempFilePreferencePage"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TempFilePreferencePage"
+            name="Temp Files">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

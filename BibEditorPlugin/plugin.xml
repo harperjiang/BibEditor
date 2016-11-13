@@ -217,7 +217,7 @@
       <page
             class="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.TeXDojoPreferencePage"
             id="edu.uchicago.cs.hao.texdojo.preferences.PreferencePage"
-            name="TeX Dojo">
+            name="TeXDojo">
       </page>
    </extension>
    <extension

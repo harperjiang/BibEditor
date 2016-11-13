@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2016 Hao Jiang.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Hao Jiang - initial API and implementation and/or initial documentation
+ *******************************************************************************/
+
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant;
 
 import org.eclipse.jface.text.IDocument;
@@ -14,9 +25,9 @@ public class LaTeXContentAssistant extends ContentAssistant {
 		setAutoActivationDelay(500);
 
 		// Configure content assistant
-		setContentAssistProcessor(new CommandProcessor(), PartitionScanner.LATEX_COMMAND);
-		setContentAssistProcessor(new CommandProcessor(), PartitionScanner.LATEX_ARG);
-		setContentAssistProcessor(new CommandProcessor(), IDocument.DEFAULT_CONTENT_TYPE);
+		setContentAssistProcessor(new CommandAssistant(), PartitionScanner.LATEX_COMMAND);
+		setContentAssistProcessor(new CommandAssistant(), PartitionScanner.LATEX_ARG);
+		setContentAssistProcessor(new CommandAssistant(), IDocument.DEFAULT_CONTENT_TYPE);
 	}
 
 }

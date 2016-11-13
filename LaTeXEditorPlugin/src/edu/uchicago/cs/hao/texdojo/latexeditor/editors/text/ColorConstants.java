@@ -24,12 +24,14 @@ import org.eclipse.swt.graphics.RGB;
 public class ColorConstants {
 	public static final String COMMAND = "command";
 	public static final String COMMAND_ARG = "command_arg";
+	public static final String OPTION = "option";
 	public static final String DEFAULT = "default";
 
 	static {
 		ColorRegistry cr = JFaceResources.getColorRegistry();
 		cr.put(COMMAND, new RGB(100, 200, 50));
 		cr.put(COMMAND_ARG, new RGB(100, 0, 200));
+		cr.put(OPTION, new RGB(150, 50, 100));
 		cr.put(DEFAULT, new RGB(0, 0, 0));
 	}
 
