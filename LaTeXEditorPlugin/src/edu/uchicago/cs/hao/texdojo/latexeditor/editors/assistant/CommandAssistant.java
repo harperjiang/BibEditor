@@ -23,15 +23,12 @@ import java.util.List;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Point;
-
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
 
 public class CommandAssistant implements IContentAssistProcessor {
 
@@ -42,7 +39,6 @@ public class CommandAssistant implements IContentAssistProcessor {
 		try {
 			IDocument doc = viewer.getDocument();
 
-			ITypedRegion partition = doc.getPartition(offset);
 			Point selectedRange = viewer.getSelectedRange();
 
 			if (selectedRange.y > 0) {
@@ -54,16 +50,13 @@ public class CommandAssistant implements IContentAssistProcessor {
 				ICompletionProposal[] proposals = findSelectionProposals(selected, selectedRange.x, selectedRange.y);
 				return proposals;
 
-			} else if (PartitionScanner.LATEX_COMMAND.equals(partition.getType())
-					|| PartitionScanner.LATEX_ARG.equals(partition.getType())) {
+			} else {
 				// Retrieve qualifier
 				String qualifier = getQualifier(doc, offset);
 				ICompletionProposal[] proposals = findProposals(qualifier, offset);
 
 				// Return the proposals
 				return proposals;
-			} else {
-				return new ICompletionProposal[0];
 			}
 		} catch (BadLocationException e) {
 			// Do nothing
@@ -172,10 +165,10 @@ public class CommandAssistant implements IContentAssistProcessor {
 
 			if (includeBs) {
 				text = "\\" + cmd.key;
-				display = MessageFormat.format("\\{0}\t{1}", cmd.key, cmd.display);
+				display = MessageFormat.format("\\{0} {1}", cmd.key, cmd.display);
 			} else {
 				text = cmd.key;
-				display = MessageFormat.format("{0}\t{1}", cmd.key, cmd.display);
+				display = MessageFormat.format("{0} {1}", cmd.key, cmd.display);
 			}
 			// Construct proposal
 			CompletionProposal proposal = new CompletionProposal(text, documentOffset - qlen, qlen, text.length(), null,
@@ -262,7 +255,8 @@ public class CommandAssistant implements IContentAssistProcessor {
 			while ((line = br.readLine()) != null) {
 				if (!line.startsWith("#")) {
 					String[] parts = line.split("\\s+");
-					commands.add(new Command(parts[0], parts[1]));
+					if (parts.length >= 2)
+						commands.add(new Command(parts[0], parts[1]));
 				}
 			}
 		} catch (Exception e) {

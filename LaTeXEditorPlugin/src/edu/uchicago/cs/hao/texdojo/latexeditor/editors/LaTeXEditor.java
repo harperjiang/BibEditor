@@ -109,8 +109,8 @@ public class LaTeXEditor extends TextEditor {
 		removeTempFiles(inputFile.getParentFile(), tempFiles);
 	}
 
-	private void removeTempFiles(File dir, String tempFiles) {
-		String[] tfs = tempFiles.split(",");
+	private void removeTempFiles(final File dir, String tempFiles) {
+		final String[] tfs = tempFiles.split(",");
 		File[] candidates = dir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File d, String name) {
@@ -124,10 +124,7 @@ public class LaTeXEditor extends TextEditor {
 			}
 		});
 		for (File can : candidates) {
-			boolean a = can.isFile();
-			boolean b = can.delete();
-			boolean c= a|b;
-			continue;
+			can.delete();
 		}
 	}
 
