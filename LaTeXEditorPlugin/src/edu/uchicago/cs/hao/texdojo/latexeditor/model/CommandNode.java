@@ -9,19 +9,15 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 /**
  * @author Hao Jiang
  *
  */
-public class EndNode extends LaTeXNode {
+public class CommandNode extends LaTeXNode {
 
-	public EndNode(String env, int offset, int length) {
-		super(env, offset, length);
-	}
-
-	public void append(ArgNode arg) {
-		this.setContent(arg.getContent());
+	public CommandNode(String data, int offset, int length) {
+		super(data, offset, length);
 	}
 }

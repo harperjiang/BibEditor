@@ -1,4 +1,4 @@
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +15,12 @@ public class LaTeXParser {
 		stack.clear();
 
 		for (LaTeXNode node : nodes) {
-			if (node instanceof BeginNode) {
+			if (stack.isEmpty()) {
 				stack.push(node);
+				continue;
 			}
-			if (node instanceof EndNode) {
-				stack.push(node);
-			}
-			if (node instanceof CommandNode) {
-				stack.push(node);
-			}
-			if (node instanceof TextNode) {
+			if (node instanceof BeginNode || node instanceof EndNode || node instanceof CommandNode
+					|| node instanceof TextNode) {
 				LaTeXNode stacktop = stack.pop();
 				if (stacktop instanceof EndNode) {
 					EndNode en = (EndNode) stacktop;
@@ -95,7 +91,14 @@ public class LaTeXParser {
 				}
 			}
 		}
-		return null;
+
+		// Final processing, EOF node
+		LaTeXNode stacktop = stack.pop();
+		if (stacktop instanceof EndNode && ((EndNode) stacktop).getContent() != null) {
+			matchBegin((EndNode) stacktop);
+		}
+
+		return stack;
 	}
 
 	private void matchBegin(EndNode en) {

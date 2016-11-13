@@ -9,9 +9,10 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -29,6 +30,23 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
 public class LaTeXModel {
 
 	private List<LaTeXNode> nodes = new ArrayList<LaTeXNode>();
+
+	/**
+	 * Init the model with an given document and partition
+	 * 
+	 * @param doc
+	 * @param tokens
+	 * @throws BadLocationException
+	 */
+	public void init(IDocument doc) throws BadLocationException {
+		ITypedRegion[] partitions = doc.computePartitioning(0, doc.getLength());
+		this.nodes = parseTokens(doc, partitions);
+		parseNodes();
+	}
+
+	public List<LaTeXNode> nodes() {
+		return Collections.unmodifiableList(nodes);
+	}
 
 	/**
 	 * @param offset
@@ -81,8 +99,9 @@ public class LaTeXModel {
 	}
 
 	public boolean has(String command) {
-		for(LaTeXNode node:nodes) {
-			if(node.has(command))
+		for (LaTeXNode node : nodes) {
+			if (node.has(command) && (node instanceof CommandNode || node instanceof InvokeNode
+					|| node instanceof GroupNode || node instanceof BeginNode))
 				return true;
 		}
 		return false;
@@ -102,12 +121,12 @@ public class LaTeXModel {
 				} else if (LaTeXConstant.END.equals(data)) {
 					newnodes.add(new EndNode(null, token.getOffset(), token.getLength()));
 				} else {
-					newnodes.add(new CommandNode(data, token.getOffset(), token.getLength()));
+					newnodes.add(new CommandNode(undecorate(data), token.getOffset(), token.getLength()));
 				}
 			} else if (PartitionScanner.LATEX_ARG.equals(token.getType())) {
-				newnodes.add(new ArgNode(data, token.getOffset(), token.getLength()));
+				newnodes.add(new ArgNode(undecorate(data), token.getOffset(), token.getLength()));
 			} else if (PartitionScanner.LATEX_OPTION.equals(token.getType())) {
-				newnodes.add(new OptionNode(data, token.getOffset(), token.getLength()));
+				newnodes.add(new OptionNode(undecorate(data), token.getOffset(), token.getLength()));
 			} else if (IDocument.DEFAULT_CONTENT_TYPE.equals(token.getType())) {
 				newnodes.add(new TextNode(data, token.getOffset(), token.getLength()));
 			} else {
@@ -117,4 +136,15 @@ public class LaTeXModel {
 		return newnodes;
 	}
 
+	private String undecorate(String input) {
+		if (input.startsWith("\\"))
+			return input.substring(1);
+		if (input.startsWith("{") && input.endsWith("}")) {
+			return input.substring(1, input.length() - 1);
+		}
+		if (input.startsWith("[") && input.endsWith("]")) {
+			return input.substring(1, input.length() - 1);
+		}
+		return input;
+	}
 }

@@ -9,9 +9,10 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,4 +41,9 @@ public class GroupNode extends LaTeXNode {
 		nodes.addAll(end.decompose());
 		return nodes;
 	}
+
+	public List<LaTeXNode> getChildren() {
+		return Collections.unmodifiableList(children);
+	}
+
 }

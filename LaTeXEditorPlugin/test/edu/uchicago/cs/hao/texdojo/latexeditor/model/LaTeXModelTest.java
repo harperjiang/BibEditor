@@ -1,0 +1,85 @@
+/*******************************************************************************
+ * Copyright (c) 2016 Hao Jiang.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Hao Jiang - initial API and implementation and/or initial documentation
+ *******************************************************************************/
+
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.rules.FastPartitioner;
+import org.junit.Before;
+import org.junit.Test;
+
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
+
+/**
+ * @author Hao Jiang
+ *
+ */
+public class LaTeXModelTest {
+
+	IDocument doc;
+
+	@Before
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream("edu/uchicago/cs/hao/texdojo/latexeditor/model/doc")));
+
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		while ((line = br.readLine()) != null)
+			sb.append(line).append('\n');
+
+		doc = new Document(sb.toString());
+		IDocumentPartitioner partitioner = new FastPartitioner(new PartitionScanner(),
+				new String[] { PartitionScanner.LATEX_COMMAND, PartitionScanner.LATEX_ARG });
+		partitioner.connect(doc);
+		doc.setDocumentPartitioner(partitioner);
+		br.close();
+	}
+
+	@Test
+	public void testInit() throws Exception {
+
+		LaTeXModel model = new LaTeXModel();
+
+		model.init(doc);
+
+		assertEquals(3, model.nodes().size());
+
+		assertTrue(model.nodes().get(0) instanceof InvokeNode);
+		assertTrue(model.nodes().get(1) instanceof TextNode);
+		assertTrue(model.nodes().get(2) instanceof GroupNode);
+	}
+
+	@Test
+	public void testClear() throws Exception {
+		LaTeXModel model = new LaTeXModel();
+		model.init(doc);
+
+		model.clear(50, 20);
+
+		assertEquals(12, model.nodes().size());
+
+	}
+
+	@Test
+	public void testUpdate() {
+
+	}
+}

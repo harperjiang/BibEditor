@@ -9,7 +9,7 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 import java.util.ArrayList;
 import java.util.List;

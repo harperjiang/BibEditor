@@ -1,4 +1,4 @@
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 public interface LaTeXConstant {
 

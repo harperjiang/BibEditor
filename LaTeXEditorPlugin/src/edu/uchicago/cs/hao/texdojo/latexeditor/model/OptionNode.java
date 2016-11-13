@@ -9,20 +9,15 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 /**
  * @author Hao Jiang
  *
  */
-public class BeginNode extends LaTeXNode {
+public class OptionNode extends LaTeXNode {
 
-	public BeginNode(String env, int offset, int length) {
-		super(env, offset, length);
+	public OptionNode(String content, int offset, int length) {
+		super(content, offset, length);
 	}
-	
-	public void append(ArgNode arg) {
-		this.setContent(arg.getContent());
-	}
-
 }

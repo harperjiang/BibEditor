@@ -9,36 +9,15 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
-
-import org.junit.Test;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 /**
  * @author Hao Jiang
  *
  */
-public class LaTeXModelTest {
+public class ArgNode extends LaTeXNode {
 
-	/**
-	 * Test method for
-	 * {@link edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXModel#add(java.lang.String, int)}.
-	 */
-	@Test
-	public void testAddToken() {
-		LaTeXModel model = new LaTeXModel();
-
-		
+	public ArgNode(String arg, int offset, int length) {
+		super(arg, offset, length);
 	}
-
-	/**
-	 * Test method for
-	 * {@link edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXModel#remove(int, int)}.
-	 */
-	@Test
-	public void testRemove() {
-		LaTeXModel model = new LaTeXModel();
-
-		
-	}
-
 }

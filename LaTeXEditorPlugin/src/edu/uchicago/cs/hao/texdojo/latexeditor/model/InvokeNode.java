@@ -9,9 +9,10 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,6 +27,7 @@ public class InvokeNode extends LaTeXNode {
 
 	public InvokeNode(CommandNode command) {
 		super(command.getContent(), command.getOffset(), command.getLength());
+		this.command = command;
 	}
 
 	public void attach(LaTeXNode arg) {
@@ -44,4 +46,13 @@ public class InvokeNode extends LaTeXNode {
 
 		return components;
 	}
+
+	public List<LaTeXNode> getArgs() {
+		return Collections.unmodifiableList(args);
+	}
+
+	public CommandNode getCommand() {
+		return command;
+	}
+
 }

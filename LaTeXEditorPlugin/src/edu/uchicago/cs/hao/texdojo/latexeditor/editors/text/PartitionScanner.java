@@ -48,4 +48,12 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 		setPredicateRules(rules);
 		setDefaultReturnToken(text);
 	}
+
+	public static final boolean isCommand(String type) {
+		return LATEX_COMMAND.equals(type);
+	}
+
+	public static final boolean isArgOption(String type) {
+		return LATEX_ARG.equals(type) || LATEX_OPTION.equals(type);
+	}
 }

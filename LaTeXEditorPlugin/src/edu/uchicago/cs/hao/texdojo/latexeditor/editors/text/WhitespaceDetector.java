@@ -22,6 +22,6 @@ public class WhitespaceDetector implements IWhitespaceDetector {
 
 	@Override
 	public boolean isWhitespace(char c) {
-		return Character.isSpaceChar(c);
+		return Character.isSpaceChar(c) || c == '\n' || c == '\r';
 	}
 }

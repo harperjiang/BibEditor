@@ -13,6 +13,7 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,9 +24,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
-import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
-import org.eclipse.jface.text.Region;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -35,11 +34,11 @@ import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.editors.text.TextEditor;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.compile.LaTeXCompiler;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXConstant;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXModel;
+import edu.uchicago.cs.hao.texdojo.latexeditor.compile.LaTeXCompiler;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXDocumentProvider;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXConstant;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXModel;
 import edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants;
 import edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer;
 
@@ -63,7 +62,16 @@ public class LaTeXEditor extends TextEditor {
 	@Override
 	protected void doSetInput(IEditorInput input) throws CoreException {
 		super.doSetInput(input);
-		getDocumentProvider().getDocument(getEditorInput()).addDocumentListener(new ParserListener());
+
+		IDocument doc = getDocumentProvider().getDocument(getEditorInput());
+
+		// Init the model with document and start listening its change
+		try {
+			model.init(doc);
+			doc.addDocumentListener(new ParserListener());
+		} catch (BadLocationException e) {
+			e.printStackTrace(new PrintStream(getConsole().newOutputStream()));
+		}
 	}
 
 	@Override
@@ -77,6 +85,8 @@ public class LaTeXEditor extends TextEditor {
 		// Check to see whether to compile current file
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 		File inputFile = ((IPathEditorInput) getEditorInput()).getPath().toFile();
+
+		String tempFiles = prefs.get(PreferenceConstants.P_TEMP_FILE, PreferenceInitializer.DEFAULT_TEMP_FILE);
 
 		boolean compileDoc = prefs.getBoolean(PreferenceConstants.P_COMPILE_DOC,
 				PreferenceInitializer.DEFAULT_COMPILE_DOCUMENT);
@@ -96,8 +106,10 @@ public class LaTeXEditor extends TextEditor {
 		LaTeXCompiler.compile(executable, bibexe, inputFile, getConsole(), model.has(LaTeXConstant.EXTERNAL_BIB));
 
 		// Remove temporary files
-		File dir = inputFile.getParentFile();
-		String tempFiles = prefs.get(PreferenceConstants.P_TEMP_FILE, PreferenceInitializer.DEFAULT_TEMP_FILE);
+		removeTempFiles(inputFile.getParentFile(), tempFiles);
+	}
+
+	private void removeTempFiles(File dir, String tempFiles) {
 		String[] tfs = tempFiles.split(",");
 		File[] candidates = dir.listFiles(new FilenameFilter() {
 			@Override
@@ -112,7 +124,10 @@ public class LaTeXEditor extends TextEditor {
 			}
 		});
 		for (File can : candidates) {
-			can.delete();
+			boolean a = can.isFile();
+			boolean b = can.delete();
+			boolean c= a|b;
+			continue;
 		}
 	}
 
@@ -132,15 +147,15 @@ public class LaTeXEditor extends TextEditor {
 
 	private class ParserListener implements IDocumentListener {
 
-		private IRegion scanRegion;
+		private int offset;
 
 		@Override
 		public void documentChanged(DocumentEvent event) {
 			try {
 				// Rescan from the beginning of region that may be impacted
 				IDocument doc = event.getDocument();
-				ITypedRegion[] tokens = doc.getDocumentPartitioner().computePartitioning(scanRegion.getOffset(),
-						scanRegion.getLength());
+				ITypedRegion[] tokens = doc.getDocumentPartitioner().computePartitioning(offset,
+						doc.getLength() - offset);
 				model.update(doc, tokens);
 			} catch (BadLocationException e) {
 				e.printStackTrace(new PrintWriter(getConsole().newOutputStream()));
@@ -155,17 +170,30 @@ public class LaTeXEditor extends TextEditor {
 					// Replace text, determine affected region
 
 					ITypedRegion headRegion = doc.getPartition(event.getOffset());
-					ITypedRegion tailRegion = doc.getPartition(event.getOffset() + event.getLength());
 
-					scanRegion = new Region(headRegion.getOffset(), tailRegion.getOffset() + tailRegion.getLength()
-							- headRegion.getOffset() - event.getLength() + event.getText().length());
-
+					offset = headRegion.getOffset();
 					// Clear affected command
-					model.clear(headRegion.getOffset(),
-							tailRegion.getOffset() + tailRegion.getLength() - headRegion.getOffset());
+
 				} else {
-					scanRegion = doc.getPartition(event.getOffset());
+					ITypedRegion in = doc.getPartition(event.getOffset());
+					if (in.getOffset() == event.getOffset()) {
+						// At the beginning of partition, check previous
+						if (event.getOffset() != 0) {
+							ITypedRegion prev = doc.getPartition(event.getOffset() - 1);
+							if (!PartitionScanner.isArgOption(prev.getType())) {
+								// This is an append to prev partition
+								offset = prev.getOffset();
+							} else { // This is an insert to next partition
+								offset = in.getOffset();
+							}
+						} else {
+							offset = in.getOffset();
+						}
+					} else {
+						offset = in.getOffset();
+					}
 				}
+				model.clear(offset, doc.getLength() - offset);
 			} catch (BadLocationException e) {
 				e.printStackTrace(new PrintWriter(getConsole().newOutputStream()));
 			}

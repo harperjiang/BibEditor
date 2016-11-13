@@ -9,7 +9,7 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.compile;
+package edu.uchicago.cs.hao.texdojo.latexeditor.compile;
 
 import java.io.File;
 import java.io.IOException;
