@@ -79,6 +79,7 @@ public class LaTeXEditor extends TextEditor {
 		super.doSave(progressMonitor);
 		// Invoke pdflatex to work on current latex document
 		compile();
+		
 	}
 
 	protected void compile() {

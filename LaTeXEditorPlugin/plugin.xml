@@ -27,6 +27,12 @@
             id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TempFilePreferencePage"
             name="Temp Files">
       </page>
+      <page
+            category="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.ColorPreferencePage"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.ColorPreferencePage"
+            name="Syntax Color">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

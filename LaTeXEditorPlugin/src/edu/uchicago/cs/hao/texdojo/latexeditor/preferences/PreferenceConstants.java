@@ -26,4 +26,12 @@ public class PreferenceConstants {
 
 	public static final String P_MAIN_TEX = "mainTex";
 
+	public static final String P_COLOR_COMMAND = "colorCommand";
+
+	public static final String P_COLOR_ARG = "colorArgument";
+
+	public static final String P_COLOR_OPTION = "colorOption";
+
+	public static final String P_COLOR_COMMENT = "colorComment";
+
 }

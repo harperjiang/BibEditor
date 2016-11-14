@@ -47,7 +47,8 @@ public class LaTeXModelTest {
 
 		doc = new Document(sb.toString());
 		IDocumentPartitioner partitioner = new FastPartitioner(new PartitionScanner(),
-				new String[] { PartitionScanner.LATEX_COMMAND, PartitionScanner.LATEX_ARG });
+				new String[] { IDocument.DEFAULT_CONTENT_TYPE, PartitionScanner.LATEX_COMMAND,
+						PartitionScanner.LATEX_ARG, PartitionScanner.LATEX_OPTION, PartitionScanner.LATEX_COMMENT });
 		partitioner.connect(doc);
 		doc.setDocumentPartitioner(partitioner);
 		br.close();
@@ -60,11 +61,11 @@ public class LaTeXModelTest {
 
 		model.init(doc);
 
-		assertEquals(3, model.nodes().size());
-
-		assertTrue(model.nodes().get(0) instanceof InvokeNode);
-		assertTrue(model.nodes().get(1) instanceof TextNode);
-		assertTrue(model.nodes().get(2) instanceof GroupNode);
+		assertEquals(4, model.nodes().size());
+		assertTrue(model.nodes().get(0) instanceof CommentNode);
+		assertTrue(model.nodes().get(1) instanceof InvokeNode);
+		assertTrue(model.nodes().get(2) instanceof TextNode);
+		assertTrue(model.nodes().get(3) instanceof GroupNode);
 	}
 
 	@Test
@@ -74,7 +75,7 @@ public class LaTeXModelTest {
 
 		model.clear(50, 20);
 
-		assertEquals(12, model.nodes().size());
+		assertEquals(14, model.nodes().size());
 
 	}
 

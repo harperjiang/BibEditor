@@ -20,7 +20,7 @@ public class LaTeXParser {
 				continue;
 			}
 			if (node instanceof BeginNode || node instanceof EndNode || node instanceof CommandNode
-					|| node instanceof TextNode) {
+					|| node instanceof TextNode || node instanceof CommentNode) {
 				LaTeXNode stacktop = stack.pop();
 				if (stacktop instanceof EndNode) {
 					EndNode en = (EndNode) stacktop;

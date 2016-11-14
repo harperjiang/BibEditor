@@ -9,19 +9,17 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
-
-import org.eclipse.jface.text.rules.IWhitespaceDetector;
+package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 /**
- * 
  * @author Hao Jiang
  *
  */
-public class WhitespaceDetector implements IWhitespaceDetector {
-
-	@Override
-	public boolean isWhitespace(char c) {
-		return Character.isSpaceChar(c);
+public class CommentNode extends LaTeXNode {
+	/**
+	 * 
+	 */
+	public CommentNode(String data, int offset, int length) {
+		super(data, offset, length);
 	}
 }

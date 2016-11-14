@@ -22,9 +22,11 @@ import org.eclipse.swt.graphics.RGB;
  *
  */
 public class ColorConstants {
+	
 	public static final String COMMAND = "command";
 	public static final String COMMAND_ARG = "command_arg";
 	public static final String OPTION = "option";
+	public static final String COMMENT = "comment";
 	public static final String DEFAULT = "default";
 
 	static {
@@ -33,6 +35,7 @@ public class ColorConstants {
 		cr.put(COMMAND_ARG, new RGB(100, 0, 200));
 		cr.put(OPTION, new RGB(150, 50, 100));
 		cr.put(DEFAULT, new RGB(0, 0, 0));
+		cr.put(COMMENT, new RGB(240, 10, 20));
 	}
 
 	public static Color get(String type) {

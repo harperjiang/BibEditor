@@ -28,8 +28,7 @@ public class LaTeXDocumentProvider extends FileDocumentProvider {
 	protected IDocument createDocument(Object element) throws CoreException {
 		IDocument document = super.createDocument(element);
 		if (document != null) {
-			IDocumentPartitioner partitioner = new FastPartitioner(new PartitionScanner(),
-					new String[] { PartitionScanner.LATEX_COMMAND, PartitionScanner.LATEX_ARG });
+			IDocumentPartitioner partitioner = new FastPartitioner(new PartitionScanner(), PartitionScanner.VALID_TYPE);
 			partitioner.connect(document);
 			document.setDocumentPartitioner(partitioner);
 		}

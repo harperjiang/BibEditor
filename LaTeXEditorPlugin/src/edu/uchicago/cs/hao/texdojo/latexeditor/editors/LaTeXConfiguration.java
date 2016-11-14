@@ -23,11 +23,9 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.BeginEndStrategy;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LaTeXContentAssistant;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.CommandArgScanner;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.CommandScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.DoubleClickStrategy;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
 
 /**
  * 
@@ -48,8 +46,7 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 
 	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return new String[] { IDocument.DEFAULT_CONTENT_TYPE, PartitionScanner.LATEX_COMMAND,
-				PartitionScanner.LATEX_ARG, PartitionScanner.LATEX_OPTION };
+		return PartitionScanner.VALID_TYPE;
 	}
 
 	@Override
@@ -82,6 +79,10 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 		dr = new DefaultDamagerRepairer(new LaTeXScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_OPTION);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_OPTION);
+
+		dr = new DefaultDamagerRepairer(new LaTeXScanner());
+		reconciler.setDamager(dr, PartitionScanner.LATEX_COMMENT);
+		reconciler.setRepairer(dr, PartitionScanner.LATEX_COMMENT);
 
 		dr = new DefaultDamagerRepairer(new LaTeXScanner());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);

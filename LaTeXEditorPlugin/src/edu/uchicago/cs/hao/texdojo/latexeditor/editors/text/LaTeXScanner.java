@@ -12,10 +12,12 @@
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
 
 import org.eclipse.jface.text.TextAttribute;
+import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
+import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordPatternRule;
@@ -33,16 +35,20 @@ public class LaTeXScanner extends RuleBasedScanner {
 		IToken arg = new Token(new TextAttribute(ColorConstants.get(ColorConstants.COMMAND_ARG)));
 		IToken command = new Token(new TextAttribute(ColorConstants.get(ColorConstants.COMMAND), null, SWT.BOLD));
 		IToken option = new Token(new TextAttribute(ColorConstants.get(ColorConstants.OPTION)));
+		IToken comment = new Token(new TextAttribute(ColorConstants.get(ColorConstants.COMMENT), null, SWT.ITALIC));
 
-		IRule[] rules = new IRule[4];
+		IRule[] rules = new IRule[5];
 
 		// Add rule for keyword
 		rules[0] = new WordPatternRule(new WordDetector(), "\\", null, command);
 		// Add rule for command args
 		rules[1] = new MultiLineRule("{", "}", arg);
 		rules[2] = new MultiLineRule("[", "]", option);
+
+		// Add rule for comment
+		rules[3] = new EndOfLineRule("%", comment);
 		// Add generic whitespace rule.
-		rules[3] = new WhitespaceRule(new WhitespaceDetector());
+		rules[4] = new WhitespaceRule(new WhitespaceDetector());
 
 		setRules(rules);
 		setDefaultReturnToken(text);
