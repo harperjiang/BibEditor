@@ -17,6 +17,7 @@ import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
+import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WordPatternRule;
 
@@ -35,8 +36,10 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 
 	public final static String LATEX_COMMENT = "__latex_comment";
 
+	public final static String LATEX_MATHMODE = "__latex_mathmode";
+
 	public static final String[] VALID_TYPE = new String[] { IDocument.DEFAULT_CONTENT_TYPE, LATEX_COMMAND, LATEX_ARG,
-			LATEX_OPTION, LATEX_COMMENT };
+			LATEX_OPTION, LATEX_COMMENT, LATEX_MATHMODE };
 
 	public PartitionScanner() {
 
@@ -44,14 +47,17 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 		IToken arg = new Token(LATEX_ARG);
 		IToken option = new Token(LATEX_OPTION);
 		IToken comment = new Token(LATEX_COMMENT);
+		IToken mathmode = new Token(LATEX_MATHMODE);
 		IToken text = new Token(IDocument.DEFAULT_CONTENT_TYPE);
 
-		IPredicateRule[] rules = new IPredicateRule[4];
+		IPredicateRule[] rules = new IPredicateRule[6];
 
 		rules[0] = new MultiLineRule("{", "}", arg);
 		rules[1] = new MultiLineRule("[", "]", option);
 		rules[2] = new WordPatternRule(new WordDetector(), "\\", null, command);
 		rules[3] = new EndOfLineRule("%", comment);
+		rules[4] = new SingleLineRule("$", "$", mathmode);
+		rules[5] = new MultiLineRule("\\[", "\\]", mathmode);
 		setPredicateRules(rules);
 		// Setting a default here will separate text to single character token
 		// setDefaultReturnToken(text);

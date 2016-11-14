@@ -30,9 +30,10 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
  */
 public class ColorManager {
 
-	static final String keys[] = { P_COLOR_COMMAND, P_COLOR_ARG, P_COLOR_OPTION, P_COLOR_TEXT, P_COLOR_COMMENT };
+	static final String keys[] = { P_COLOR_COMMAND, P_COLOR_ARG, P_COLOR_OPTION, P_COLOR_TEXT, P_COLOR_COMMENT,
+			P_COLOR_MATHMODE };
 	static final String values[] = { DEFAULT_COLOR_COMMAND, DEFAULT_COLOR_ARG, DEFAULT_COLOR_OPTION, DEFAULT_COLOR_TEXT,
-			DEFAULT_COLOR_COMMENT };
+			DEFAULT_COLOR_COMMENT, DEFAULT_COLOR_MATHMODE };
 
 	static {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);

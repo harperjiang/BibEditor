@@ -11,10 +11,9 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.preferences;
 
-import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 

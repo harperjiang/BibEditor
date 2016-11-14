@@ -39,6 +39,8 @@ public class ColorPreferencePage extends FieldEditorPreferencePage implements IW
 		addField(new ColorFieldEditor(PreferenceConstants.P_COLOR_ARG, "Command Argument", getFieldEditorParent()));
 		addField(new ColorFieldEditor(PreferenceConstants.P_COLOR_OPTION, "Command Argument", getFieldEditorParent()));
 		addField(new ColorFieldEditor(PreferenceConstants.P_COLOR_COMMENT, "Comment", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.P_COLOR_MATHMODE, "Math Mode", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.P_COLOR_TEXT, "Text", getFieldEditorParent()));
 	}
 
 	/*

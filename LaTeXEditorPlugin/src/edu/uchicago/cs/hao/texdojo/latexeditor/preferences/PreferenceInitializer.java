@@ -44,6 +44,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public static final String DEFAULT_COLOR_TEXT = StringConverter.asString(new RGB(0, 0, 0));
 
+	public static final String DEFAULT_COLOR_MATHMODE = StringConverter.asString(new RGB(250, 10, 50));
+
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(P_LATEX_EXE, DEFAULT_LATEX_EXE);
@@ -56,6 +58,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(P_COLOR_OPTION, DEFAULT_COLOR_OPTION);
 		store.setDefault(P_COLOR_ARG, DEFAULT_COLOR_ARG);
 		store.setDefault(P_COLOR_TEXT, DEFAULT_COLOR_TEXT);
+		store.setDefault(P_COLOR_MATHMODE, DEFAULT_COLOR_MATHMODE);
 	}
 
 }

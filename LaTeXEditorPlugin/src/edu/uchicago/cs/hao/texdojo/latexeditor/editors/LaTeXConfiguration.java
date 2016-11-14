@@ -85,6 +85,10 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_COMMENT);
 
 		dr = new DefaultDamagerRepairer(new LaTeXScanner());
+		reconciler.setDamager(dr, PartitionScanner.LATEX_MATHMODE);
+		reconciler.setRepairer(dr, PartitionScanner.LATEX_MATHMODE);
+
+		dr = new DefaultDamagerRepairer(new LaTeXScanner());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 

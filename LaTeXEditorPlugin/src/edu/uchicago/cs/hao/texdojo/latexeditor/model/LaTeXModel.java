@@ -129,10 +129,8 @@ public class LaTeXModel {
 				newnodes.add(new OptionNode(undecorate(data), token.getOffset(), token.getLength()));
 			} else if (PartitionScanner.LATEX_COMMENT.equals(token.getType())) {
 				newnodes.add(new CommentNode(data, token.getOffset(), token.getLength()));
-			} else if (IDocument.DEFAULT_CONTENT_TYPE.equals(token.getType())) {
-				newnodes.add(new TextNode(data, token.getOffset(), token.getLength()));
 			} else {
-				throw new IllegalArgumentException("Unrecognized item type:" + token.getType());
+				newnodes.add(new TextNode(data, token.getOffset(), token.getLength()));
 			}
 		}
 		return newnodes;

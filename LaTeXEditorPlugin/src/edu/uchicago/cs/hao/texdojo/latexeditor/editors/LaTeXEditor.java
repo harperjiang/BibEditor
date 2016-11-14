@@ -88,7 +88,8 @@ public class LaTeXEditor extends TextEditor {
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
 		super.doSave(progressMonitor);
-		// Invoke pdflatex to work on current latex document
+		
+		// Invoke pdflatex to work on current latex document	
 		compile();
 	}
 
@@ -96,7 +97,7 @@ public class LaTeXEditor extends TextEditor {
 	 * Rescan the document and apply new color/font
 	 */
 	public void refresh() {
-		// TODO Not implemented
+		// Create a new config to reload colors/fonts
 		SourceViewerConfiguration config = new LaTeXConfiguration();
 		setSourceViewerConfiguration(config);
 		((SourceViewer) getSourceViewer()).configure(config);

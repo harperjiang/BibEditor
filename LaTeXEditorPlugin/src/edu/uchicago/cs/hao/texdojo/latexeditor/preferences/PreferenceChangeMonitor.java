@@ -11,11 +11,7 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.preferences;
 
-import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_ARG;
-import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_COMMAND;
-import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_COMMENT;
-import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_OPTION;
-import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_TEXT;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.*;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -37,7 +33,7 @@ public class PreferenceChangeMonitor implements IPreferenceChangeListener {
 	public void preferenceChange(PreferenceChangeEvent event) {
 		if (P_COLOR_COMMAND.equals(event.getKey()) || P_COLOR_ARG.equals(event.getKey())
 				|| P_COLOR_OPTION.equals(event.getKey()) || P_COLOR_COMMENT.equals(event.getKey())
-				|| P_COLOR_TEXT.equals(event.getKey())) {
+				|| P_COLOR_TEXT.equals(event.getKey()) || P_COLOR_MATHMODE.equals(event.getKey())) {
 			// Put new color to registry
 			ColorRegistry cr = JFaceResources.getColorRegistry();
 			cr.put(event.getKey(), StringConverter.asRGB(event.getNewValue().toString()));

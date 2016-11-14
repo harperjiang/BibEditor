@@ -11,7 +11,12 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
 
-import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.*;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_ARG;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_COMMAND;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_COMMENT;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_MATHMODE;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_OPTION;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_TEXT;
 
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.EndOfLineRule;
@@ -19,6 +24,7 @@ import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
+import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordPatternRule;
@@ -37,8 +43,9 @@ public class LaTeXScanner extends RuleBasedScanner {
 		IToken command = new Token(new TextAttribute(ColorManager.get(P_COLOR_COMMAND), null, SWT.BOLD));
 		IToken option = new Token(new TextAttribute(ColorManager.get(P_COLOR_OPTION)));
 		IToken comment = new Token(new TextAttribute(ColorManager.get(P_COLOR_COMMENT), null, SWT.ITALIC));
+		IToken mathmode = new Token(new TextAttribute(ColorManager.get(P_COLOR_MATHMODE)));
 
-		IRule[] rules = new IRule[5];
+		IRule[] rules = new IRule[7];
 
 		// Add rule for keyword
 		rules[0] = new WordPatternRule(new WordDetector(), "\\", null, command);
@@ -48,8 +55,12 @@ public class LaTeXScanner extends RuleBasedScanner {
 
 		// Add rule for comment
 		rules[3] = new EndOfLineRule("%", comment);
+
+		// Math mode
+		rules[4] = new SingleLineRule("$", "$", mathmode);
+		rules[5] = new MultiLineRule("\\[", "\\]", mathmode);
 		// Add generic whitespace rule.
-		rules[4] = new WhitespaceRule(new WhitespaceDetector());
+		rules[6] = new WhitespaceRule(new WhitespaceDetector());
 
 		setRules(rules);
 		setDefaultReturnToken(text);

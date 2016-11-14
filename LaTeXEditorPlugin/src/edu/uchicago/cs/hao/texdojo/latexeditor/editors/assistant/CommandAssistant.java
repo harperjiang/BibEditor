@@ -53,10 +53,11 @@ public class CommandAssistant implements IContentAssistProcessor {
 			} else {
 				// Retrieve qualifier
 				String qualifier = getQualifier(doc, offset);
-				ICompletionProposal[] proposals = findProposals(qualifier, offset);
 
-				// Return the proposals
-				return proposals;
+				// No proposal for empty string
+				if (qualifier == null || qualifier.length() == 0)
+					return noInputProposals(offset);
+				return findProposals(qualifier, offset);
 			}
 		} catch (BadLocationException e) {
 			// Do nothing
@@ -117,6 +118,13 @@ public class CommandAssistant implements IContentAssistProcessor {
 		}
 	}
 
+	/**
+	 * Find Proposal for a non-empty qualifier
+	 * 
+	 * @param qualifier
+	 * @param documentOffset
+	 * @return
+	 */
 	private ICompletionProposal[] findProposals(String qualifier, int documentOffset) {
 		boolean includeBs = true;
 		if (qualifier.startsWith("\\")) {
@@ -183,6 +191,24 @@ public class CommandAssistant implements IContentAssistProcessor {
 		return proparray;
 	}
 
+	/**
+	 * Find a proposal when nothing is provided
+	 * 
+	 * @param offset
+	 * @return
+	 */
+	private ICompletionProposal[] noInputProposals(int offset) {
+		return new ICompletionProposal[0];
+	}
+
+	/**
+	 * Find proposals when text is selected
+	 * 
+	 * @param selection
+	 * @param offset
+	 * @param length
+	 * @return
+	 */
 	private ICompletionProposal[] findSelectionProposals(String selection, int offset, int length) {
 		String[] lines = selection.split("[\\r\\n]+");
 
