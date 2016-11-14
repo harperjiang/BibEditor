@@ -11,31 +11,35 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
 
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.*;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.*;
+
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
+
+import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 
 /**
  * 
  * @author Hao Jiang
  *
  */
-public class ColorConstants {
-	
-	public static final String COMMAND = "command";
-	public static final String COMMAND_ARG = "command_arg";
-	public static final String OPTION = "option";
-	public static final String COMMENT = "comment";
-	public static final String DEFAULT = "default";
+public class ColorManager {
+
+	static final String keys[] = { P_COLOR_COMMAND, P_COLOR_ARG, P_COLOR_OPTION, P_COLOR_TEXT, P_COLOR_COMMENT };
+	static final String values[] = { DEFAULT_COLOR_COMMAND, DEFAULT_COLOR_ARG, DEFAULT_COLOR_OPTION, DEFAULT_COLOR_TEXT,
+			DEFAULT_COLOR_COMMENT };
 
 	static {
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 		ColorRegistry cr = JFaceResources.getColorRegistry();
-		cr.put(COMMAND, new RGB(100, 200, 50));
-		cr.put(COMMAND_ARG, new RGB(100, 0, 200));
-		cr.put(OPTION, new RGB(150, 50, 100));
-		cr.put(DEFAULT, new RGB(0, 0, 0));
-		cr.put(COMMENT, new RGB(240, 10, 20));
+		for (int i = 0; i < keys.length; i++) {
+			cr.put(keys[i], StringConverter.asRGB(prefs.get(keys[i], values[i])));
+		}
 	}
 
 	public static Color get(String type) {

@@ -11,13 +11,14 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
 
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.*;
+
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
-import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordPatternRule;
@@ -31,11 +32,11 @@ import org.eclipse.swt.SWT;
 public class LaTeXScanner extends RuleBasedScanner {
 
 	public LaTeXScanner() {
-		IToken text = new Token(new TextAttribute(ColorConstants.get(ColorConstants.DEFAULT)));
-		IToken arg = new Token(new TextAttribute(ColorConstants.get(ColorConstants.COMMAND_ARG)));
-		IToken command = new Token(new TextAttribute(ColorConstants.get(ColorConstants.COMMAND), null, SWT.BOLD));
-		IToken option = new Token(new TextAttribute(ColorConstants.get(ColorConstants.OPTION)));
-		IToken comment = new Token(new TextAttribute(ColorConstants.get(ColorConstants.COMMENT), null, SWT.ITALIC));
+		IToken text = new Token(new TextAttribute(ColorManager.get(P_COLOR_TEXT)));
+		IToken arg = new Token(new TextAttribute(ColorManager.get(P_COLOR_ARG)));
+		IToken command = new Token(new TextAttribute(ColorManager.get(P_COLOR_COMMAND), null, SWT.BOLD));
+		IToken option = new Token(new TextAttribute(ColorManager.get(P_COLOR_OPTION)));
+		IToken comment = new Token(new TextAttribute(ColorManager.get(P_COLOR_COMMENT), null, SWT.ITALIC));
 
 		IRule[] rules = new IRule[5];
 

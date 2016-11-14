@@ -17,6 +17,7 @@ import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.*;
 
 /**
  * Class used to initialize default preference values.
@@ -33,25 +34,28 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public static final String DEFAULT_MAIN_TEX = "main.tex";
 
-	public static final String DEFAULT_COLOR_COMMAND = StringConverter.asString(new RGB(0, 0, 0));
+	public static final String DEFAULT_COLOR_COMMAND = StringConverter.asString(new RGB(18, 45, 89));
 
-	public static final String DEFAULT_COLOR_ARG = StringConverter.asString(new RGB(0, 0, 0));
+	public static final String DEFAULT_COLOR_ARG = StringConverter.asString(new RGB(101, 35, 42));
 
-	public static final String DEFAULT_COLOR_OPTION = StringConverter.asString(new RGB(0, 0, 0));
+	public static final String DEFAULT_COLOR_OPTION = StringConverter.asString(new RGB(109, 70, 22));
 
-	public static final String DEFAULT_COLOR_COMMENT = StringConverter.asString(new RGB(0, 0, 0));
+	public static final String DEFAULT_COLOR_COMMENT = StringConverter.asString(new RGB(48, 112, 29));
+
+	public static final String DEFAULT_COLOR_TEXT = StringConverter.asString(new RGB(0, 0, 0));
 
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.P_LATEX_EXE, DEFAULT_LATEX_EXE);
-		store.setDefault(PreferenceConstants.P_BIBTEX_EXE, DEFAULT_BIB_EXE);
-		store.setDefault(PreferenceConstants.P_TEMP_FILE, DEFAULT_TEMP_FILE);
-		store.setDefault(PreferenceConstants.P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
-		store.setDefault(PreferenceConstants.P_MAIN_TEX, DEFAULT_MAIN_TEX);
-		store.setDefault(PreferenceConstants.P_COLOR_COMMAND, DEFAULT_COLOR_COMMAND);
-		store.setDefault(PreferenceConstants.P_COLOR_COMMENT, DEFAULT_COLOR_COMMENT);
-		store.setDefault(PreferenceConstants.P_COLOR_OPTION, DEFAULT_COLOR_OPTION);
-		store.setDefault(PreferenceConstants.P_COLOR_ARG, DEFAULT_COLOR_ARG);
+		store.setDefault(P_LATEX_EXE, DEFAULT_LATEX_EXE);
+		store.setDefault(P_BIBTEX_EXE, DEFAULT_BIB_EXE);
+		store.setDefault(P_TEMP_FILE, DEFAULT_TEMP_FILE);
+		store.setDefault(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
+		store.setDefault(P_MAIN_TEX, DEFAULT_MAIN_TEX);
+		store.setDefault(P_COLOR_COMMAND, DEFAULT_COLOR_COMMAND);
+		store.setDefault(P_COLOR_COMMENT, DEFAULT_COLOR_COMMENT);
+		store.setDefault(P_COLOR_OPTION, DEFAULT_COLOR_OPTION);
+		store.setDefault(P_COLOR_ARG, DEFAULT_COLOR_ARG);
+		store.setDefault(P_COLOR_TEXT, DEFAULT_COLOR_TEXT);
 	}
 
 }

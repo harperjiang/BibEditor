@@ -33,5 +33,7 @@ public class PreferenceConstants {
 	public static final String P_COLOR_OPTION = "colorOption";
 
 	public static final String P_COLOR_COMMENT = "colorComment";
+	
+	public static final String P_COLOR_TEXT = "colorText";
 
 }
