@@ -94,12 +94,6 @@
             sequence="M1+F">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
-            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M2+A">
-      </key>
-      <key
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
             contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -109,13 +103,13 @@
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand"
             contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M2+C">
+            sequence="M1+M2+C">
       </key>
       <key
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
             contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M2+S">
+            sequence="M1+M2+S">
       </key>
       <key
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyEntryCommand"
