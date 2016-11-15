@@ -11,7 +11,12 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.preferences;
 
-import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.*;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_ARG;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_COMMAND;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_COMMENT;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_MATHMODE;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_OPTION;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_TEXT;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -19,6 +24,8 @@ import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor;
@@ -39,10 +46,14 @@ public class PreferenceChangeMonitor implements IPreferenceChangeListener {
 			cr.put(event.getKey(), StringConverter.asRGB(event.getNewValue().toString()));
 
 			// Refresh Current Active Editor
-			IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-			if (editor instanceof LaTeXEditor) {
-				LaTeXEditor latexEditor = (LaTeXEditor) editor;
-				latexEditor.refresh();
+			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+
+			for (IEditorReference ref : page.getEditorReferences()) {
+				IEditorPart editor = ref.getEditor(false);
+				if (editor instanceof LaTeXEditor && page.isPartVisible(editor)) {
+					LaTeXEditor latexEditor = (LaTeXEditor) editor;
+					latexEditor.refresh();
+				}
 			}
 
 		}
