@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="edu.uchicago.cs.hao.texdojo"
-      label="TeX Dojo"
+      label="TeXDojo"
       version="0.0.1.alpha_20161113"
       provider-name="Hao Jiang"
       plugin="edu.uchicago.cs.hao.bibeditor"

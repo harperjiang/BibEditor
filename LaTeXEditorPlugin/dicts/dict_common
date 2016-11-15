@@ -1,0 +1,33 @@
+# Common Commands
+documentclass	documentclass[options]{type}
+usepackage	usepackage[options]{package}
+title
+author
+date
+maketitle
+
+abstract
+appendix
+abstractname
+
+part
+chapter
+section
+subsection
+subsubsection
+paragraph
+subparagraph
+
+tableofcontents
+listoffigures
+listoftables
+
+cite
+nocite
+bibliographystyle
+bibliography
+selectbiblanguage
+addbibresource
+printbibliography	printbibliography[title={Book references},type=book]
+
+setcounter
