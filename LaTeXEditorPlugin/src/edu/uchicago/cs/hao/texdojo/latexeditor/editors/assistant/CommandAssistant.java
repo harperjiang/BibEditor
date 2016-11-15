@@ -32,8 +32,6 @@ import org.eclipse.swt.graphics.Point;
 
 public class CommandAssistant implements IContentAssistProcessor {
 
-	List<Command> commands = new ArrayList<Command>();
-
 	@Override
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 		try {
@@ -54,9 +52,11 @@ public class CommandAssistant implements IContentAssistProcessor {
 				// Retrieve qualifier
 				String qualifier = getQualifier(doc, offset);
 
-				// No proposal for empty string
+				// proposal for empty string
 				if (qualifier == null || qualifier.length() == 0)
 					return noInputProposals(offset);
+				if (qualifier.startsWith("\\begin{"))
+					return envProposals(qualifier.substring(7), offset);
 				return findProposals(qualifier, offset);
 			}
 		} catch (BadLocationException e) {
@@ -116,6 +116,31 @@ public class CommandAssistant implements IContentAssistProcessor {
 				return "";
 			}
 		}
+	}
+
+	/**
+	 * Return available environment names as proposal
+	 * 
+	 * @param offset
+	 * @return
+	 */
+	private ICompletionProposal[] envProposals(String qualifier, int offset) {
+		int qlen = qualifier.length();
+		List<String> candidates = new ArrayList<String>();
+		for (String env : envs) {
+			if (env.startsWith(qualifier))
+				candidates.add(env);
+		}
+
+		ICompletionProposal[] proposals = new ICompletionProposal[candidates.size()];
+
+		for (int i = 0; i < candidates.size(); i++) {
+			String env = candidates.get(i);
+			String text = MessageFormat.format("{0}'}'\n\n\\end'{'{0}'}'\n", env);
+			proposals[i] = new CompletionProposal(text, offset - qlen, text.length(), env.length() + 2, null, env, null,
+					null);
+		}
+		return proposals;
 	}
 
 	/**
@@ -237,7 +262,7 @@ public class CommandAssistant implements IContentAssistProcessor {
 
 		// itemize
 		String data = MessageFormat.format("\\begin'{'itemize'}'\n{0}\\end'{'itemize'}'", listBuilder.toString());
-		results[0] = new CompletionProposal(data, offset, length, offset + data.length(), null,
+		results[0] = new CompletionProposal(data, offset, length, data.length(), null,
 				"\\begin{itemize}...\\end{itemize}", null, null);
 
 		// enumerate
@@ -271,29 +296,47 @@ public class CommandAssistant implements IContentAssistProcessor {
 
 	}
 
+	static final String[] dicts = { "dicts/dict_math", "dicts/dict_common" };
+
+	static final String env_dict = "dicts/dict_env";
+
+	List<Command> commands = new ArrayList<Command>();
+
+	List<String> envs = new ArrayList<String>();
+
 	public CommandAssistant() {
+		loadCommandDicts();
+		loadEnvDict();
+	}
 
+	private void loadCommandDicts() {
 		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("edu/uchicago/cs/hao/texdojo/latexeditor/editors/assistant/dict")));
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				if (!line.startsWith("#")) {
-					String[] parts = line.split("\\s+");
-					if (parts.length >= 2)
-						commands.add(new Command(parts[0], parts[1]));
-				}
-			}
-		} catch (Exception e) {
-			// Eat exception, just no completion
-
-		} finally {
+		for (String dict : dicts) {
 			try {
-				if (null != br)
-					br.close();
-			} catch (IOException e) {
+				br = new BufferedReader(new InputStreamReader(
+						Thread.currentThread().getContextClassLoader().getResourceAsStream(dict), "UTF-8"));
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					if (line.trim().length() != 0) {
+						if (!line.startsWith("#")) {
+							String[] parts = line.split("\\s+");
+							if (parts.length >= 2)
+								commands.add(new Command(parts[0], parts[1]));
+							else if (parts.length == 1) {
+								commands.add(new Command(parts[0], ""));
+							}
+						}
+					}
+				}
+			} catch (Exception e) {
+				// Eat exception, just no completion
+			} finally {
+				try {
+					if (null != br)
+						br.close();
+				} catch (IOException e) {
 
+				}
 			}
 		}
 		commands.sort(new Comparator<Command>() {
@@ -304,4 +347,34 @@ public class CommandAssistant implements IContentAssistProcessor {
 		});
 	}
 
+	private void loadEnvDict() {
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(
+					Thread.currentThread().getContextClassLoader().getResourceAsStream(env_dict), "UTF-8"));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				if (line.trim().length() != 0) {
+					if (!line.startsWith("#")) {
+						envs.add(line.trim());
+					}
+				}
+			}
+		} catch (Exception e) {
+			// Eat exception, just no completion
+		} finally {
+			try {
+				if (null != br)
+					br.close();
+			} catch (IOException e) {
+
+			}
+		}
+		envs.sort(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+		});
+	}
 }
