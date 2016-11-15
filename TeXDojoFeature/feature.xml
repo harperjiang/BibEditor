@@ -2,7 +2,7 @@
 <feature
       id="edu.uchicago.cs.hao.texdojo"
       label="TeX Dojo"
-      version="0.0.1.alpha_20161113"
+      version="0.0.1.alpha_20161114"
       provider-name="Hao Jiang"
       plugin="edu.uchicago.cs.hao.bibeditor"
       license-feature="edu.uchicago.cs.hao.license"
