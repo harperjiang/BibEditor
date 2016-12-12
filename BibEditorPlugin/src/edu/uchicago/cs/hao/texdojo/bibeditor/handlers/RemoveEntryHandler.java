@@ -32,9 +32,10 @@ public class RemoveEntryHandler extends BibHandler {
 	public Object executeWithEditor(ExecutionEvent event, BibEditor editor) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 
-		BibEntry entry = editor.getUi().selected();
-		if (null != entry) {
-			editor.getUi().getModel().removeEntry(entry);
+		BibEntry[] entries = editor.getUi().allSelected();
+		if (null != entries) {
+			for (BibEntry entry : entries)
+				editor.getUi().getModel().removeEntry(entry);
 		} else {
 			MessageDialog.openWarning(window.getShell(), "No entry selected", "Please select an entry to delete");
 		}
