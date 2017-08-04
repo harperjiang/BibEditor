@@ -40,5 +40,107 @@
             class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXBuilder"
+         name="LaTeX Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="edu.uchicago.cs.hao.texdojo.latexeditor.project.LaTeXBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature"
+         name="LaTeX Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="edu.uchicago.cs.hao.texdojo.latexeditor.project.LaTeXNature">
+         </run>
+      </runtime>
+      <builder
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature.category"
+            name="LaTeX Project Nature commands">
+      </category>
+      <command
+            categoryId="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature.category"
+            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.project.AddRemoveLaTeXNatureHandler"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.addRemoveLaTeXNature"
+            name="Add/RemoveLaTeX Project Nature">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.addRemoveLaTeXNature"
+               label="Disable Sample builder"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IProject">
+                        <test
+                              property="org.eclipse.core.resources.projectNature"
+                              value="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.addRemoveLaTeXNature"
+               label="Enable Sample builder"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IProject">
+                        <not>
+                           <test
+                                 property="org.eclipse.core.resources.projectNature"
+                                 value="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature">
+                           </test>
+                        </not>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXProblem"
+         name="LaTeX Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
 
 </plugin>

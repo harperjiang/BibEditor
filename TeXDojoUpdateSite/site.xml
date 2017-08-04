@@ -3,5 +3,5 @@
    <description name="TeXDojo Editor UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/texdojo/updatesite">
       TeXDojo Editor UpdateSite
    </description>
-   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.1.alpha_20161114.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.1.alpha_20161114"/>
+   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.1.alpha_20161213.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.1.alpha_20161213"/>
 </site>
