@@ -162,10 +162,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
 			// Parse the document
-			IDocument document = new LaTeXDocumentProvider().getDocument(resource);
-			LaTeXModel model = new LaTeXModel();
-			model.init(document);
 
+			LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
 			if (compileDoc && !model.has("document")) {
 				return;
 			} else if (!mainTex.equals(inputFile.getName())) {

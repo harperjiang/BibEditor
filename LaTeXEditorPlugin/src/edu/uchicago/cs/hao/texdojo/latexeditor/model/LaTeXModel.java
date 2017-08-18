@@ -11,6 +11,7 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -134,6 +135,10 @@ public class LaTeXModel {
 			}
 		}
 		return newnodes;
+	}
+	
+	public static LaTeXModel parseFromFile(InputStream input) {
+		throw new IllegalArgumentException("Not implemented");
 	}
 
 	private String undecorate(String input) {

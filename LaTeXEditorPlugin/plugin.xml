@@ -83,7 +83,7 @@
             locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
          <command
                commandId="edu.uchicago.cs.hao.texdojo.latexeditor.addRemoveLaTeXNature"
-               label="Disable Sample builder"
+               label="Disable LaTeX builder"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -106,7 +106,7 @@
          </command>
          <command
                commandId="edu.uchicago.cs.hao.texdojo.latexeditor.addRemoveLaTeXNature"
-               label="Enable Sample builder"
+               label="Enable LaTeX builder"
                style="push">
             <visibleWhen
                   checkEnabled="false">
