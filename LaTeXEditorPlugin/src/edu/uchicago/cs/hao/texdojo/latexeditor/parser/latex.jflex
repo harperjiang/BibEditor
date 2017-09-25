@@ -6,6 +6,7 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.parser;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.*;
 %%
 %class LaTeXParser
+%public
 %unicode
 %function scan
 %type LaTeXNode
@@ -23,7 +24,7 @@ LineTerminator = \r|\n|\r\n
 Whitespace     = [ \t\f]+
 Begin		   = \\"begin"
 End			   = \\"end"
-Command		   = \\[^ \t\r\n\{\[\]\}\%]+
+Command		   = \\[^ \t\r\n\{\[\]\}\%\\]+
 
 Text		   = [^\\\{\[\]\]\%]+
 
@@ -39,7 +40,7 @@ Text		   = [^\\\{\[\]\]\%]+
 "["					{yybegin(OPTION); buffer = new StringBuilder();}
 {Begin}				{return new BeginNode(null, 0, yytext().length());}
 {End}				{return new EndNode(null, 0, yytext().length());}
-{Command}			{return new CommandNode(yytext(), 0, yytext().length());}
+{Command}			{return new CommandNode(yytext().substring(1), 0, yytext().length());}
 {Text}    			{return new TextNode(yytext(),0,yytext().length());}
 }
 

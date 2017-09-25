@@ -206,7 +206,7 @@
             category="edu.uchicago.cs.hao.texdojo.preferences.PreferencePage"
             class="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.BibEditorPreferencePage"
             id="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.BibEditorPreferencePage"
-            name="BibTex Editor">
+            name="BibTeX Editor">
       </page>
       <page
             class="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.TeXDojoPreferencePage"

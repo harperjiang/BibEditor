@@ -11,10 +11,10 @@ import org.junit.Test;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.ArgNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.BeginNode;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.CommandNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.CommentNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.EndNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
-import edu.uchicago.cs.hao.texdojo.latexeditor.model.OptionNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.TextNode;
 
 public class LaTeXParserTest {
@@ -56,7 +56,7 @@ public class LaTeXParserTest {
 		assertTrue(nodes.get(4) instanceof EndNode);
 		assertTrue(nodes.get(5) instanceof ArgNode);
 		
-		parser = new LaTeXParser("\\begin{abc} \n" + "\\end{abc}");
+		parser = new LaTeXParser("\\begin{abc} \n" + "\\goodatm\\end{abc}");
 
 		node = null;
 		nodes = new ArrayList<LaTeXNode>();
@@ -65,13 +65,17 @@ public class LaTeXParserTest {
 			nodes.add(node);
 		}
 
-		assertEquals(5, nodes.size());
+		assertEquals(6, nodes.size());
 		assertTrue(nodes.get(0) instanceof BeginNode);
 		assertTrue(nodes.get(1) instanceof ArgNode);
 		assertTrue(nodes.get(2) instanceof TextNode);
 		assertEquals(" \n",nodes.get(2).getContent());
-		assertTrue(nodes.get(3) instanceof EndNode);
-		assertTrue(nodes.get(4) instanceof ArgNode);
+
+		assertTrue(nodes.get(3) instanceof CommandNode);
+		assertTrue(nodes.get(3).has("goodatm"));
+		
+		assertTrue(nodes.get(4) instanceof EndNode);
+		assertTrue(nodes.get(5) instanceof ArgNode);
 	}
 
 }

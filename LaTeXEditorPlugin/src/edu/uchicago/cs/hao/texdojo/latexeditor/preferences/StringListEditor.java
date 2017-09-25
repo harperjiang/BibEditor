@@ -11,8 +11,11 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.preferences;
 
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.ListEditor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * 
@@ -35,13 +38,18 @@ public class StringListEditor extends ListEditor {
 	}
 
 	@Override
-	protected String getNewInputObject() {
-		return "*.tmp";
+	protected String[] parseString(String stringList) {
+		return stringList.split(",");
 	}
 
 	@Override
-	protected String[] parseString(String stringList) {
-		return stringList.split(",");
+	protected String getNewInputObject() {
+		InputDialog dlg = new InputDialog(Display.getCurrent().getActiveShell(), "", "Add temp file type", "", null);
+		if (dlg.open() == Window.OK) {
+			// User clicked OK; update the label with the input
+			return dlg.getValue();
+		}
+		return "*.tmp";
 	}
 
 }

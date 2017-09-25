@@ -38,10 +38,12 @@ public class LaTeXCompiler {
 
 		File parent = new File(inputFile.getLocationURI()).getParentFile();
 
-		ProcessBuilder latexBuilder = new ProcessBuilder()
-				.command(latexExe, "-interaction=nonstopmode", inputFile.getName()).directory(parent)
-				.redirectErrorStream(true);
-		ProcessBuilder bibBuilder = new ProcessBuilder().command(bibExe, inputFile.getName()).directory(parent)
+		String inputFileName = inputFile.getName().replaceAll("\\.tex$", "");
+
+		ProcessBuilder latexBuilder = new ProcessBuilder().command(latexExe, "-interaction=nonstopmode", inputFileName)
+				.directory(parent).redirectErrorStream(true);
+
+		ProcessBuilder bibBuilder = new ProcessBuilder().command(bibExe, inputFileName).directory(parent)
 				.redirectErrorStream(true);
 		try {
 
