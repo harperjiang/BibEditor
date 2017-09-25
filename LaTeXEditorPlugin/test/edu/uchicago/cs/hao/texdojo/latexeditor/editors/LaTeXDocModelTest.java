@@ -9,7 +9,7 @@
  *    Hao Jiang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package edu.uchicago.cs.hao.texdojo.latexeditor.model;
+package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,12 +26,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.CommentNode;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.GroupNode;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.InvokeNode;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.TextNode;
 
 /**
  * @author Hao Jiang
  *
  */
-public class LaTeXModelTest {
+public class LaTeXDocModelTest {
 
 	IDocument doc;
 
@@ -57,7 +61,7 @@ public class LaTeXModelTest {
 	@Test
 	public void testInit() throws Exception {
 
-		LaTeXModel model = new LaTeXModel();
+		LaTeXDocModel model = new LaTeXDocModel();
 
 		model.init(doc);
 
@@ -70,7 +74,7 @@ public class LaTeXModelTest {
 
 	@Test
 	public void testClear() throws Exception {
-		LaTeXModel model = new LaTeXModel();
+		LaTeXDocModel model = new LaTeXDocModel();
 		model.init(doc);
 
 		model.clear(50, 20);

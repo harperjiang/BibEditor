@@ -32,7 +32,6 @@ import org.eclipse.ui.editors.text.TextEditor;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXDocumentProvider;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
-import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXModel;
 
 /**
  * 
@@ -43,7 +42,7 @@ public class LaTeXEditor extends TextEditor {
 
 	private static final String CONSOLE_NAME = "TeXDojo";
 
-	private LaTeXModel model = new LaTeXModel();
+	private LaTeXDocModel model = new LaTeXDocModel();
 
 	public LaTeXEditor() {
 		super();

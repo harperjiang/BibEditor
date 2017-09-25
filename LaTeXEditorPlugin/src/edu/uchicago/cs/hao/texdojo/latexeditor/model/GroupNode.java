@@ -46,4 +46,13 @@ public class GroupNode extends LaTeXNode {
 		return Collections.unmodifiableList(children);
 	}
 
+	@Override
+	public boolean has(String command) {
+		if (begin.has(command) || end.has(command))
+			return true;
+		for (LaTeXNode child : children)
+			if (child.has(command))
+				return true;
+		return false;
+	}
 }

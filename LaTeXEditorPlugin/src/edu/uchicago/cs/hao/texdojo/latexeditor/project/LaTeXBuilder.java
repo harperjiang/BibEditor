@@ -25,13 +25,12 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.text.IDocument;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXDocumentProvider;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXConstant;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXModel;
 
@@ -164,8 +163,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			// Parse the document
 
 			LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
-			if (compileDoc && !model.has("document")) {
-				return;
+			if (compileDoc) {
+				if (!model.has("document")) {
+					return;
+				}
 			} else if (!mainTex.equals(inputFile.getName())) {
 				return;
 			}
@@ -180,6 +181,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			// Remove temporary files under the same folder
 			File parent = new File(inputFile.getLocationURI()).getParentFile();
 			removeTempFiles(parent, tempFiles);
+			// Refresh generated pdf resource
+
+			IFile pdfFile = resource.getParent().getFile(new Path(resource.getName().replaceAll("tex$", "pdf")));
+			pdfFile.refreshLocal(1, monitor);
 		}
 
 	}

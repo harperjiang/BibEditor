@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class LaTeXParser {
+public class LaTeXOrganizer {
 
 	private List<LaTeXNode> newnodes = new ArrayList<LaTeXNode>();
 
@@ -93,11 +93,12 @@ public class LaTeXParser {
 		}
 
 		// Final processing, EOF node
-		LaTeXNode stacktop = stack.pop();
-		if (stacktop instanceof EndNode && ((EndNode) stacktop).getContent() != null) {
-			matchBegin((EndNode) stacktop);
+		if (!stack.isEmpty()) {
+			LaTeXNode stacktop = stack.pop();
+			if (stacktop instanceof EndNode && ((EndNode) stacktop).getContent() != null) {
+				matchBegin((EndNode) stacktop);
+			}
 		}
-
 		return stack;
 	}
 

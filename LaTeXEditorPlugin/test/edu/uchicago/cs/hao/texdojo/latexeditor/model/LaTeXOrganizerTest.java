@@ -15,15 +15,15 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.model.EndNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.GroupNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.InvokeNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
-import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXParser;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXOrganizer;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.OptionNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.TextNode;
 
-public class LaTeXParserTest {
+public class LaTeXOrganizerTest {
 
 	@Test
 	public void testParse() {
-		LaTeXParser parser = new LaTeXParser();
+		LaTeXOrganizer parser = new LaTeXOrganizer();
 
 		List<LaTeXNode> tokens = new ArrayList<LaTeXNode>();
 
