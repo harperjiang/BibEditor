@@ -2,9 +2,9 @@
 <feature
       id="edu.uchicago.cs.hao.texdojo"
       label="TeXDojo"
-      version="0.0.1.alpha_20161213"
+      version="0.0.2.alpha_20170924"
       provider-name="Hao Jiang"
-      plugin="edu.uchicago.cs.hao.texdojo.bibeditor"
+      plugin="edu.uchicago.cs.hao.texdojo.latexeditor"
       license-feature="edu.uchicago.cs.hao.license"
       license-feature-version="1.0.0.qualifier">
 
