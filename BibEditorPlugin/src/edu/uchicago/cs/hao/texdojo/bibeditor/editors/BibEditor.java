@@ -153,8 +153,12 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		public void deactivateContext() {
 			IContextService contextService = (IContextService) PlatformUI.getWorkbench()
 					.getService(IContextService.class);
-			if (contextService != null && activation != null)
+			if (contextService != null && activation != null) {
+				// Use a dialog to prompt the switch of context
+				// MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
+				// "Prompt", "Switching Context");
 				contextService.deactivateContext(activation);
+			}
 		}
 
 		@Override

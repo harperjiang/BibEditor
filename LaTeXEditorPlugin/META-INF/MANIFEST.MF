@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
  org.eclipse.ui.console,
- edu.uchicago.cs.hao.texdojo.bibeditor,
+ edu.uchicago.cs.hao.texdojo.bibeditor;bundle-version="0.0.2",
  org.junit,
  org.eclipse.ui.workbench,
  org.eclipse.core.resources
