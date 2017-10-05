@@ -17,7 +17,6 @@ import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
-import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WordPatternRule;
 
@@ -56,7 +55,7 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 		rules[1] = new MultiLineRule("[", "]", option);
 		rules[2] = new WordPatternRule(new WordDetector(), "\\", null, command);
 		rules[3] = new EndOfLineRule("%", comment);
-		rules[4] = new SingleLineRule("$", "$", mathmode);
+		rules[4] = new MultiLineRule("$", "$", mathmode);
 		rules[5] = new MultiLineRule("\\[", "\\]", mathmode);
 		setPredicateRules(rules);
 		// Setting a default here will separate text to single character token

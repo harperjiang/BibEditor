@@ -60,6 +60,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(P_COLOR_TEXT, DEFAULT_COLOR_TEXT);
 		store.setDefault(P_COLOR_MATHMODE, DEFAULT_COLOR_MATHMODE);
 		store.setDefault(P_LINE_WRAP, -1);
+		store.setDefault(P_LINE_ALIGN, true);
 	}
 
 }

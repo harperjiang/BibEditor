@@ -13,7 +13,6 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -40,9 +39,9 @@ public class LaTeXEditorPreferencePage extends FieldEditorPreferencePage impleme
 	}
 
 	/**
-	 * Creates the field editors. Field editors are abstractions of the common GUI
-	 * blocks needed to manipulate various types of preferences. Each field editor
-	 * knows how to save and restore itself.
+	 * Creates the field editors. Field editors are abstractions of the common
+	 * GUI blocks needed to manipulate various types of preferences. Each field
+	 * editor knows how to save and restore itself.
 	 */
 	public void createFieldEditors() {
 		// addField(new DirectoryFieldEditor(PreferenceConstants.P_PATH,
@@ -65,14 +64,14 @@ public class LaTeXEditorPreferencePage extends FieldEditorPreferencePage impleme
 		addField(new StringFieldEditor(PreferenceConstants.P_MAIN_TEX, "Main tex file (when above is unselected)",
 				getFieldEditorParent()));
 
-		addField(new IntegerFieldEditor(PreferenceConstants.P_LINE_WRAP,
-				"Line auto-wrap size (-1 to disable the feature)", getFieldEditorParent()));
+		
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 * @see
+	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
 	}

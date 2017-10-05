@@ -33,6 +33,12 @@
             id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.ColorPreferencePage"
             name="Syntax Color">
       </page>
+      <page
+            category="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TextPreferencePage"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TextPreferencePage"
+            name="Text Editor">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

@@ -57,7 +57,7 @@ public class LaTeXScanner extends RuleBasedScanner {
 		rules[3] = new EndOfLineRule("%", comment);
 
 		// Math mode
-		rules[4] = new SingleLineRule("$", "$", mathmode);
+		rules[4] = new MultiLineRule("$", "$", mathmode);
 		rules[5] = new MultiLineRule("\\[", "\\]", mathmode);
 		// Add generic whitespace rule.
 		rules[6] = new WhitespaceRule(new WhitespaceDetector());
