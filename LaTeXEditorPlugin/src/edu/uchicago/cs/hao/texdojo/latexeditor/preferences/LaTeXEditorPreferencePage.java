@@ -13,6 +13,7 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -39,9 +40,9 @@ public class LaTeXEditorPreferencePage extends FieldEditorPreferencePage impleme
 	}
 
 	/**
-	 * Creates the field editors. Field editors are abstractions of the common
-	 * GUI blocks needed to manipulate various types of preferences. Each field
-	 * editor knows how to save and restore itself.
+	 * Creates the field editors. Field editors are abstractions of the common GUI
+	 * blocks needed to manipulate various types of preferences. Each field editor
+	 * knows how to save and restore itself.
 	 */
 	public void createFieldEditors() {
 		// addField(new DirectoryFieldEditor(PreferenceConstants.P_PATH,
@@ -54,21 +55,24 @@ public class LaTeXEditorPreferencePage extends FieldEditorPreferencePage impleme
 		// example of a multiple-choice preference",
 		// 1, new String[][] { { "&Choice 1", "choice1" }, { "C&hoice 2",
 		// "choice2" } }, getFieldEditorParent()));
+
 		addField(new StringFieldEditor(PreferenceConstants.P_LATEX_EXE, "Path for pdflatex executable",
 				getFieldEditorParent()));
 		addField(new StringFieldEditor(PreferenceConstants.P_BIBTEX_EXE, "Path for bibtex executable",
 				getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.P_COMPILE_DOC,
 				"Compile all .tex files containing \\begin{document}", getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.P_MAIN_TEX,
-				"Main tex file (when above is unselected)", getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.P_MAIN_TEX, "Main tex file (when above is unselected)",
+				getFieldEditorParent()));
+
+		addField(new IntegerFieldEditor(PreferenceConstants.P_LINE_WRAP,
+				"Line auto-wrap size (-1 to disable the feature)", getFieldEditorParent()));
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
 	}

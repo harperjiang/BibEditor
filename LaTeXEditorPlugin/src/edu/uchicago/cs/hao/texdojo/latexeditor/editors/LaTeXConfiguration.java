@@ -23,6 +23,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.BeginEndStrategy;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LaTeXContentAssistant;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LineAlignStrategy;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.DoubleClickStrategy;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
@@ -38,7 +39,8 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 
 	private LaTeXContentAssistant contentAssistant = new LaTeXContentAssistant();
 
-	private IAutoEditStrategy[] strategies = new IAutoEditStrategy[] { new BeginEndStrategy() };
+	private IAutoEditStrategy[] strategies = new IAutoEditStrategy[] { new BeginEndStrategy(),
+			new LineAlignStrategy() };
 
 	public LaTeXConfiguration() {
 		super();

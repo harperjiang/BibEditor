@@ -25,6 +25,8 @@ public class PreferenceConstants {
 	public static final String P_COMPILE_DOC = "compileDoc";
 
 	public static final String P_MAIN_TEX = "mainTex";
+	
+	public static final String P_LINE_WRAP = "lineWrap";
 
 	public static final String P_COLOR_COMMAND = "colorCommand";
 
