@@ -47,7 +47,7 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 		IToken option = new Token(LATEX_OPTION);
 		IToken comment = new Token(LATEX_COMMENT);
 		IToken mathmode = new Token(LATEX_MATHMODE);
-		IToken text = new Token(IDocument.DEFAULT_CONTENT_TYPE);
+//		IToken text = new Token(IDocument.DEFAULT_CONTENT_TYPE);
 
 		IPredicateRule[] rules = new IPredicateRule[6];
 

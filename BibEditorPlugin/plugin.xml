@@ -199,7 +199,39 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="edu.uchicago.cs.hao.texdojo.bibeditor.toolbar.main">
+            <command
+                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
+                  icon="icons/toolbar_google.png"
+                  label="Search &amp;Google for PDF files"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="edu.uchicago.cs.hao.texdojo.bibeditor.definitions.bibEditorActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+         </toolbar>
+      </menuContribution>
    </extension>
+   
+   <extension
+  point="org.eclipse.core.expressions.definitions">
+  <definition
+    id="edu.uchicago.cs.hao.texdojo.bibeditor.definitions.bibEditorActive">
+    <with
+      variable="activeEditorId">
+      <equals
+                        value="edu.uchicago.cs.hao.texdojo.bibeditor.editors.BibEditor">
+                  </equals>
+    </with>
+  </definition>
+</extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
