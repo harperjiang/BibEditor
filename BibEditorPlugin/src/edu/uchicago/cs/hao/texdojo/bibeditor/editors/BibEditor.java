@@ -162,7 +162,7 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		}
 
 		@Override
-		public void partVisible(IWorkbenchPartReference partRef) {
+		public void partActivated(IWorkbenchPartReference partRef) {
 			if (Constants.EDITOR_ID.equals(partRef.getId())) {
 				activateContext();
 			} else if (partRef.getPart(false) instanceof IEditorPart) {
