@@ -12,7 +12,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class AddRemoveLaTeXNatureHandler extends AbstractHandler {
 
-	private ISelection selection;
+//	private ISelection selection;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		// TODO Auto-generated method stub

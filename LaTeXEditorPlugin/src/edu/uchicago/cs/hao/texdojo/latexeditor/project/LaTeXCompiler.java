@@ -50,7 +50,7 @@ public class LaTeXCompiler {
 			monitor.beginTask("Compiling " + inputFile.getName(), 80);
 			monitor.subTask("Invoking LaTeX");
 
-			connect(latexBuilder.start(), console);
+			connect(latexBuilder.start(), console, monitor);
 
 			monitor.worked(20);
 
@@ -60,21 +60,21 @@ public class LaTeXCompiler {
 			if (runbib) {
 				monitor.subTask("Invoking BibTeX");
 
-				connect(bibBuilder.start(), console);
+				connect(bibBuilder.start(), console, monitor);
 				monitor.worked(20);
 
 				if (monitor.isCanceled())
 					return;
 
 				monitor.subTask("Invoking LaTeX");
-				connect(latexBuilder.start(), console);
+				connect(latexBuilder.start(), console, monitor);
 				monitor.worked(20);
 
 				if (monitor.isCanceled())
 					return;
 
 				monitor.subTask("Invoking LaTeX");
-				connect(latexBuilder.start(), console);
+				connect(latexBuilder.start(), console, monitor);
 				monitor.worked(20);
 
 				if (monitor.isCanceled())
@@ -141,7 +141,7 @@ public class LaTeXCompiler {
 				monitor.beginTask("Compiling " + inputFile.getName(), 80);
 				monitor.subTask("Invoking LaTeX");
 
-				connect(latexBuilder.start(), console);
+				connect(latexBuilder.start(), console, monitor);
 
 				monitor.worked(20);
 
@@ -151,21 +151,21 @@ public class LaTeXCompiler {
 				if (runbib) {
 					monitor.subTask("Invoking BibTeX");
 
-					connect(bibBuilder.start(), console);
+					connect(bibBuilder.start(), console, monitor);
 					monitor.worked(20);
 
 					if (cancelled)
 						return Status.CANCEL_STATUS;
 
 					monitor.subTask("Invoking LaTeX");
-					connect(latexBuilder.start(), console);
+					connect(latexBuilder.start(), console, monitor);
 					monitor.worked(20);
 
 					if (cancelled)
 						return Status.CANCEL_STATUS;
 
 					monitor.subTask("Invoking LaTeX");
-					connect(latexBuilder.start(), console);
+					connect(latexBuilder.start(), console, monitor);
 					monitor.worked(20);
 
 					if (cancelled)
@@ -181,13 +181,23 @@ public class LaTeXCompiler {
 
 	}
 
-	static void connect(Process p, IOConsole console) throws IOException, InterruptedException {
+	static final long TIMEOUT = 120000L;
+
+	static void connect(Process p, IOConsole console, IProgressMonitor monitor)
+			throws IOException, InterruptedException {
 		OutputStream output = console.newOutputStream();
 
+		long consumed = 0;
+		long checkInterval = 500L;
 		while (p.isAlive()) {
 			copyStream(p.getInputStream(), output);
 			copyStream(console.getInputStream(), p.getOutputStream());
-			Thread.sleep(500);
+			Thread.sleep(checkInterval);
+			consumed += checkInterval;
+			if (monitor.isCanceled() || consumed >= TIMEOUT) {
+				p.destroy();
+				p.waitFor();
+			}
 		}
 		copyStream(p.getInputStream(), output);
 		copyStream(console.getInputStream(), p.getOutputStream());
