@@ -53,6 +53,12 @@
             id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.pasteEntryCommand"
             name="Paste Entry">
       </command>
+      <command
+            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
+            defaultHandler="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.ArxivEntryHandler"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand"
+            name="Add Article from ArXiv">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -83,6 +89,10 @@
       <handler
             class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.PasteEntryHandler"
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.pasteEntryCommand">
+      </handler>
+      <handler
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.ArxivEntryHandler"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand">
       </handler>
    </extension>
    <extension
@@ -179,6 +189,11 @@
                style="push">
          </command>
          <command
+               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand"
+               label="Add Article from ArXiv"
+               style="push">
+         </command>
+         <command
                commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
                label="&amp;Remove BibTex Entry"
                style="push">
@@ -208,6 +223,18 @@
                   commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
                   icon="icons/toolbar_google.png"
                   label="Search &amp;Google for PDF files"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="edu.uchicago.cs.hao.texdojo.bibeditor.definitions.bibEditorActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand"
+                  icon="icons/arxiv_icon.png"
+                  label="Add Article from ArXiv"
                   style="push">
                <visibleWhen
                      checkEnabled="false">

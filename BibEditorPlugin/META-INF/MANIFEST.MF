@@ -11,6 +11,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.junit,
  org.eclipse.ui.views,
- org.eclipse.ui.console
+ org.eclipse.ui.console,
+ org.apache.httpcomponents.httpclient;bundle-version="4.5.2",
+ org.apache.httpcomponents.httpcore;bundle-version="4.4.6",
+ ch.qos.logback.classic;bundle-version="1.0.7",
+ ch.qos.logback.core;bundle-version="1.0.7",
+ org.slf4j.api;bundle-version="1.7.2",
+ org.apache.commons.lang3;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

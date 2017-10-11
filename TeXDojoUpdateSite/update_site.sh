@@ -1,7 +1,7 @@
 #!/bin/sh
 
-USITE_REPO=/home/harper/git/TeXDojo/TeXDojoUpdateSite
-WEBSITE_REPO=/home/harper/git/website-personal/WebContent/texdojo/updatesite
+USITE_REPO=/home/harper/Repositories/BibEditor/TeXDojoUpdateSite
+WEBSITE_REPO=/home/harper/Repositories/websites/personal/WebContent/texdojo/updatesite
 
 #USITE_REPO=/home/Cathy/c/workspace/TeXDojo/TeXDojoUpdateSite
 #WEBSITE_REPO=/home/Cathy/c/workspace/website-personal/WebContent/bibeditor/updatesite
