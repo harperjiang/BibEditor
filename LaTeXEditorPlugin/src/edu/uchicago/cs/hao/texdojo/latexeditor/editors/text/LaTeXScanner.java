@@ -49,8 +49,8 @@ public class LaTeXScanner extends RuleBasedScanner {
 		// Add rule for keyword
 		rules[0] = new WordPatternRule(new WordDetector(), "\\", null, command);
 		// Add rule for command args
-		rules[1] = new MultiLineRule("{", "}", arg);
-		rules[2] = new MultiLineRule("[", "]", option);
+		rules[1] = new MultiLineGreedyRule('{', '}', arg);
+		rules[2] = new MultiLineGreedyRule('[', ']', option);
 
 		// Add rule for comment
 		rules[3] = new EndOfLineRule("%", comment);

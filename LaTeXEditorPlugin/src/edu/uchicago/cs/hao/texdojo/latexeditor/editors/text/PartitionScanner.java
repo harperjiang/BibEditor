@@ -47,12 +47,12 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 		IToken option = new Token(LATEX_OPTION);
 		IToken comment = new Token(LATEX_COMMENT);
 		IToken mathmode = new Token(LATEX_MATHMODE);
-//		IToken text = new Token(IDocument.DEFAULT_CONTENT_TYPE);
+		// IToken text = new Token(IDocument.DEFAULT_CONTENT_TYPE);
 
 		IPredicateRule[] rules = new IPredicateRule[6];
 
-		rules[0] = new MultiLineRule("{", "}", arg);
-		rules[1] = new MultiLineRule("[", "]", option);
+		rules[0] = new MultiLineGreedyRule('{', '}', arg);
+		rules[1] = new MultiLineGreedyRule('[', ']', option);
 		rules[2] = new WordPatternRule(new WordDetector(), "\\", null, command);
 		rules[3] = new EndOfLineRule("%", comment);
 		rules[4] = new MultiLineRule("$", "$", mathmode);
@@ -60,6 +60,7 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 		setPredicateRules(rules);
 		// Setting a default here will separate text to single character token
 		// setDefaultReturnToken(text);
+
 	}
 
 	public static final boolean isCommand(String type) {
