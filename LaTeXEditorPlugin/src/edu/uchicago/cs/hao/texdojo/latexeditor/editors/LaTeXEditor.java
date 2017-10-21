@@ -101,8 +101,7 @@ public class LaTeXEditor extends TextEditor implements ISelectionChangedListener
 			LaTeXTreeNode selectedNode = (LaTeXTreeNode) treesel.getFirstElement();
 			if (null != selectedNode) {
 				LaTeXNode node = selectedNode.getNode();
-				getSourceViewer().setSelectedRange(node.getOffset(), node.getLength());
-				getSourceViewer().setVisibleRegion(node.getOffset(), node.getLength());
+				selectAndReveal(node.getOffset(), node.getLength());
 			}
 		}
 		return;
