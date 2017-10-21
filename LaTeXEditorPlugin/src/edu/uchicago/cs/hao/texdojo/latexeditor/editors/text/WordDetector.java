@@ -26,6 +26,6 @@ public class WordDetector implements IWordDetector {
 
 	@Override
 	public boolean isWordStart(char c) {
-		return Character.isDefined(c) && !Character.isSpaceChar(c);
+		return Character.isAlphabetic(c) || Character.isDigit(c);
 	}
 }

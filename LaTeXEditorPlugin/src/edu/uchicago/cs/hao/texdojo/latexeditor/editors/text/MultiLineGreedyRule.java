@@ -32,8 +32,9 @@ public class MultiLineGreedyRule implements IPredicateRule {
 		// Dunno how to support resume
 		if (resume)
 			return Token.UNDEFINED;
-
+		boolean escape = false;
 		int c = scanner.read();
+
 		if (start == c) {
 			// Start match, look for end
 			int readCount = 1;
@@ -41,15 +42,21 @@ public class MultiLineGreedyRule implements IPredicateRule {
 
 			while ((c = scanner.read()) != ICharacterScanner.EOF) {
 				readCount++;
-				if (c == start) {
+				if (c == start && !escape) {
 					stackCount++;
 				}
-				if (c == end) {
+				if (c == end && !escape) {
 					if (stackCount == 0) {
 						return successToken;
 					} else {
 						stackCount--;
 					}
+				}
+				if (c == '\\') { // Escape
+					escape = !escape;
+				} else {
+					if (escape)
+						escape = false;
 				}
 			}
 			for (int i = 0; i < readCount; i++) {

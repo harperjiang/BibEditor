@@ -26,7 +26,6 @@ import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
-import org.eclipse.jface.text.rules.WordPatternRule;
 import org.eclipse.swt.SWT;
 
 /**
@@ -43,23 +42,25 @@ public class LaTeXScanner extends RuleBasedScanner {
 		IToken option = new Token(new TextAttribute(ColorManager.get(P_COLOR_OPTION)));
 		IToken comment = new Token(new TextAttribute(ColorManager.get(P_COLOR_COMMENT), null, SWT.ITALIC));
 		IToken mathmode = new Token(new TextAttribute(ColorManager.get(P_COLOR_MATHMODE)));
-
-		IRule[] rules = new IRule[7];
+		
+		IRule[] rules = new IRule[8];
 
 		// Add rule for keyword
-		rules[0] = new WordPatternRule(new WordDetector(), "\\", null, command);
+		rules[0] = new NonEmptyWordPatternRule(new WordDetector(), "\\", null, command);
 		// Add rule for command args
 		rules[1] = new MultiLineGreedyRule('{', '}', arg);
 		rules[2] = new MultiLineGreedyRule('[', ']', option);
 
-		// Add rule for comment
-		rules[3] = new EndOfLineRule("%", comment);
-
 		// Math mode
-		rules[4] = new MultiLineRule("$", "$", mathmode);
-		rules[5] = new MultiLineRule("\\[", "\\]", mathmode);
+		rules[3] = new MultiLineRule("$", "$", mathmode);
+		rules[4] = new MultiLineRule("\\[", "\\]", mathmode);
+
+		// Add rule for comment
+		rules[5] = new NonEmptyWordPatternRule(new EscapeDetector(), "\\", null, text, 1);
+		rules[6] = new EndOfLineRule("%", comment);
+
 		// Add generic whitespace rule.
-		rules[6] = new WhitespaceRule(new WhitespaceDetector());
+		rules[7] = new WhitespaceRule(new WhitespaceDetector());
 
 		setRules(rules);
 		setDefaultReturnToken(text);
