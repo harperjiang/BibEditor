@@ -42,7 +42,7 @@ public class LaTeXScanner extends RuleBasedScanner {
 		IToken option = new Token(new TextAttribute(ColorManager.get(P_COLOR_OPTION)));
 		IToken comment = new Token(new TextAttribute(ColorManager.get(P_COLOR_COMMENT), null, SWT.ITALIC));
 		IToken mathmode = new Token(new TextAttribute(ColorManager.get(P_COLOR_MATHMODE)));
-		
+
 		IRule[] rules = new IRule[8];
 
 		// Add rule for keyword

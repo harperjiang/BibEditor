@@ -19,24 +19,14 @@ public class LaTeXOrganizer {
 				stack.push(node);
 				continue;
 			}
-			if (node instanceof BeginNode || node instanceof EndNode || node instanceof CommandNode
-					|| node instanceof TextNode || node instanceof CommentNode) {
-				LaTeXNode stacktop = stack.pop();
-				if (stacktop instanceof EndNode) {
-					EndNode en = (EndNode) stacktop;
-					if (en.getContent() != null) {
-						matchBegin(en);
-						stack.push(node);
-					} else {
-						stack.push(stacktop);
-						stack.push(node);
-					}
+			if (node instanceof EndNode) {
+				EndNode en = (EndNode) node;
+				if (en.getContent() != null) {
+					matchBegin(en);
 				} else {
-					stack.push(stacktop);
 					stack.push(node);
 				}
-			}
-			if (node instanceof ArgNode) {
+			} else if (node instanceof ArgNode) {
 				LaTeXNode stackTop = stack.pop();
 				if (stackTop instanceof CommandNode) {
 					InvokeNode invoke = new InvokeNode((CommandNode) stackTop);
@@ -66,8 +56,7 @@ public class LaTeXOrganizer {
 				} else {
 					stack.push(node);
 				}
-			}
-			if (node instanceof OptionNode) {
+			} else if (node instanceof OptionNode) {
 				LaTeXNode stacktop = stack.pop();
 				if (stacktop instanceof CommandNode) {
 					InvokeNode in = new InvokeNode((CommandNode) stacktop);
@@ -89,6 +78,8 @@ public class LaTeXOrganizer {
 					stack.push(stacktop);
 					stack.push(node);
 				}
+			} else {
+				stack.push(node);
 			}
 		}
 
@@ -97,6 +88,8 @@ public class LaTeXOrganizer {
 			LaTeXNode stacktop = stack.pop();
 			if (stacktop instanceof EndNode && ((EndNode) stacktop).getContent() != null) {
 				matchBegin((EndNode) stacktop);
+			} else {
+				stack.push(stacktop);
 			}
 		}
 		return stack;

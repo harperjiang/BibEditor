@@ -1,8 +1,9 @@
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
+package edu.uchicago.cs.hao.texdojo.latexeditor.editors.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITypedRegion;
@@ -65,6 +66,8 @@ public class LaTeXDocModel {
 		nodes.addAll(insertIndex, newnodes);
 
 		model.organize();
+
+		fireModelChanged();
 	}
 
 	protected List<LaTeXNode> parseTokens(IDocument doc, ITypedRegion[] tokens) throws BadLocationException {
@@ -112,6 +115,7 @@ public class LaTeXDocModel {
 				nodes.add(node);
 			}
 		}
+		fireModelChanged();
 	}
 
 	private String undecorate(String input) {
@@ -129,4 +133,22 @@ public class LaTeXDocModel {
 	public List<LaTeXNode> nodes() {
 		return model.getNodes();
 	}
+
+	private ListenerList<LaTeXDocModelListener> listeners = new ListenerList<>();
+
+	public void addModelListener(LaTeXDocModelListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeModelListener(LaTeXDocModelListener listener) {
+		listeners.remove(listener);
+	}
+
+	protected void fireModelChanged() {
+		LaTeXDocModelEvent event = new LaTeXDocModelEvent(this);
+		for (LaTeXDocModelListener listener : listeners) {
+			listener.modelChanged(event);
+		}
+	}
+
 }

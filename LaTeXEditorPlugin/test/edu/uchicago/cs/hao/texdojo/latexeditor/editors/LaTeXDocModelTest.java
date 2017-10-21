@@ -25,6 +25,7 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXDocModel;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.CommentNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.GroupNode;

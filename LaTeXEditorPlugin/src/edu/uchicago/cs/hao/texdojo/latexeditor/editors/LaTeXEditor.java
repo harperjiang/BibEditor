@@ -23,31 +23,44 @@ import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXDocModel;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.outline.LaTeXEditorOutlinePage;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.outline.LaTeXTreeNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXDocumentProvider;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
 
 /**
  * 
  * @author Hao Jiang
  *
  */
-public class LaTeXEditor extends TextEditor {
+public class LaTeXEditor extends TextEditor implements ISelectionChangedListener {
 
 	private static final String CONSOLE_NAME = "TeXDojo";
 
 	private LaTeXDocModel model = new LaTeXDocModel();
 
+	private LaTeXEditorOutlinePage page = new LaTeXEditorOutlinePage(model);
+
 	public LaTeXEditor() {
 		super();
 		setSourceViewerConfiguration(new LaTeXConfiguration());
 		setDocumentProvider(new LaTeXDocumentProvider());
+
+		page.addSelectionChangedListener(this);
 	}
 
 	@Override
@@ -79,6 +92,34 @@ public class LaTeXEditor extends TextEditor {
 		setSourceViewerConfiguration(config);
 		((SourceViewer) getSourceViewer()).configure(config);
 		getSourceViewer().invalidateTextPresentation();
+	}
+
+	@Override
+	public void selectionChanged(SelectionChangedEvent event) {
+		if (event.getSource() == page && event.getSelection() instanceof TreeSelection) {
+			TreeSelection treesel = (TreeSelection) event.getSelection();
+			LaTeXTreeNode selectedNode = (LaTeXTreeNode) treesel.getFirstElement();
+			if (null != selectedNode) {
+				LaTeXNode node = selectedNode.getNode();
+				getSourceViewer().setSelectedRange(node.getOffset(), node.getLength());
+				getSourceViewer().setVisibleRegion(node.getOffset(), node.getLength());
+			}
+		}
+		return;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
+		if (adapter.equals(IContentOutlinePage.class)) {
+			return (T) page;
+		}
+		return super.getAdapter(adapter);
+	}
+
+	@Override
+	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
+		super.configureSourceViewerDecorationSupport(support);
 	}
 
 	public static IOConsole getConsole() {
