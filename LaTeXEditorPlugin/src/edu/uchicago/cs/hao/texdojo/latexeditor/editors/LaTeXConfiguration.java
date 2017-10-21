@@ -27,7 +27,7 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LineAlignStrate
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.DoubleClickStrategy;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
-
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionDamagerRepairer;
 /**
  * 
  * @author Hao Jiang
@@ -74,11 +74,11 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 		reconciler.setDamager(dr, PartitionScanner.LATEX_COMMAND);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_COMMAND);
 
-		dr = new DefaultDamagerRepairer(new LaTeXScanner());
+		dr = new PartitionDamagerRepairer(new LaTeXScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_ARG);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_ARG);
 
-		dr = new DefaultDamagerRepairer(new LaTeXScanner());
+		dr = new PartitionDamagerRepairer(new LaTeXScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_OPTION);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_OPTION);
 

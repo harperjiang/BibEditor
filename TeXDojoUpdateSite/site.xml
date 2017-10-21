@@ -6,5 +6,8 @@
    <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.2.beta_20171011.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.2.beta_20171011">
       <category name="edu.uchicago.cs.hao.texdojo"/>
    </feature>
+   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.2.beta_20171021.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.2.beta_20171021">
+      <category name="edu.uchicago.cs.hao.texdojo"/>
+   </feature>
    <category-def name="edu.uchicago.cs.hao.texdojo" label="TeXDojo"/>
 </site>
