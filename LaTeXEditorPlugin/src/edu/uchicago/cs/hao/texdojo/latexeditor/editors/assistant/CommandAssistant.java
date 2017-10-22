@@ -72,13 +72,11 @@ public class CommandAssistant implements IContentAssistProcessor {
 
 	@Override
 	public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public char[] getContextInformationAutoActivationCharacters() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -89,7 +87,6 @@ public class CommandAssistant implements IContentAssistProcessor {
 
 	@Override
 	public IContextInformationValidator getContextInformationValidator() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -137,8 +134,7 @@ public class CommandAssistant implements IContentAssistProcessor {
 		for (int i = 0; i < candidates.size(); i++) {
 			String env = candidates.get(i);
 			String text = MessageFormat.format("{0}'}'\n\n\\end'{'{0}'}'\n", env);
-			proposals[i] = new CompletionProposal(text, offset - qlen, text.length(), env.length() + 2, null, env, null,
-					null);
+			proposals[i] = new CompletionProposal(text, offset - qlen, qlen, env.length() + 2, null, env, null, null);
 		}
 		return proposals;
 	}
@@ -156,64 +152,49 @@ public class CommandAssistant implements IContentAssistProcessor {
 			includeBs = false;
 			qualifier = qualifier.substring(1);
 		}
+		String lqualifier = qualifier.toLowerCase();
 
 		List<ICompletionProposal> props = new ArrayList<ICompletionProposal>();
 		int qlen = qualifier.length();
 
 		// Search through all proposals
-		int middleIndex = Collections.binarySearch(commands, new Command(qualifier, null), new Comparator<Command>() {
+		int index = Collections.binarySearch(commands, new Command(lqualifier, null), new Comparator<Command>() {
 			@Override
 			public int compare(Command o1, Command o2) {
-				if (o1.key.startsWith(o2.key) || o2.key.startsWith(o1.key))
-					return 0;
-				return o1.key.compareTo(o2.key);
+				return o1.key.toLowerCase().compareTo(o2.key.toLowerCase());
 			}
 		});
-		if (middleIndex == -1) {
-			return new ICompletionProposal[0];
-		}
-		// Rewind to the first
-		int start = middleIndex;
-		while (start >= 0) {
-			Command cmd = commands.get(start);
-			if (!cmd.key.startsWith(qualifier))
-				break;
-			else
-				start--;
-		}
-		// Forward to the last
-		int stop = middleIndex;
-		while (stop < commands.size()) {
-			Command cmd = commands.get(stop);
-			if (!cmd.key.startsWith(qualifier))
-				break;
-			else
-				stop++;
-		}
-
-		for (int i = start + 1; i < stop; i++) {
-			Command cmd = commands.get(i);
-			String text = null;
-			String display = null;
-
-			if (includeBs) {
-				text = "\\" + cmd.key;
-				display = MessageFormat.format("\\{0} {1}", cmd.key, cmd.display);
-			} else {
-				text = cmd.key;
-				display = MessageFormat.format("{0} {1}", cmd.key, cmd.display);
+		if (index >= 0) {
+			return new ICompletionProposal[] { fromCommand(commands.get(index), includeBs, documentOffset, qlen) };
+		} else {
+			int ins = -index - 1;
+			// Forward to the last
+			while (ins < commands.size() && commands.get(ins).key.toLowerCase().startsWith(lqualifier)) {
+				props.add(fromCommand(commands.get(ins), includeBs, documentOffset, qlen));
+				ins++;
 			}
-			// Construct proposal
-			CompletionProposal proposal = new CompletionProposal(text, documentOffset - qlen, qlen, text.length(), null,
-					display, null, null);
 
-			// and add to result list
-			props.add(proposal);
-
+			ICompletionProposal[] proparray = new ICompletionProposal[props.size()];
+			props.toArray(proparray);
+			return proparray;
 		}
-		ICompletionProposal[] proparray = new ICompletionProposal[props.size()];
-		props.toArray(proparray);
-		return proparray;
+	}
+
+	protected ICompletionProposal fromCommand(Command cmd, boolean includeBs, int documentOffset, int qlen) {
+		String text = null;
+		String display = null;
+
+		if (includeBs) {
+			text = "\\" + cmd.key;
+			display = MessageFormat.format("\\{0} {1}", cmd.key, cmd.display);
+		} else {
+			text = cmd.key;
+			display = MessageFormat.format("{0} {1}", cmd.key, cmd.display);
+		}
+		// Construct proposal
+		CompletionProposal proposal = new CompletionProposal(text, documentOffset - qlen, qlen, text.length(), null,
+				display, null, null);
+		return proposal;
 	}
 
 	/**

@@ -3,9 +3,9 @@ tabular
 itemize
 enumerate
 description
-figure
+figure {0}\n
 figure*
-subfigure
+subfigure 
 array
 align
 align*
@@ -13,3 +13,5 @@ quote
 quotation
 abstract
 document
+algorithm
+algorithmic

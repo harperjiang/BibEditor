@@ -40,19 +40,22 @@ public class LaTeXOrganizerTest {
 		tokens.add(new EndNode(null, 30, 10));
 		tokens.add(new ArgNode("document", 45, 10));
 
+		tokens.add(new CommandNode("aka", 55, 10));
+		tokens.add(new ArgNode("ttt", 65, 10));
+
 		List<LaTeXNode> newnodes = parser.parse(tokens);
 
-		assertEquals(1, newnodes.size());
+		assertEquals(2, newnodes.size());
 		assertTrue(newnodes.get(0) instanceof GroupNode);
 		assertTrue(newnodes.get(0).getContent().equals("document"));
-	
-		GroupNode gn = (GroupNode)newnodes.get(0);
+		
+		GroupNode gn = (GroupNode) newnodes.get(0);
 		assertEquals(2, gn.getChildren().size());
-	
+
 		assertTrue(gn.getChildren().get(0) instanceof TextNode);
 		assertTrue(gn.getChildren().get(1) instanceof InvokeNode);
 		
-	
+		assertTrue(newnodes.get(1) instanceof InvokeNode);
 	}
 
 }

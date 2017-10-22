@@ -13,9 +13,15 @@ public class LaTeXEditorOutlinePage extends ContentOutlinePage implements LaTeXD
 
 	private LaTeXDocModel model;
 
-	private ILabelProvider labelProvider = new LaTeXOutlineLabelProvider();
+	private ILabelProvider outlineLabelProvider = new LaTeXOutlineLabelProvider();
 
-	private IContentProvider contentProvider = new LaTeXOutlineTreeContentProvider();
+	private IContentProvider outlineContentProvider = new LaTeXOutlineTreeContentProvider();
+
+	private ILabelProvider figureLabelProvider = new LaTeXFigureLabelProvider();
+
+	private IContentProvider figureContentProvider = new LaTeXFigureTreeContentProvider();
+
+	private boolean figureMode = false;
 
 	public LaTeXEditorOutlinePage(LaTeXDocModel model) {
 		this.model = model;
@@ -26,8 +32,8 @@ public class LaTeXEditorOutlinePage extends ContentOutlinePage implements LaTeXD
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		getTreeViewer().addSelectionChangedListener(this);
-		getTreeViewer().setLabelProvider(labelProvider);
-		getTreeViewer().setContentProvider(contentProvider);
+		getTreeViewer().setLabelProvider(outlineLabelProvider);
+		getTreeViewer().setContentProvider(outlineContentProvider);
 		getTreeViewer().setInput(model);
 		getTreeViewer().expandAll();
 	}
@@ -38,4 +44,22 @@ public class LaTeXEditorOutlinePage extends ContentOutlinePage implements LaTeXD
 		getTreeViewer().expandAll();
 	}
 
+	@Override
+	public void dispose() {
+		super.dispose();
+		outlineLabelProvider.dispose();
+		figureLabelProvider.dispose();
+	}
+
+	public void switchMode() {
+		figureMode = !figureMode;
+		if (figureMode) {
+			getTreeViewer().setLabelProvider(figureLabelProvider);
+			getTreeViewer().setContentProvider(figureContentProvider);
+		} else {
+			getTreeViewer().setLabelProvider(outlineLabelProvider);
+			getTreeViewer().setContentProvider(outlineContentProvider);
+		}
+		getTreeViewer().expandAll();
+	}
 }

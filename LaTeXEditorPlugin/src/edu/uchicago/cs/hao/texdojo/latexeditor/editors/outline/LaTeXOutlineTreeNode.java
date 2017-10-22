@@ -7,7 +7,9 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.model.CommandNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.InvokeNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
 
-public class LaTeXTreeNode {
+public class LaTeXOutlineTreeNode implements ILaTeXTreeNode {
+
+	public static final String PART = "part";
 
 	public static final String CHAPTER = "chapter";
 
@@ -21,10 +23,10 @@ public class LaTeXTreeNode {
 	private int level;
 	private LaTeXNode node;
 
-	private LaTeXTreeNode parent;
-	private List<LaTeXTreeNode> children = new ArrayList<LaTeXTreeNode>();
+	private LaTeXOutlineTreeNode parent;
+	private List<LaTeXOutlineTreeNode> children = new ArrayList<LaTeXOutlineTreeNode>();
 
-	private LaTeXTreeNode(String text, int level, LaTeXNode node) {
+	private LaTeXOutlineTreeNode(String text, int level, LaTeXNode node) {
 		this.text = text;
 		this.level = level;
 		this.node = node;
@@ -42,20 +44,20 @@ public class LaTeXTreeNode {
 		return level;
 	}
 
-	public void add(LaTeXTreeNode child) {
+	public void add(LaTeXOutlineTreeNode child) {
 		child.parent = this;
 		children.add(child);
 	}
 
-	public LaTeXTreeNode getParent() {
+	public LaTeXOutlineTreeNode getParent() {
 		return parent;
 	}
 
-	public List<LaTeXTreeNode> getChildren() {
+	public List<LaTeXOutlineTreeNode> getChildren() {
 		return children;
 	}
 
-	public static LaTeXTreeNode from(LaTeXNode node) {
+	public static LaTeXOutlineTreeNode from(LaTeXNode node) {
 		if (node instanceof InvokeNode || node instanceof CommandNode) {
 			String text = "";
 			if (node instanceof InvokeNode) {
@@ -67,14 +69,16 @@ public class LaTeXTreeNode {
 				}
 			}
 			switch (node.getContent()) {
+			case PART:
+				return new LaTeXOutlineTreeNode(text, 0, node);
 			case CHAPTER:
-				return new LaTeXTreeNode(text, 0, node);
+				return new LaTeXOutlineTreeNode(text, 1, node);
 			case SECTION:
-				return new LaTeXTreeNode(text, 1, node);
+				return new LaTeXOutlineTreeNode(text, 2, node);
 			case SUBSECTION:
-				return new LaTeXTreeNode(text, 2, node);
+				return new LaTeXOutlineTreeNode(text, 3, node);
 			case SUBSUBSECTION:
-				return new LaTeXTreeNode(text, 3, node);
+				return new LaTeXOutlineTreeNode(text, 4, node);
 			default:
 				return null;
 			}

@@ -23,5 +23,7 @@ public class EndNode extends LaTeXNode {
 
 	public void append(ArgNode arg) {
 		this.setContent(arg.getContent());
+		this.setLength(getLength() + arg.getLength());
 	}
+
 }

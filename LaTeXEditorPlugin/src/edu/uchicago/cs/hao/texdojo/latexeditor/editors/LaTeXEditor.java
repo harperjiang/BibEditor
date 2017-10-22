@@ -36,8 +36,8 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXDocModel;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.outline.ILaTeXTreeNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.outline.LaTeXEditorOutlinePage;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.outline.LaTeXTreeNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXDocumentProvider;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
@@ -53,14 +53,14 @@ public class LaTeXEditor extends TextEditor implements ISelectionChangedListener
 
 	private LaTeXDocModel model = new LaTeXDocModel();
 
-	private LaTeXEditorOutlinePage page = new LaTeXEditorOutlinePage(model);
+	private LaTeXEditorOutlinePage outlinePage = new LaTeXEditorOutlinePage(model);
 
 	public LaTeXEditor() {
 		super();
 		setSourceViewerConfiguration(new LaTeXConfiguration());
 		setDocumentProvider(new LaTeXDocumentProvider());
 
-		page.addSelectionChangedListener(this);
+		outlinePage.addSelectionChangedListener(this);
 	}
 
 	@Override
@@ -96,9 +96,9 @@ public class LaTeXEditor extends TextEditor implements ISelectionChangedListener
 
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
-		if (event.getSource() == page && event.getSelection() instanceof TreeSelection) {
+		if (event.getSource() == outlinePage && event.getSelection() instanceof TreeSelection) {
 			TreeSelection treesel = (TreeSelection) event.getSelection();
-			LaTeXTreeNode selectedNode = (LaTeXTreeNode) treesel.getFirstElement();
+			ILaTeXTreeNode selectedNode = (ILaTeXTreeNode) treesel.getFirstElement();
 			if (null != selectedNode) {
 				LaTeXNode node = selectedNode.getNode();
 				selectAndReveal(node.getOffset(), node.getLength());
@@ -111,7 +111,7 @@ public class LaTeXEditor extends TextEditor implements ISelectionChangedListener
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter.equals(IContentOutlinePage.class)) {
-			return (T) page;
+			return (T) outlinePage;
 		}
 		return super.getAdapter(adapter);
 	}
@@ -119,6 +119,16 @@ public class LaTeXEditor extends TextEditor implements ISelectionChangedListener
 	@Override
 	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
 		super.configureSourceViewerDecorationSupport(support);
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		outlinePage.dispose();
+	}
+
+	public LaTeXEditorOutlinePage getOutlinePage() {
+		return outlinePage;
 	}
 
 	public static IOConsole getConsole() {

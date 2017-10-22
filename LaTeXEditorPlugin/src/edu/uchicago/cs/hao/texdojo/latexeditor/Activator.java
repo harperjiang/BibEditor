@@ -14,6 +14,8 @@ package edu.uchicago.cs.hao.texdojo.latexeditor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -51,6 +53,9 @@ public class Activator extends AbstractUIPlugin {
 		// Install Preference Change Monitor
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 		prefs.addPreferenceChangeListener(monitor);
+
+		// Initialize Image Resources
+		initImages();
 	}
 
 	/*
@@ -79,8 +84,8 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path
+	 * Returns an image descriptor for the image file at the given plug-in relative
+	 * path
 	 *
 	 * @param path
 	 *            the path
@@ -89,4 +94,20 @@ public class Activator extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
+
+	protected void initImages() {
+		getImageRegistry().put(ImageResource.ICON_CHAPTER, new Image(Display.getCurrent(),
+				Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/chapter_icon.png")));
+		getImageRegistry().put(ImageResource.ICON_LIST, new Image(Display.getCurrent(),
+				Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/list_icon.png")));
+		getImageRegistry().put(ImageResource.ICON_ITEM, new Image(Display.getCurrent(),
+				Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/item_icon.png")));
+		getImageRegistry().put(ImageResource.ICON_FIGURE, new Image(Display.getCurrent(),
+				Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/figure_icon.png")));
+		getImageRegistry().put(ImageResource.ICON_TABLE, new Image(Display.getCurrent(),
+				Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/table_icon.png")));
+		getImageRegistry().put(ImageResource.ICON_ALGO, new Image(Display.getCurrent(),
+				Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/algo_icon.png")));
+	}
+
 }

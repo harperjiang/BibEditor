@@ -73,22 +73,32 @@
    <extension
          point="org.eclipse.ui.commands">
       <category
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature.category"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.categories.LaTeXNature"
             name="LaTeX Project Nature commands">
       </category>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature.category"
+            categoryId="edu.uchicago.cs.hao.texdojo.latexeditor.categories.LaTeXNature"
             defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.project.AddRemoveLaTeXNatureHandler"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.addRemoveLaTeXNature"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.addRemoveLaTeXNature"
             name="Add/RemoveLaTeX Project Nature">
       </command>
+      <command
+            categoryId="edu.uchicago.cs.hao.texdojo.latexeditor.categories.OutlineButton"
+            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.editors.outline.ViewFiguresHandler"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.viewFigure"
+            name="View Figures/Tables">
+      </command>
+      <category
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.categories.OutlineButton"
+            name="LaTeX Editor Outline">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.addRemoveLaTeXNature"
+               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.addRemoveLaTeXNature"
                label="Disable LaTeX builder"
                style="push">
             <visibleWhen
@@ -111,7 +121,7 @@
             </visibleWhen>
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.addRemoveLaTeXNature"
+               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.addRemoveLaTeXNature"
                label="Enable LaTeX builder"
                style="push">
             <visibleWhen
@@ -136,6 +146,24 @@
             </visibleWhen>
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.views.ContentOutline?after=additions">
+         <command
+               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.viewFigure"
+               icon="icons/figure_icon.png"
+               label="View Figures/Tables"
+               style="toggle">
+         </command>
+      </menuContribution>
+      <!--menuContribution
+            locationURI="menu:org.eclipse.ui.views.ContentOutline?after=additions">
+         <command
+               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.viewFigure"
+               icon="icons/figure_icon.png"
+               label="View Figures/Tables"
+               style="toggle">
+         </command>
+      </menuContribution-->
    </extension>
    <extension
          id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXProblem"

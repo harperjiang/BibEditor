@@ -14,10 +14,10 @@ public class LaTeXOutlineTreeContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof LaTeXDocModel) {
 			LaTeXDocModel model = (LaTeXDocModel) inputElement;
-			List<LaTeXTreeNode> roots = new ArrayList<LaTeXTreeNode>();
-			LaTeXTreeNode current = null;
+			List<LaTeXOutlineTreeNode> roots = new ArrayList<LaTeXOutlineTreeNode>();
+			LaTeXOutlineTreeNode current = null;
 			for (LaTeXNode node : model.nodes()) {
-				LaTeXTreeNode treeNode = LaTeXTreeNode.from(node);
+				LaTeXOutlineTreeNode treeNode = LaTeXOutlineTreeNode.from(node);
 				if (treeNode != null) {
 					while (current != null && current.getLevel() >= treeNode.getLevel()) {
 						current = current.getParent();
@@ -37,24 +37,24 @@ public class LaTeXOutlineTreeContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof LaTeXTreeNode) {
-			return ((LaTeXTreeNode) parentElement).getChildren().toArray();
+		if (parentElement instanceof LaTeXOutlineTreeNode) {
+			return ((LaTeXOutlineTreeNode) parentElement).getChildren().toArray();
 		}
 		return null;
 	}
 
 	@Override
 	public Object getParent(Object element) {
-		if (element instanceof LaTeXTreeNode) {
-			return ((LaTeXTreeNode) element).getParent();
+		if (element instanceof LaTeXOutlineTreeNode) {
+			return ((LaTeXOutlineTreeNode) element).getParent();
 		}
 		return null;
 	}
 
 	@Override
 	public boolean hasChildren(Object element) {
-		if (element instanceof LaTeXTreeNode) {
-			return !((LaTeXTreeNode) element).getChildren().isEmpty();
+		if (element instanceof LaTeXOutlineTreeNode) {
+			return !((LaTeXOutlineTreeNode) element).getChildren().isEmpty();
 		}
 		return false;
 	}

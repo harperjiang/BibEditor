@@ -2,38 +2,34 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.editors.outline;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
+
+import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
+import edu.uchicago.cs.hao.texdojo.latexeditor.ImageResource;
 
 public class LaTeXOutlineLabelProvider extends LabelProvider {
-	protected Image chapterImage = new Image(Display.getCurrent(),
-			Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/chapter_icon.png"));
-
-	protected Image listImage = new Image(Display.getCurrent(),
-			Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/list_icon.png"));
 
 	public Image getImage(Object element) {
-		if (element instanceof LaTeXTreeNode) {
-			switch (((LaTeXTreeNode) element).getLevel()) {
-			case 0:
-				return chapterImage;
+		if (element instanceof LaTeXOutlineTreeNode) {
+			switch (((LaTeXOutlineTreeNode) element).getLevel()) {
+			case 0:// part
+			case 1:// chapter
+				return Activator.getDefault().getImageRegistry().get(ImageResource.ICON_CHAPTER);
+			case 2:// section
+				return Activator.getDefault().getImageRegistry().get(ImageResource.ICON_LIST);
+			case 3:// subsection
+			case 4:// subsubsection
+				return Activator.getDefault().getImageRegistry().get(ImageResource.ICON_ITEM);
 			default:
-				return listImage;
+				return Activator.getDefault().getImageRegistry().get(ImageResource.ICON_ITEM);
 			}
 		}
 		return null;
 	}
 
 	public String getText(Object element) {
-		if (element instanceof LaTeXTreeNode) {
-			return ((LaTeXTreeNode) element).getText();
+		if (element instanceof LaTeXOutlineTreeNode) {
+			return ((LaTeXOutlineTreeNode) element).getText();
 		}
 		return null;
-	}
-
-	@Override
-	public void dispose() {
-		super.dispose();
-		listImage.dispose();
-		chapterImage.dispose();
 	}
 }

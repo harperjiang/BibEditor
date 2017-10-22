@@ -50,8 +50,11 @@ public class BeginEndStrategy implements IAutoEditStrategy {
 
 						// Insert an end tag
 						String text = MessageFormat.format("\n\n{0}'{'{1}'}'", "\\end", argText);
-						
+
 						command.text = text;
+//						command.length = text.length();
+						command.caretOffset = command.offset + 1;
+						command.shiftsCaret = false;
 					}
 				}
 
