@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXDocModel;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.GroupNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
 
 public class LaTeXFigureTreeContentProvider implements ITreeContentProvider {
@@ -15,12 +16,24 @@ public class LaTeXFigureTreeContentProvider implements ITreeContentProvider {
 		if (inputElement instanceof LaTeXDocModel) {
 			LaTeXDocModel model = (LaTeXDocModel) inputElement;
 			List<LaTeXFigureTreeNode> roots = new ArrayList<>();
+
+			// Search for document node
+			GroupNode document = null;
+
 			for (LaTeXNode node : model.nodes()) {
-				LaTeXFigureTreeNode fNode = LaTeXFigureTreeNode.from(node);
-				if (fNode != null) {
-					roots.add(fNode);
+				if (node instanceof GroupNode && "document".equals(node.getContent())) {
+					document = (GroupNode) node;
+					break;
 				}
 			}
+
+			if (document != null)
+				for (LaTeXNode node : document.getChildren()) {
+					LaTeXFigureTreeNode fNode = LaTeXFigureTreeNode.from(node);
+					if (fNode != null) {
+						roots.add(fNode);
+					}
+				}
 			return roots.toArray();
 		}
 		return null;

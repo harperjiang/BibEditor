@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.model.LaTeXDocModel;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.GroupNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
 
 public class LaTeXOutlineTreeContentProvider implements ITreeContentProvider {
@@ -16,20 +17,31 @@ public class LaTeXOutlineTreeContentProvider implements ITreeContentProvider {
 			LaTeXDocModel model = (LaTeXDocModel) inputElement;
 			List<LaTeXOutlineTreeNode> roots = new ArrayList<LaTeXOutlineTreeNode>();
 			LaTeXOutlineTreeNode current = null;
+			// Search for document node
+			GroupNode document = null;
+
 			for (LaTeXNode node : model.nodes()) {
-				LaTeXOutlineTreeNode treeNode = LaTeXOutlineTreeNode.from(node);
-				if (treeNode != null) {
-					while (current != null && current.getLevel() >= treeNode.getLevel()) {
-						current = current.getParent();
-					}
-					if (current == null) {
-						roots.add(treeNode);
-					} else {
-						current.add(treeNode);
-					}
-					current = treeNode;
+				if (node instanceof GroupNode && "document".equals(node.getContent())) {
+					document = (GroupNode) node;
+					break;
 				}
 			}
+
+			if (document != null)
+				for (LaTeXNode node : document.getChildren()) {
+					LaTeXOutlineTreeNode treeNode = LaTeXOutlineTreeNode.from(node);
+					if (treeNode != null) {
+						while (current != null && current.getLevel() >= treeNode.getLevel()) {
+							current = current.getParent();
+						}
+						if (current == null) {
+							roots.add(treeNode);
+						} else {
+							current.add(treeNode);
+						}
+						current = treeNode;
+					}
+				}
 			return roots.toArray();
 		}
 		return null;
