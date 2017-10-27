@@ -49,6 +49,8 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
  */
 public class LaTeXEditor extends TextEditor implements ISelectionChangedListener {
 
+	public static final String ID = "edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor";
+
 	private static final String CONSOLE_NAME = "TeXDojo";
 
 	private LaTeXDocModel model = new LaTeXDocModel();

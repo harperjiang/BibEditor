@@ -10,7 +10,7 @@
             icon="icons/tex_icon.png"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.editors.XMLEditor">
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor">
       </editor>
    </extension>
    <extension
@@ -153,6 +153,12 @@
                icon="icons/figure_icon.png"
                label="View Figures/Tables"
                style="toggle">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="edu.uchicago.cs.hao.texdojo.latexeditor.definitions.latexEditorActive">
+               </reference>
+            </visibleWhen>
          </command>
       </menuContribution>
       <!--menuContribution
@@ -175,6 +181,18 @@
       <persistent
             value="true">
       </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.definitions.latexEditorActive">
+         <with
+               variable="activeEditorId">
+            <equals
+                  value="edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor">
+            </equals>
+         </with>
+      </definition>
    </extension>
 
 </plugin>
