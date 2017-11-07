@@ -25,9 +25,9 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.BeginEndStrateg
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LaTeXContentAssistant;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LineAlignStrategy;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.DoubleClickStrategy;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.LaTeXScanner;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.TextAttributeScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionDamagerRepairer;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
 /**
  * 
  * @author Hao Jiang
@@ -70,27 +70,27 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
 
-		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(new LaTeXScanner());
+		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(new TextAttributeScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_COMMAND);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_COMMAND);
 
-		dr = new PartitionDamagerRepairer(new LaTeXScanner());
+		dr = new PartitionDamagerRepairer(new TextAttributeScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_ARG);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_ARG);
 
-		dr = new PartitionDamagerRepairer(new LaTeXScanner());
+		dr = new PartitionDamagerRepairer(new TextAttributeScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_OPTION);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_OPTION);
 
-		dr = new DefaultDamagerRepairer(new LaTeXScanner());
+		dr = new PartitionDamagerRepairer(new TextAttributeScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_COMMENT);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_COMMENT);
 
-		dr = new DefaultDamagerRepairer(new LaTeXScanner());
+		dr = new PartitionDamagerRepairer(new TextAttributeScanner());
 		reconciler.setDamager(dr, PartitionScanner.LATEX_MATHMODE);
 		reconciler.setRepairer(dr, PartitionScanner.LATEX_MATHMODE);
 
-		dr = new DefaultDamagerRepairer(new LaTeXScanner());
+		dr = new PartitionDamagerRepairer(new TextAttributeScanner());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 

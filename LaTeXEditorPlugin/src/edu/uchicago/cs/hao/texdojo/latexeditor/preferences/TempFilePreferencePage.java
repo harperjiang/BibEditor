@@ -32,9 +32,9 @@ public class TempFilePreferencePage extends FieldEditorPreferencePage implements
 	}
 
 	/**
-	 * Creates the field editors. Field editors are abstractions of the common
-	 * GUI blocks needed to manipulate various types of preferences. Each field
-	 * editor knows how to save and restore itself.
+	 * Creates the field editors. Field editors are abstractions of the common GUI
+	 * blocks needed to manipulate various types of preferences. Each field editor
+	 * knows how to save and restore itself.
 	 */
 	public void createFieldEditors() {
 		// addField(new DirectoryFieldEditor(PreferenceConstants.P_PATH,
@@ -48,14 +48,14 @@ public class TempFilePreferencePage extends FieldEditorPreferencePage implements
 		// 1, new String[][] { { "&Choice 1", "choice1" }, { "C&hoice 2",
 		// "choice2" } }, getFieldEditorParent()));
 
-		addField(new StringListEditor(PreferenceConstants.P_TEMP_FILE, "Temp File List", getFieldEditorParent()));
+		addField(new StringListEditor(PreferenceConstants.P_TEMP_FILE, "Temp Files will be deleted after compiliation",
+				getFieldEditorParent()));
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
 	}

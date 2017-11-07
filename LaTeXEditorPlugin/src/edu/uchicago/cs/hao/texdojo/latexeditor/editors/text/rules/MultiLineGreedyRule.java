@@ -1,4 +1,4 @@
-package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text;
+package edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.rules;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IPredicateRule;

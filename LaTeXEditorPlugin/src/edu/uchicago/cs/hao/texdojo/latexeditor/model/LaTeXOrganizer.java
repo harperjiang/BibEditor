@@ -77,7 +77,8 @@ public class LaTeXOrganizer {
 		// find recent begin
 		BeginNode bn = null;
 		for (int i = stack.size() - 1; i >= 0; i--) {
-			if (stack.get(i) instanceof BeginNode && stack.get(i).getContent().equals(en.getContent())) {
+			if (stack.get(i) instanceof BeginNode && !StringUtils.isEmpty(stack.get(i).getContent())
+					&& stack.get(i).getContent().equals(en.getContent())) {
 				bn = (BeginNode) stack.get(i);
 				break;
 			}

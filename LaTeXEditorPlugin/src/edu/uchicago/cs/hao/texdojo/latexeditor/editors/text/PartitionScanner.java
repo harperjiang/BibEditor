@@ -19,6 +19,9 @@ import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.Token;
 
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.rules.MultiLineGreedyRule;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.rules.NonEmptyWordPatternRule;
+
 /**
  * 
  * @author Hao Jiang

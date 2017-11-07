@@ -28,14 +28,17 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.swt.SWT;
 
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.rules.MultiLineGreedyRule;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.rules.NonEmptyWordPatternRule;
+
 /**
  * 
  * @author Hao Jiang
  *
  */
-public class LaTeXScanner extends RuleBasedScanner {
+public class TextAttributeScanner extends RuleBasedScanner {
 
-	public LaTeXScanner() {
+	public TextAttributeScanner() {
 		IToken text = new Token(new TextAttribute(ColorManager.get(P_COLOR_TEXT)));
 		IToken arg = new Token(new TextAttribute(ColorManager.get(P_COLOR_ARG)));
 		IToken command = new Token(new TextAttribute(ColorManager.get(P_COLOR_COMMAND), null, SWT.BOLD));
@@ -58,6 +61,7 @@ public class LaTeXScanner extends RuleBasedScanner {
 		// Add rule for comment
 		rules[5] = new NonEmptyWordPatternRule(new EscapeDetector(), "\\", null, text, 1);
 		rules[6] = new EndOfLineRule("%", comment);
+
 
 		// Add generic whitespace rule.
 		rules[7] = new WhitespaceRule(new WhitespaceDetector());
