@@ -14,6 +14,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.LoggerFactory;
 
+import edu.uchicago.cs.hao.texdojo.bibeditor.dialogs.SelectEntryDialog;
 import edu.uchicago.cs.hao.texdojo.bibeditor.editors.BibEditor;
 import edu.uchicago.cs.hao.texdojo.bibeditor.external.acmdl.ACMDLService;
 import edu.uchicago.cs.hao.texdojo.bibeditor.external.acmdl.DefaultACMDLService;
@@ -69,6 +70,14 @@ public class ACMDLEntryHandler extends BibHandler {
 					return null;
 				default:
 					// Multiple Entries found, choose one
+					SelectEntryDialog dialog = new SelectEntryDialog(Display.getCurrent().getActiveShell());
+					dialog.setEntries(entries);
+					if (dialog.open() == Window.OK) {
+						Object[] choice = dialog.getChoice();
+						for (Object c : choice) {
+							editor.getUi().getModel().addEntry((BibEntry) c);
+						}
+					}
 					return null;
 				}
 			} catch (Exception e) {

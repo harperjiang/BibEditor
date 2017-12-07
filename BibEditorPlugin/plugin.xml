@@ -59,6 +59,12 @@
             id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand"
             name="Add Article from ArXiv">
       </command>
+      <command
+            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
+            defaultHandler="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.ACMDLEntryHandler"
+            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.acmdlEntryCommand"
+            name="Add Article from ACM DL">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -93,6 +99,10 @@
       <handler
             class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.ArxivEntryHandler"
             commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand">
+      </handler>
+      <handler
+            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.ACMDLEntryHandler"
+            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.acmdlEntryCommand">
       </handler>
    </extension>
    <extension
@@ -235,6 +245,18 @@
                   commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand"
                   icon="icons/arxiv_icon.png"
                   label="Add Article from ArXiv"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="edu.uchicago.cs.hao.texdojo.bibeditor.definitions.bibEditorActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.acmdlEntryCommand"
+                  icon="icons/acmdl_icon.png"
+                  label="Add Article from ACM DL"
                   style="push">
                <visibleWhen
                      checkEnabled="false">

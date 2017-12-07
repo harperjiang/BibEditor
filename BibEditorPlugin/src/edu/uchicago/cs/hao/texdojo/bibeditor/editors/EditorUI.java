@@ -292,7 +292,7 @@ public class EditorUI implements PropertyChangeListener {
 			this.model.addPropertyChangeListener(this);
 	}
 
-	private static class BibEntryColumnLabelProvider extends ColumnLabelProvider {
+	public static class BibEntryColumnLabelProvider extends ColumnLabelProvider {
 
 		private int index;
 
@@ -335,7 +335,7 @@ public class EditorUI implements PropertyChangeListener {
 		}
 	}
 
-	protected class ColumnViewerComparator extends ViewerComparator {
+	public static class ColumnViewerComparator extends ViewerComparator {
 		private int propertyIndex;
 		private static final int DESCENDING = 1;
 		private int direction = DESCENDING;
@@ -377,7 +377,7 @@ public class EditorUI implements PropertyChangeListener {
 		}
 	}
 
-	private class ColumnSelectionListener implements SelectionListener {
+	public class ColumnSelectionListener implements SelectionListener {
 
 		int index = -1;
 
