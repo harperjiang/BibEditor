@@ -36,7 +36,7 @@ public class ArxivEntryHandler extends BibHandler {
 			String articleId = dlg.getValue();
 			if (!ARTICLE_ID.matcher(articleId).matches()) {
 				MessageDialog.openError(Display.getCurrent().getActiveShell(), "Invalid Article Id",
-						"Not an valid article id. Please check your input.");
+						"Not a valid article id. Please check your input.");
 				return null;
 			}
 			ArxivService service = new DefaultArxivService();
@@ -65,7 +65,8 @@ public class ArxivEntryHandler extends BibHandler {
 				}
 
 				editor.getUi().getModel().addEntry(newEntry);
-
+				MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Entry added",
+						"BibTex entry has been added to list.");
 			} catch (Exception e) {
 				MessageDialog.openError(Display.getCurrent().getActiveShell(), "Failed to fetch article",
 						"Error occurred when trying to fetch article information. Please try again later.");
