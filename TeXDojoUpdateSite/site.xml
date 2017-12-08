@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="TeXDojo Editor UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/texdojo/updatesite">
-      TeXDojo Editor UpdateSite
+   <description name="TeXDojo UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/texdojo/updatesite">
+      TeXDojo UpdateSite
    </description>
-   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.2.beta_20171022_1.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.2.beta_20171022_1">
+   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.2.beta_20171208.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.2.beta_20171208">
       <category name="edu.uchicago.cs.hao.texdojo"/>
    </feature>
    <category-def name="edu.uchicago.cs.hao.texdojo" label="TeXDojo"/>
