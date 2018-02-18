@@ -14,6 +14,8 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author Hao Jiang
@@ -47,12 +49,11 @@ public class GroupNode extends LaTeXNode {
 	}
 
 	@Override
-	public boolean has(String command) {
-		if (begin.has(command) || end.has(command))
-			return true;
-		for (LaTeXNode child : children)
-			if (child.has(command))
-				return true;
-		return false;
+	public List<LaTeXNode> find(Predicate<LaTeXNode> p) {
+		if (p.test(begin) || p.test(end))
+			return Collections.singletonList((LaTeXNode) this);
+		return children.stream().flatMap(node -> {
+			return node.find(p).stream();
+		}).collect(Collectors.toList());
 	}
 }

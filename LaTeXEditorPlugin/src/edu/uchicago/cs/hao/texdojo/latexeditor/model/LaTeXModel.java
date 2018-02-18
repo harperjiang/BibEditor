@@ -13,7 +13,12 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.parser.LaTeXParser;
 
@@ -36,12 +41,15 @@ public class LaTeXModel {
 	}
 
 	public boolean has(String command) {
-		for (LaTeXNode node : nodes) {
-			if (node.has(command) && (node instanceof CommandNode || node instanceof InvokeNode
-					|| node instanceof GroupNode || node instanceof BeginNode))
-				return true;
-		}
-		return false;
+		return !find(n -> {
+			return !StringUtils.isEmpty(n.getContent()) && n.getContent().equals(command);
+		}).isEmpty();
+	}
+
+	public List<LaTeXNode> find(Predicate<LaTeXNode> p) {
+		return nodes.stream().flatMap(n -> {
+			return n.find(p).stream();
+		}).collect(Collectors.toList());
 	}
 
 	public void organize() {

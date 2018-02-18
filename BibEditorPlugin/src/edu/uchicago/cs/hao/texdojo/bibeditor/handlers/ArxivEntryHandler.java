@@ -26,7 +26,7 @@ import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibProp;
  */
 public class ArxivEntryHandler extends BibHandler {
 
-	static final Pattern ARTICLE_ID = Pattern.compile("\\d{4}\\.\\d{4}");
+	static final Pattern ARTICLE_ID = Pattern.compile("\\d+\\.\\d+");
 
 	@Override
 	protected Object executeWithEditor(ExecutionEvent event, BibEditor editor) throws ExecutionException {

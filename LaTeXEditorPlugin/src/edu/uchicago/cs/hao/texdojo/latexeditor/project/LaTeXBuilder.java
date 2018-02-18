@@ -13,8 +13,11 @@ import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInit
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -31,65 +34,12 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.ArgNode;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.InvokeNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXConstant;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXModel;
 
 public class LaTeXBuilder extends IncrementalProjectBuilder {
-
-	class LaTeXDeltaVisitor implements IResourceDeltaVisitor {
-
-		private IProgressMonitor monitor;
-
-		public LaTeXDeltaVisitor(IProgressMonitor monitor) {
-			super();
-			this.monitor = monitor;
-		}
-
-		@Override
-		public boolean visit(IResourceDelta delta) throws CoreException {
-			try {
-				IResource resource = delta.getResource();
-				switch (delta.getKind()) {
-				case IResourceDelta.ADDED:
-					// handle added resource
-					compile(resource, monitor);
-					break;
-				case IResourceDelta.REMOVED:
-					// handle removed resource
-					break;
-				case IResourceDelta.CHANGED:
-					// handle changed resource
-					compile(resource, monitor);
-					break;
-				}
-				// return true to continue visiting children.
-				return true;
-			} catch (Exception e) {
-				// TODO Handle Error
-				return true;
-			}
-		}
-	}
-
-	class LaTeXResourceVisitor implements IResourceVisitor {
-
-		private IProgressMonitor monitor;
-
-		public LaTeXResourceVisitor(IProgressMonitor monitor) {
-			super();
-			this.monitor = monitor;
-		}
-
-		public boolean visit(IResource resource) {
-			try {
-				compile(resource, monitor);
-			} catch (Exception e) {
-				// TODO Handle Error
-			}
-			// return true to continue visiting children.
-			return true;
-		}
-	}
 
 	public static final String BUILDER_ID = "edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXBuilder";
 
@@ -130,21 +80,140 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
+	private DependencyMap dependency = new DependencyMap();
+
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
+		// Check to see whether to compile current file
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+
+		boolean compileDoc = prefs.getBoolean(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
+		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
+
 		try {
-			getProject().accept(new LaTeXResourceVisitor(monitor));
-		} catch (CoreException e) {
+			if (!compileDoc) {
+				compile(getProject().getFile(mainTex), monitor);
+				return;
+			}
+			dependency = new DependencyMap();
+			getProject().accept(new IResourceVisitor() {
+				public boolean visit(IResource resource) {
+					try {
+						if (resource instanceof IFile && resource.getName().endsWith(".tex")) {
+							scan(resource, monitor);
+						}
+					} catch (Exception e) {
+						// TODO Handle Error
+					}
+					// return true to continue visiting children.
+					return true;
+				}
+			});
+			dependency.roots().forEach(root -> {
+				try {
+					compile(root, monitor);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	protected void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException {
+
+		// Check to see whether to compile current file
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+
+		boolean compileDoc = prefs.getBoolean(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
+		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
+
 		// the visitor does the work.
-		delta.accept(new LaTeXDeltaVisitor(monitor));
+		Set<IResource> affectedRoots = new HashSet<>();
+		delta.accept(new IResourceDeltaVisitor() {
+			@Override
+			public boolean visit(IResourceDelta delta) throws CoreException {
+				try {
+					IResource resource = delta.getResource();
+					if (resource instanceof IFile && resource.getName().endsWith(".tex")) {
+						String rname = resource.getName().replaceFirst("\\.tex$", "");
+						switch (delta.getKind()) {
+						case IResourceDelta.ADDED:
+							// handle added resource
+							scan(resource, monitor);
+							affectedRoots.addAll(dependency.roots(rname));
+							break;
+						case IResourceDelta.REMOVED:
+							// handle removed resource
+							affectedRoots.addAll(dependency.roots(rname));
+							dependency.remove(rname);
+							break;
+						case IResourceDelta.CHANGED:
+							// handle changed resource
+							affectedRoots.addAll(dependency.roots(rname));
+							scan(resource, monitor);
+							affectedRoots.addAll(dependency.roots(rname));
+							break;
+						}
+					}
+					// return true to continue visiting children.
+					return true;
+				} catch (Exception e) {
+					// TODO Handle Error
+					return true;
+				}
+			}
+		});
+
+		affectedRoots.forEach(root -> {
+			try {
+				if (!compileDoc) {
+					if (root.getName().equals(mainTex)) {
+						compile(root, monitor);
+					}
+				} else
+					compile(root, monitor);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		// delete markers set and files created
 		getProject().deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+	}
+
+	void scan(IResource resource, IProgressMonitor monitor) throws Exception {
+
+		monitor.beginTask("Scanning " + resource.getName(), 10);
+
+		IFile inputFile = (IFile) resource;
+		LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
+
+		monitor.worked(5);
+		String rname = resource.getName().replaceFirst("\\.tex$", "");
+		dependency.add(rname, resource);
+		dependency.unmark(rname);
+
+		if (model.has("document")) {
+			dependency.mark(rname);
+		}
+
+		model.find(node -> {
+			if (node instanceof InvokeNode) {
+				InvokeNode in = (InvokeNode) node;
+				return !StringUtils.isEmpty(node.getContent())
+						&& (node.getContent().equals("input") || node.getContent().equals("include"));
+			}
+			return false;
+		}).forEach(node -> {
+			InvokeNode in = (InvokeNode) node;
+			ArgNode arg = (ArgNode) (in.getArgs().get(0));
+			dependency.include(rname, arg.getContent());
+		});
+
+		monitor.worked(5);
 	}
 
 	void compile(IResource resource, IProgressMonitor monitor) throws Exception {
@@ -157,19 +226,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 			String tempFiles = prefs.get(P_TEMP_FILE, DEFAULT_TEMP_FILE);
 
-			boolean compileDoc = prefs.getBoolean(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
-			String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
-
-			// Parse the document
-
 			LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
-			if (compileDoc) {
-				if (!model.has("document")) {
-					return;
-				}
-			} else if (!mainTex.equals(inputFile.getName())) {
-				return;
-			}
 
 			String executable = prefs.get(P_LATEX_EXE, DEFAULT_LATEX_EXE);
 			String bibexe = prefs.get(P_BIBTEX_EXE, DEFAULT_BIB_EXE);
