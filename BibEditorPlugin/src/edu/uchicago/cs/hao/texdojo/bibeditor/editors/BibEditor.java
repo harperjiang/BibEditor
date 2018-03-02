@@ -47,13 +47,14 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 	private EditorUI ui;
 
 	private IResourceChangeListener resMonitor;
-
+	
 	public BibEditor() {
 		super();
 		ui = new EditorUI();
 		ui.addPropertyChangeListener(this);
 		resMonitor = new ResourceChangeListener();
 	}
+	
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -102,6 +103,7 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 	public void dispose() {
 		super.dispose();
 		ui.dispose();
+		
 		getSite().getPage().removePartListener(contextManager);
 		contextManager.deactivateContext();
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resMonitor);
