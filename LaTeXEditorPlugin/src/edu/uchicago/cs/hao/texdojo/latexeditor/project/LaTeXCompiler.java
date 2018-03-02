@@ -18,10 +18,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.console.IOConsole;
 
 /**
@@ -30,8 +28,8 @@ import org.eclipse.ui.console.IOConsole;
  */
 public class LaTeXCompiler {
 
-	public static synchronized void compile(String latexExe, String bibExe, IFile inputFile, IOConsole console,
-			boolean runbib, IProgressMonitor monitor) {
+	public static synchronized void compile(IncrementalProjectBuilder builder, String latexExe, String bibExe,
+			IFile inputFile, IOConsole console, boolean runbib, IProgressMonitor monitor) {
 		console.clearConsole();
 
 		OutputStream output = console.newOutputStream();
@@ -45,37 +43,39 @@ public class LaTeXCompiler {
 
 		ProcessBuilder bibBuilder = new ProcessBuilder().command(bibExe, inputFileName).directory(parent)
 				.redirectErrorStream(true);
+
+		int totalWork = runbib ? 100 : 25;
 		try {
+			String message = "Compiling " + inputFile.getName();
+			monitor.beginTask(message, totalWork);
+			monitor.subTask(message + " - first pass");
 
-			monitor.beginTask("Compiling " + inputFile.getName(), 80);
-			monitor.subTask("Invoking LaTeX");
+			connect(latexBuilder.start(), console, builder, monitor);
 
-			connect(latexBuilder.start(), console, monitor);
-
-			monitor.worked(20);
+			monitor.worked(25);
 
 			if (monitor.isCanceled())
 				return;
 
 			if (runbib) {
-				monitor.subTask("Invoking BibTeX");
+				monitor.subTask(message + " - invoking BibTeX");
 
-				connect(bibBuilder.start(), console, monitor);
-				monitor.worked(20);
-
-				if (monitor.isCanceled())
-					return;
-
-				monitor.subTask("Invoking LaTeX");
-				connect(latexBuilder.start(), console, monitor);
-				monitor.worked(20);
+				connect(bibBuilder.start(), console, builder, monitor);
+				monitor.worked(25);
 
 				if (monitor.isCanceled())
 					return;
 
-				monitor.subTask("Invoking LaTeX");
-				connect(latexBuilder.start(), console, monitor);
-				monitor.worked(20);
+				monitor.subTask(message + " - second pass");
+				connect(latexBuilder.start(), console, builder, monitor);
+				monitor.worked(25);
+
+				if (monitor.isCanceled())
+					return;
+
+				monitor.subTask(message + " - final pass");
+				connect(latexBuilder.start(), console, builder, monitor);
+				monitor.worked(25);
 
 				if (monitor.isCanceled())
 					return;
@@ -88,102 +88,9 @@ public class LaTeXCompiler {
 		return;
 	}
 
-	public static class CompileJob extends Job {
-
-		String latexExe;
-
-		String bibExe;
-
-		IFile inputFile;
-
-		IOConsole console;
-
-		boolean runbib;
-
-		boolean cancelled = false;
-
-		/**
-		 * @param latexExe
-		 * @param bibExe
-		 * @param inputFile
-		 * @param output
-		 */
-		public CompileJob(String latexExe, String bibExe, IFile inputFile, IOConsole console, boolean runbib) {
-			super("TeXDojo LaTeX Compile Job");
-			this.latexExe = latexExe;
-			this.bibExe = bibExe;
-			this.inputFile = inputFile;
-			this.console = console;
-			this.runbib = runbib;
-		}
-
-		@Override
-		protected void canceling() {
-			super.canceling();
-			cancelled = true;
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			console.clearConsole();
-
-			OutputStream output = console.newOutputStream();
-
-			File parent = new File(inputFile.getLocationURI()).getParentFile();
-
-			ProcessBuilder latexBuilder = new ProcessBuilder()
-					.command(latexExe, "-interaction=nonstopmode", inputFile.getName()).directory(parent)
-					.redirectErrorStream(true);
-			ProcessBuilder bibBuilder = new ProcessBuilder().command(bibExe, inputFile.getName()).directory(parent)
-					.redirectErrorStream(true);
-			try {
-
-				monitor.beginTask("Compiling " + inputFile.getName(), 80);
-				monitor.subTask("Invoking LaTeX");
-
-				connect(latexBuilder.start(), console, monitor);
-
-				monitor.worked(20);
-
-				if (cancelled)
-					return Status.CANCEL_STATUS;
-
-				if (runbib) {
-					monitor.subTask("Invoking BibTeX");
-
-					connect(bibBuilder.start(), console, monitor);
-					monitor.worked(20);
-
-					if (cancelled)
-						return Status.CANCEL_STATUS;
-
-					monitor.subTask("Invoking LaTeX");
-					connect(latexBuilder.start(), console, monitor);
-					monitor.worked(20);
-
-					if (cancelled)
-						return Status.CANCEL_STATUS;
-
-					monitor.subTask("Invoking LaTeX");
-					connect(latexBuilder.start(), console, monitor);
-					monitor.worked(20);
-
-					if (cancelled)
-						return Status.CANCEL_STATUS;
-				}
-
-				monitor.done();
-			} catch (Exception e) {
-				e.printStackTrace(new PrintStream(output));
-			}
-			return Status.OK_STATUS;
-		}
-
-	}
-
 	static final long TIMEOUT = 120000L;
 
-	static void connect(Process p, IOConsole console, IProgressMonitor monitor)
+	static void connect(Process p, IOConsole console, IncrementalProjectBuilder builder, IProgressMonitor monitor)
 			throws IOException, InterruptedException {
 		OutputStream output = console.newOutputStream();
 
@@ -194,7 +101,7 @@ public class LaTeXCompiler {
 			copyStream(console.getInputStream(), p.getOutputStream());
 			Thread.sleep(checkInterval);
 			consumed += checkInterval;
-			if (monitor.isCanceled() || consumed >= TIMEOUT) {
+			if (monitor.isCanceled() || builder.isInterrupted() || consumed >= TIMEOUT) {
 				p.destroy();
 				p.waitFor();
 			}

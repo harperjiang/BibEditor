@@ -46,7 +46,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	private static final String MARKER_TYPE = "edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXProblem";
 
 	public LaTeXBuilder() {
-
+		return;
 	}
 
 	private void addMarker(IFile file, String message, int lineNumber, int severity) {
@@ -206,7 +206,6 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 		model.find(node -> {
 			if (node instanceof InvokeNode) {
-				InvokeNode in = (InvokeNode) node;
 				return !StringUtils.isEmpty(node.getContent())
 						&& (node.getContent().equals("input") || node.getContent().equals("include"));
 			}
@@ -227,16 +226,15 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 			// Check to see whether to compile current file
 			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
-
 			String tempFiles = prefs.get(P_TEMP_FILE, DEFAULT_TEMP_FILE);
-
-			LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
 
 			String executable = prefs.get(P_LATEX_EXE, DEFAULT_LATEX_EXE);
 			String bibexe = prefs.get(P_BIBTEX_EXE, DEFAULT_BIB_EXE);
 
+			LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
+
 			// Detect whether the file contains an bib command
-			LaTeXCompiler.compile(executable, bibexe, inputFile, LaTeXEditor.getConsole(),
+			LaTeXCompiler.compile(this, executable, bibexe, inputFile, LaTeXEditor.getConsole(),
 					model.has(LaTeXConstant.EXTERNAL_BIB), monitor);
 
 			// Remove temporary files under the same folder
@@ -247,7 +245,6 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			IFile pdfFile = resource.getParent().getFile(new Path(resource.getName().replaceAll("tex$", "pdf")));
 			pdfFile.refreshLocal(1, monitor);
 		}
-
 	}
 
 	private void removeTempFiles(final File dir, String tempFiles) {
