@@ -49,7 +49,7 @@ public class LaTeXCompiler {
 			String message = "Compiling " + inputFile.getName();
 			monitor.beginTask(message, totalWork);
 			monitor.subTask(message + " - first pass");
-
+			
 			connect(latexBuilder.start(), console, builder, monitor);
 
 			monitor.worked(25);
