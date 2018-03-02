@@ -30,7 +30,7 @@ import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibParser;
  */
 public class ACMDLEntryHandler extends BibHandler {
 
-	static final Pattern ARTICLE_ID = Pattern.compile("\\d+");
+	static final Pattern ARTICLE_ID = Pattern.compile("\\d+(\\.\\d+)?");
 
 	@Override
 	protected Object executeWithEditor(ExecutionEvent event, BibEditor editor) throws ExecutionException {

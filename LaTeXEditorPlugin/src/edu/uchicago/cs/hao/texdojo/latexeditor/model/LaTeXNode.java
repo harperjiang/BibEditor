@@ -12,7 +12,11 @@
 package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Hao Jiang
@@ -75,6 +79,12 @@ public abstract class LaTeXNode {
 	}
 
 	public boolean has(String command) {
-		return getContent() != null && getContent().equals(command);
+		return !find(n -> {
+			return !StringUtils.isEmpty(n.getContent()) && n.getContent().equals(command);
+		}).isEmpty();
+	}
+	
+	public List<LaTeXNode> find(Predicate<LaTeXNode> p) {
+		return p.test(this) ? Collections.singletonList(this) : Collections.emptyList();
 	}
 }

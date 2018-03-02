@@ -14,28 +14,26 @@ package edu.uchicago.cs.hao.texdojo.bibeditor.editors;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPathEditorInput;
-import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.contexts.IContextActivation;
-import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.EditorPart;
 
 import edu.uchicago.cs.hao.texdojo.bibeditor.Activator;
 import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibModel;
-import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibParseException;
 import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibParser;
 import edu.uchicago.cs.hao.texdojo.bibeditor.preferences.PreferenceConstants;
 
@@ -45,10 +43,13 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 
 	private EditorUI ui;
 
+	private IResourceChangeListener resMonitor;
+
 	public BibEditor() {
 		super();
 		ui = new EditorUI();
 		ui.addPropertyChangeListener(this);
+		resMonitor = new ResourceChangeListener();
 	}
 
 	@Override
@@ -68,18 +69,10 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		setContentDescription(input.getToolTipText());
 		setTitleToolTip(input.getToolTipText());
 
-		IPath path = ((IPathEditorInput) input).getPath();
-		try {
-			model = new BibParser().parse(new FileInputStream(path.toFile()));
-			ui.setModel(model);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (BibParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		refresh();
 
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(resMonitor,
+				IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE);
 	}
 
 	private ContextManager contextManager;
@@ -93,7 +86,6 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		getSite().setSelectionProvider(ui.getTable());
 
 		contextManager = new ContextManager();
-
 		getSite().getPage().addPartListener(contextManager);
 	}
 
@@ -101,8 +93,9 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 	public void dispose() {
 		super.dispose();
 		ui.dispose();
-
+		contextManager.deactivateContext();
 		getSite().getPage().removePartListener(contextManager);
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resMonitor);
 	}
 
 	@Override
@@ -115,6 +108,16 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		boolean preserveCase = prefs.getBoolean(PreferenceConstants.P_PRESERVE_CASE, false);
 
 		ui.save(((IPathEditorInput) getEditorInput()).getPath().toFile(), preserveCase);
+	}
+	
+	protected void refresh() {
+		IPath path = ((IPathEditorInput)getEditorInput()).getPath();
+		try {
+			model = new BibParser().parse(new FileInputStream(path.toFile()));
+			ui.setModel(model);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
 	}
 
 	@Override
@@ -140,35 +143,26 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		return ui;
 	}
 
-	static class ContextManager extends PartListenerSupport {
-		IContextActivation activation = null;
-
-		public void activateContext() {
-			IContextService contextService = (IContextService) PlatformUI.getWorkbench()
-					.getService(IContextService.class);
-			if (contextService != null)
-				activation = contextService.activateContext(Constants.CONTEXT_ID);
-		}
-
-		public void deactivateContext() {
-			IContextService contextService = (IContextService) PlatformUI.getWorkbench()
-					.getService(IContextService.class);
-			if (contextService != null && activation != null) {
-				// Use a dialog to prompt the switch of context
-				// MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
-				// "Prompt", "Switching Context");
-				contextService.deactivateContext(activation);
-			}
-		}
+	class ResourceChangeListener implements IResourceChangeListener {
 
 		@Override
-		public void partActivated(IWorkbenchPartReference partRef) {
-			if (Constants.EDITOR_ID.equals(partRef.getId())) {
-				activateContext();
-			} else if (partRef.getPart(false) instanceof IEditorPart) {
-				// Other Editor is activated
-				deactivateContext();
+		public void resourceChanged(IResourceChangeEvent event) {
+			try {
+				event.getDelta().accept(new IResourceDeltaVisitor() {
+
+					@Override
+					public boolean visit(IResourceDelta delta) throws CoreException {
+						if (delta.getResource().getFullPath().equals(BibEditor.this.getEditorInput())) {
+							// File Changed
+							refresh();
+						}
+						return false;
+					}
+
+				});
+			} catch (CoreException e) {
+				throw new RuntimeException(e);
 			}
 		}
-	};
+	}
 }
