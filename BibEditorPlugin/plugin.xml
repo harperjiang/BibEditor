@@ -303,7 +303,7 @@
          point="org.eclipse.ui.contexts">
       <context
             id="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
-            name="BibTex Editor Context"
+            name="TeXDojo BibTex Editor"
             parentId="org.eclipse.ui.contexts.window">
       </context>
    </extension>

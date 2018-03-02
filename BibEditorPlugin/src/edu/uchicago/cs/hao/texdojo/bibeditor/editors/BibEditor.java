@@ -102,8 +102,8 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 	public void dispose() {
 		super.dispose();
 		ui.dispose();
-		contextManager.deactivateContext();
 		getSite().getPage().removePartListener(contextManager);
+		contextManager.deactivateContext();
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resMonitor);
 	}
 
