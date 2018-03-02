@@ -45,6 +45,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 	private static final String MARKER_TYPE = "edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXProblem";
 
+	public LaTeXBuilder() {
+
+	}
+
 	private void addMarker(IFile file, String message, int lineNumber, int severity) {
 		try {
 			IMarker marker = file.createMarker(MARKER_TYPE);

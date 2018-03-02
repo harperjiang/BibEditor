@@ -287,7 +287,8 @@ public class EditorUI implements PropertyChangeListener {
 	public void setModel(BibModel model) {
 		if (this.model != null)
 			this.model.removePropertyChangeListener(this);
-		this.model = model;
+		this.model.merge(model);
+		this.table.refresh();
 		if (this.model != null)
 			this.model.addPropertyChangeListener(this);
 	}

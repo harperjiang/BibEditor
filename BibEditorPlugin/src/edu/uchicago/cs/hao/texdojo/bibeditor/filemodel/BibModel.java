@@ -59,4 +59,13 @@ public class BibModel {
 		support.removePropertyChangeListener(listener);
 	}
 
+	public void merge(BibModel model) {
+		
+		for(BibEntry e:model.entries) {
+			if(!this.entries.stream().anyMatch(exist->exist.id.equals(e.id))) {
+				this.entries.add(e);
+			}
+		}
+	}
+
 }
