@@ -65,12 +65,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		// Load dependency if any exists
 		IFile config = getProject().getFile(".texdojo");
-		if (config != null) {
-			try {
-				this.dependency.load(new FileReader(config.getFullPath().toFile()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			this.dependency.load(new FileReader(config.getFullPath().toFile()));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (kind == FULL_BUILD) {
@@ -86,7 +84,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 		// Write dependency to file
 		try {
-			Writer writer = new FileWriter(getProject().getFile(".texdojo").getFullPath().toFile());
+			Writer writer = new FileWriter(getProject().getFile(".texdojo").getLocation().toFile());
 			this.dependency.save(writer);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,7 +131,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			});
 			dependency.roots().forEach(root -> {
 				try {
-					compile(getProject().getFile(root), monitor);
+					compile(getProject().getFile(root + ".tex"), monitor);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -192,10 +190,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			try {
 				if (!compileDoc) {
 					if (root.equals(mainTex)) {
-						compile(getProject().getFile(root), monitor);
+						compile(getProject().getFile(root + ".tex"), monitor);
 					}
 				} else
-					compile(getProject().getFile(root), monitor);
+					compile(getProject().getFile(root + ".tex"), monitor);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -238,7 +236,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	}
 
 	void compile(IResource resource, IProgressMonitor monitor) throws Exception {
-		if (resource instanceof IFile && resource.getName().endsWith(".tex")) {
+		if (resource instanceof IFile) {
 			IFile inputFile = (IFile) resource;
 			deleteMarkers(inputFile);
 
