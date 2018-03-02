@@ -59,13 +59,27 @@ public class BibModel {
 		support.removePropertyChangeListener(listener);
 	}
 
-	public void merge(BibModel model) {
-		
-		for(BibEntry e:model.entries) {
-			if(!this.entries.stream().anyMatch(exist->exist.id.equals(e.id))) {
-				this.entries.add(e);
+	public void merge(BibModel newmodel) {
+		for (BibEntry e : newmodel.entries) {
+			boolean found = false;
+			for (int i = 0; i < entries.size(); i++) {
+				if (entries.get(i).id.equals(e.id)) {
+					BibEntry old = entries.get(i);
+					entries.set(i, e);
+					support.fireIndexedPropertyChange("entries", i, old, e);
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				addEntry(e);
 			}
 		}
 	}
 
+	public void update(List<BibEntry> newEntries) {
+		this.entries.clear();
+		this.entries.addAll(newEntries);
+		support.fireIndexedPropertyChange("entries", -1, null, null);
+	}
 }

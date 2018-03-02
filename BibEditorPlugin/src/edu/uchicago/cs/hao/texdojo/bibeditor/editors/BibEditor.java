@@ -25,7 +25,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPathEditorInput;
@@ -68,8 +71,14 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		setPartName(input.getName());
 		setContentDescription(input.getToolTipText());
 		setTitleToolTip(input.getToolTipText());
-
-		refresh();
+		
+		IPath path = ((IPathEditorInput) getEditorInput()).getPath();
+		try {
+			model = new BibParser().parse(new FileInputStream(path.toFile()));
+			ui.setModel(model);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(resMonitor,
 				IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE);
@@ -109,16 +118,7 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 
 		ui.save(((IPathEditorInput) getEditorInput()).getPath().toFile(), preserveCase);
 	}
-	
-	protected void refresh() {
-		IPath path = ((IPathEditorInput)getEditorInput()).getPath();
-		try {
-			model = new BibParser().parse(new FileInputStream(path.toFile()));
-			ui.setModel(model);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} 
-	}
+
 
 	@Override
 	public void doSaveAs() {
@@ -154,7 +154,34 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 					public boolean visit(IResourceDelta delta) throws CoreException {
 						if (delta.getResource().getFullPath().equals(BibEditor.this.getEditorInput())) {
 							// File Changed
-							refresh();
+							switch (MessageDialog.open(MessageDialog.QUESTION_WITH_CANCEL,
+									Display.getCurrent().getActiveShell(), "File is changed",
+									"A file change is discovered. Do you want to merge the change?", SWT.NONE, "Merge",
+									"Reload", "Ignore")) {
+							case 0: // Merge
+								IPath path = ((IPathEditorInput) getEditorInput()).getPath();
+								try {
+									BibModel newmodel = new BibParser().parse(new FileInputStream(path.toFile()));
+									getModel().merge(newmodel);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								break;
+							case 1: // Reload
+								IPath pathreload = ((IPathEditorInput) getEditorInput()).getPath();
+								try {
+									BibModel newmodel = new BibParser().parse(new FileInputStream(pathreload.toFile()));
+									getModel().update(newmodel.getEntries());;
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								break;
+							case 2: // Cancel
+
+								break;
+							default:
+								throw new IllegalArgumentException();
+							}
 						}
 						return false;
 					}
