@@ -30,11 +30,24 @@ public abstract class LaTeXNode {
 
 	private String content;
 
-	public LaTeXNode(String c, int offset, int length) {
+	private int line;
+
+	private LaTeXNode parent;
+
+	public LaTeXNode(String c, int offset, int length, int line) {
 		super();
 		this.content = c;
 		this.offset = offset;
 		this.length = length;
+		this.line = line;
+	}
+
+	public LaTeXNode getParent() {
+		return parent;
+	}
+
+	public void setParent(LaTeXNode parent) {
+		this.parent = parent;
 	}
 
 	public String getContent() {
@@ -65,6 +78,14 @@ public abstract class LaTeXNode {
 		return getOffset() + getLength();
 	}
 
+	public int getLine() {
+		return line;
+	}
+
+	public void setLine(int line) {
+		this.line = line;
+	}
+
 	public boolean overlap(int offset, int length) {
 		int end1 = this.offset + this.length - 1;
 		int end2 = offset + length - 1;
@@ -83,7 +104,7 @@ public abstract class LaTeXNode {
 			return !StringUtils.isEmpty(n.getContent()) && n.getContent().equals(command);
 		}).isEmpty();
 	}
-	
+
 	public List<LaTeXNode> find(Predicate<LaTeXNode> p) {
 		return p.test(this) ? Collections.singletonList(this) : Collections.emptyList();
 	}

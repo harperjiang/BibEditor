@@ -76,20 +76,27 @@ public class LaTeXDocModel {
 			String data = doc.get(token.getOffset(), token.getLength());
 			if (PartitionScanner.LATEX_COMMAND.equals(token.getType())) {
 				if (LaTeXConstant.BEGIN.equals(data)) {
-					newnodes.add(new BeginNode(null, token.getOffset(), token.getLength()));
+					newnodes.add(new BeginNode(null, token.getOffset(), token.getLength(),
+							doc.getLineOfOffset(token.getOffset())));
 				} else if (LaTeXConstant.END.equals(data)) {
-					newnodes.add(new EndNode(null, token.getOffset(), token.getLength()));
+					newnodes.add(new EndNode(null, token.getOffset(), token.getLength(),
+							doc.getLineOfOffset(token.getOffset())));
 				} else {
-					newnodes.add(new CommandNode(undecorate(data), token.getOffset(), token.getLength()));
+					newnodes.add(new CommandNode(undecorate(data), token.getOffset(), token.getLength(),
+							doc.getLineOfOffset(token.getOffset())));
 				}
 			} else if (PartitionScanner.LATEX_ARG.equals(token.getType())) {
-				newnodes.add(new ArgNode(undecorate(data), token.getOffset(), token.getLength()));
+				newnodes.add(new ArgNode(undecorate(data), token.getOffset(), token.getLength(),
+						doc.getLineOfOffset(token.getOffset())));
 			} else if (PartitionScanner.LATEX_OPTION.equals(token.getType())) {
-				newnodes.add(new OptionNode(undecorate(data), token.getOffset(), token.getLength()));
+				newnodes.add(new OptionNode(undecorate(data), token.getOffset(), token.getLength(),
+						doc.getLineOfOffset(token.getOffset())));
 			} else if (PartitionScanner.LATEX_COMMENT.equals(token.getType())) {
-				newnodes.add(new CommentNode(data, token.getOffset(), token.getLength()));
+				newnodes.add(new CommentNode(data, token.getOffset(), token.getLength(),
+						doc.getLineOfOffset(token.getOffset())));
 			} else {
-				newnodes.add(new TextNode(data, token.getOffset(), token.getLength()));
+				newnodes.add(new TextNode(data, token.getOffset(), token.getLength(),
+						doc.getLineOfOffset(token.getOffset())));
 			}
 		}
 		return newnodes;

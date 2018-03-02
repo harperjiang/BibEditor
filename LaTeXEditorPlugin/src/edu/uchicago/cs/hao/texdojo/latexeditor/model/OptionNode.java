@@ -17,7 +17,7 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.model;
  */
 public class OptionNode extends LaTeXNode {
 
-	public OptionNode(String content, int offset, int length) {
-		super(content, offset, length);
+	public OptionNode(String content, int offset, int length, int line) {
+		super(content, offset, length, line);
 	}
 }

@@ -17,7 +17,7 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.model;
  */
 public class CommandNode extends LaTeXNode {
 
-	public CommandNode(String data, int offset, int length) {
-		super(data, offset, length);
+	public CommandNode(String data, int offset, int length, int line) {
+		super(data, offset, length, line);
 	}
 }

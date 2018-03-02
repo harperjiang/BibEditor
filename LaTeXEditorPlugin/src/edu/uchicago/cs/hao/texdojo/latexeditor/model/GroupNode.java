@@ -28,10 +28,14 @@ public class GroupNode extends LaTeXNode {
 	private List<LaTeXNode> children = new ArrayList<LaTeXNode>();
 
 	public GroupNode(BeginNode begin, EndNode end, List<LaTeXNode> children) {
-		super(begin.getContent(), begin.getOffset(), end.getOffset() + end.getLength() - begin.getOffset());
+		super(begin.getContent(), begin.getOffset(), end.getOffset() + end.getLength() - begin.getOffset(),
+				begin.getLine());
 		this.begin = begin;
 		this.end = end;
 		this.children = children;
+		this.begin.setParent(this);
+		this.end.setParent(this);
+		this.children.forEach(c -> c.setParent(this));
 	}
 
 	@Override

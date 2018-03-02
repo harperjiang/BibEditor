@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.Writer;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,9 +39,12 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.ArgNode;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.BeginNode;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.EndNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.InvokeNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXConstant;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXModel;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
 
 public class LaTeXBuilder extends IncrementalProjectBuilder {
 
@@ -248,6 +252,18 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			String bibexe = prefs.get(P_BIBTEX_EXE, DEFAULT_BIB_EXE);
 
 			LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
+
+			// Make marks for dangling environments
+			// Note this may not be an error as the begin and end may separate in different
+			// files. Thus we just warn it
+			List<LaTeXNode> danglingEnvs = model.find(p -> {
+				return (p instanceof BeginNode || p instanceof EndNode)
+						&& (p.getParent() == null || !p.getParent().getContent().equals(p.getContent()));
+			});
+			danglingEnvs.forEach(d -> {
+				addMarker(inputFile, (d instanceof BeginNode) ? "Dangling begin" : "Dangling end", d.getLine() + 1,
+						IMarker.SEVERITY_WARNING);
+			});
 
 			// Detect whether the file contains an bib command
 			LaTeXCompiler.compile(this, executable, bibexe, inputFile, LaTeXEditor.getConsole(),
