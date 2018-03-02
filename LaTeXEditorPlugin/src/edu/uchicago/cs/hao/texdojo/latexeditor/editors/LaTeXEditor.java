@@ -49,10 +49,6 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
  */
 public class LaTeXEditor extends TextEditor implements ISelectionChangedListener {
 
-	public static final String ID = "edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor";
-
-	private static final String CONSOLE_NAME = "TeXDojo";
-
 	private LaTeXDocModel model = new LaTeXDocModel();
 
 	private LaTeXEditorOutlinePage outlinePage = new LaTeXEditorOutlinePage(model);
@@ -124,6 +120,11 @@ public class LaTeXEditor extends TextEditor implements ISelectionChangedListener
 	}
 
 	@Override
+	protected void initializeKeyBindingScopes() {
+		setKeyBindingScopes(new String[] { Constants.CONTEXT_ID, "org.eclipse.ui.textEditorScope" });
+	}
+
+	@Override
 	public void dispose() {
 		super.dispose();
 		outlinePage.dispose();
@@ -139,10 +140,10 @@ public class LaTeXEditor extends TextEditor implements ISelectionChangedListener
 
 		IConsole[] existing = conMan.getConsoles();
 		for (int i = 0; i < existing.length; i++)
-			if (CONSOLE_NAME.equals(existing[i].getName()))
+			if (Constants.CONSOLE_NAME.equals(existing[i].getName()))
 				return (IOConsole) existing[i];
 		// no console found, so create a new one
-		IOConsole myConsole = new IOConsole(CONSOLE_NAME, null);
+		IOConsole myConsole = new IOConsole(Constants.CONSOLE_NAME, null);
 		conMan.addConsoles(new IConsole[] { myConsole });
 		return myConsole;
 	}

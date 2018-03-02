@@ -92,6 +92,11 @@
             id="edu.uchicago.cs.hao.texdojo.latexeditor.categories.OutlineButton"
             name="LaTeX Editor Outline">
       </category>
+      <command
+            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.editors.handlers.TriggerCommentHandler"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.triggerComment"
+            name="Trigger Comment">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -193,6 +198,23 @@
             </equals>
          </with>
       </definition>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.triggerComment"
+            contextId="edu.uchicago.cs.hao.texdojo.latexeditor.editorContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+/">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.editorContext"
+            name="TeXDojo LaTeX Editor"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
    </extension>
 
 </plugin>
