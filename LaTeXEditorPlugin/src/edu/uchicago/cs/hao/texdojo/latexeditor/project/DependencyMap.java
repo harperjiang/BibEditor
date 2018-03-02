@@ -1,5 +1,8 @@
 package edu.uchicago.cs.hao.texdojo.latexeditor.project;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,9 +10,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.eclipse.core.resources.IResource;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class DependencyMap {
 
@@ -20,10 +24,6 @@ public class DependencyMap {
 	public void include(String rname, String include) {
 		depend.putIfAbsent(include, new ArrayList<String>());
 		depend.get(include).add(rname);
-	}
-
-	public void load(String item, List<String> parents) {
-		depend.put(item, parents);
 	}
 
 	public void remove(String rname) {
@@ -65,5 +65,42 @@ public class DependencyMap {
 			head.addAll(depend.getOrDefault(h, Collections.<String>emptyList()));
 		}
 		return new ArrayList<String>(found);
+	}
+
+	private String ROOT = "root";
+
+	private String DEP = "dep";
+
+	public void save(Writer writer) throws IOException {
+		JsonObject obj = new JsonObject();
+		JsonArray ro = new JsonArray();
+		JsonObject dep = new JsonObject();
+		obj.add(ROOT, ro);
+		obj.add(DEP, dep);
+
+		roots.forEach(s -> ro.add(s));
+
+		depend.entrySet().forEach(entry -> {
+			JsonArray deplist = new JsonArray();
+			entry.getValue().forEach(s -> deplist.add(s));
+			dep.add(entry.getKey(), deplist);
+		});
+
+		writer.write(obj.toString());
+	}
+
+	public void load(Reader reader) {
+		this.depend.clear();
+		this.roots.clear();
+		JsonObject configData = new JsonParser().parse(reader).getAsJsonObject();
+
+		configData.get(ROOT).getAsJsonArray().forEach(e -> roots.add(e.getAsString()));
+
+		JsonObject dep = configData.get(DEP).getAsJsonObject();
+		dep.entrySet().forEach(entry -> {
+			List<String> items = new ArrayList<>();
+			entry.getValue().getAsJsonArray().forEach(item -> items.add(item.getAsString()));
+			depend.put(entry.getKey(), items);
+		});
 	}
 }

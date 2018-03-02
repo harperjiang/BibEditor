@@ -13,10 +13,10 @@ import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInit
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
+import java.io.Writer;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,10 +35,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.ArgNode;
@@ -51,8 +47,6 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	public static final String BUILDER_ID = "edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXBuilder";
 
 	private static final String MARKER_TYPE = "edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXProblem";
-
-	private String DEPENDENCY = "dep";
 
 	private void addMarker(IFile file, String message, int lineNumber, int severity) {
 		try {
@@ -73,15 +67,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		IFile config = getProject().getFile(".texdojo");
 		if (config != null) {
 			try {
-				DependencyMap newmap = new DependencyMap();
-				JsonElement configData = new JsonParser().parse(new FileReader(config.getFullPath().toFile()));
-
-				JsonObject dep = configData.getAsJsonObject().get(DEPENDENCY).getAsJsonObject();
-				dep.entrySet().forEach(entry -> {
-					List<String> items = new ArrayList<>();
-					entry.getValue().getAsJsonArray().forEach(item -> items.add(item.getAsString()));
-					newmap.load(entry.getKey(), items);
-				});
+				this.dependency.load(new FileReader(config.getFullPath().toFile()));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -97,6 +83,15 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				incrementalBuild(delta, monitor);
 			}
 		}
+
+		// Write dependency to file
+		try {
+			Writer writer = new FileWriter(getProject().getFile(".texdojo").getFullPath().toFile());
+			this.dependency.save(writer);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 
