@@ -41,7 +41,7 @@ public class LaTeXNodeTest {
 	 */
 	@Test
 	public void testOverlap() {
-		LaTeXNode nodeb = new TextNode("def", 10, 20);
+		LaTeXNode nodeb = new TextNode("def", 10, 20, 10);
 
 		assertFalse(nodeb.overlap(0, 10));
 		assertTrue(nodeb.overlap(0, 11));
@@ -53,29 +53,29 @@ public class LaTeXNodeTest {
 
 	@Test
 	public void testHas() {
-		TextNode tn = new TextNode("document", 10, 20);
+		TextNode tn = new TextNode("document", 10, 20, 10);
 
 		assertTrue(tn.has("document"));
 	}
 
 	@Test
 	public void testDecompose() {
-		TextNode tn = new TextNode("document", 10, 20);
+		TextNode tn = new TextNode("document", 10, 20, 10);
 		List<LaTeXNode> dtn = tn.decompose();
 		assertEquals(1, dtn.size());
 		assertTrue(dtn.get(0) == tn);
 
 		List<LaTeXNode> nodes = new ArrayList<LaTeXNode>();
-		nodes.add(new TextNode("aadsds", 10, 20));
+		nodes.add(new TextNode("aadsds", 10, 20, 190));
 
-		InvokeNode inv = new InvokeNode(new CommandNode("aka", 10, 20));
-		inv.attach(new ArgNode("ttd", 20, 30));
-		inv.attach(new ArgNode("mma", 30, 40));
+		InvokeNode inv = new InvokeNode(new CommandNode("aka", 10, 20, 10));
+		inv.attach(new ArgNode("ttd", 20, 30, 10));
+		inv.attach(new ArgNode("mma", 30, 40, 10));
 		nodes.add(inv);
 
-		dtn.add(new GroupNode(new BeginNode("ddt", 20, 1), new EndNode("ddt", 30, 1), nodes));
+		dtn.add(new GroupNode(new BeginNode("ddt", 20, 1, 10), new EndNode("ddt", 30, 1, 20), nodes));
 
-		GroupNode a = new GroupNode(new BeginNode("abc", 0, 10), new EndNode("def", 50, 100), dtn);
+		GroupNode a = new GroupNode(new BeginNode("abc", 0, 10, 4), new EndNode("def", 50, 100, 10), dtn);
 		List<LaTeXNode> da = a.decompose();
 
 		assertEquals(9, da.size());

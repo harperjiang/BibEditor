@@ -26,13 +26,15 @@ public class InvokeNode extends LaTeXNode {
 	private CommandNode command;
 
 	public InvokeNode(CommandNode command) {
-		super(command.getContent(), command.getOffset(), command.getLength());
+		super(command.getContent(), command.getOffset(), command.getLength(), command.getLine());
 		this.command = command;
+		this.command.setParent(this);
 	}
 
 	public void attach(LaTeXNode arg) {
 		if (arg instanceof ArgNode || arg instanceof OptionNode) {
 			args.add(arg);
+			arg.setParent(this);
 			setLength(arg.getEnd() - command.getOffset());
 		}
 	}

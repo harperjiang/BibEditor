@@ -8,6 +8,7 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.model.*;
 %class LaTeXParser
 %public
 %unicode
+%line
 %function scan
 %type LaTeXNode
 
@@ -38,27 +39,27 @@ Text		   = [^\\\{\[\]\]\%]+
 "{"					{yybegin(ARGS); buffer = new StringBuilder();}
 "%"					{yybegin(COMMENT); buffer = new StringBuilder();}
 "["					{yybegin(OPTION); buffer = new StringBuilder();}
-{Begin}				{return new BeginNode(null, 0, yytext().length());}
-{End}				{return new EndNode(null, 0, yytext().length());}
-{Command}			{return new CommandNode(yytext().substring(1), 0, yytext().length());}
-{Text}    			{return new TextNode(yytext(),0,yytext().length());}
+{Begin}				{return new BeginNode(null, 0, yytext().length(), yyline);}
+{End}				{return new EndNode(null, 0, yytext().length(), yyline);}
+{Command}			{return new CommandNode(yytext().substring(1), 0, yytext().length(), yyline);}
+{Text}    			{return new TextNode(yytext(),0,yytext().length(), yyline);}
 }
 
 <OPTION> {
-"]"					{yybegin(YYINITIAL);return new OptionNode(buffer.toString(),0,buffer.length());}
+"]"					{yybegin(YYINITIAL);return new OptionNode(buffer.toString(),0,buffer.length(), yyline);}
 {LineTerminator}    {buffer.append(yytext());}
 .					{buffer.append(yytext());}
 }
 
 <ARGS> {
-"}"					{yybegin(YYINITIAL);return new ArgNode(buffer.toString(),0,buffer.length());}
+"}"					{yybegin(YYINITIAL);return new ArgNode(buffer.toString(),0,buffer.length(), yyline);}
 {LineTerminator}    {buffer.append(yytext());}
 .					{buffer.append(yytext());}
 }
 
 <COMMENT> {
-{LineTerminator}	{yybegin(YYINITIAL);return new CommentNode(buffer.toString(), 0 , buffer.length());}
+{LineTerminator}	{yybegin(YYINITIAL);return new CommentNode(buffer.toString(), 0 , buffer.length(), yyline);}
 .					{buffer.append(yytext());}
 }
 
-.                   {return new TextNode(yytext(),0,yytext().length());}
+.                   {return new TextNode(yytext(),0,yytext().length(), yyline);}

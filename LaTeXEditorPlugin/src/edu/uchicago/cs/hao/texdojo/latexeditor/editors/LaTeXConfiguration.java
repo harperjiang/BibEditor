@@ -18,6 +18,8 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
+import org.eclipse.jface.text.source.DefaultAnnotationHover;
+import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
@@ -42,6 +44,8 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 	private IAutoEditStrategy[] strategies = new IAutoEditStrategy[] { new BeginEndStrategy(),
 			new LineAlignStrategy() };
 
+	private IAnnotationHover annotationHover = new DefaultAnnotationHover();
+	
 	public LaTeXConfiguration() {
 		super();
 	}
@@ -64,6 +68,11 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		return strategies;
+	}
+	
+	@Override
+	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
+		return annotationHover;
 	}
 
 	@Override

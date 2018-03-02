@@ -17,7 +17,7 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.model;
  */
 public class ArgNode extends LaTeXNode {
 
-	public ArgNode(String arg, int offset, int length) {
-		super(arg, offset, length);
+	public ArgNode(String arg, int offset, int length, int line) {
+		super(arg, offset, length, line);
 	}
 }

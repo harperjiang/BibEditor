@@ -17,13 +17,14 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.model;
  */
 public class EndNode extends LaTeXNode {
 
-	public EndNode(String env, int offset, int length) {
-		super(env, offset, length);
+	public EndNode(String env, int offset, int length, int line) {
+		super(env, offset, length, line);
 	}
 
 	public void append(ArgNode arg) {
 		this.setContent(arg.getContent());
 		this.setLength(getLength() + arg.getLength());
+		arg.setParent(this);
 	}
 
 }
