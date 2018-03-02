@@ -12,8 +12,11 @@ import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInit
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_TEMP_FILE;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +35,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.ArgNode;
@@ -45,9 +52,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 	private static final String MARKER_TYPE = "edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXProblem";
 
-	public LaTeXBuilder() {
-		return;
-	}
+	private String DEPENDENCY = "dep";
 
 	private void addMarker(IFile file, String message, int lineNumber, int severity) {
 		try {
@@ -64,6 +69,24 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+		// Load dependency if any exists
+		IFile config = getProject().getFile(".texdojo");
+		if (config != null) {
+			try {
+				DependencyMap newmap = new DependencyMap();
+				JsonElement configData = new JsonParser().parse(new FileReader(config.getFullPath().toFile()));
+
+				JsonObject dep = configData.getAsJsonObject().get(DEPENDENCY).getAsJsonObject();
+				dep.entrySet().forEach(entry -> {
+					List<String> items = new ArrayList<>();
+					entry.getValue().getAsJsonArray().forEach(item -> items.add(item.getAsString()));
+					newmap.load(entry.getKey(), items);
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		if (kind == FULL_BUILD) {
 			fullBuild(monitor);
 		} else {
@@ -106,6 +129,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 							scan(resource, monitor);
 						}
 					} catch (Exception e) {
+						e.printStackTrace();
 						// TODO Handle Error
 					}
 					// return true to continue visiting children.
@@ -114,7 +138,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			});
 			dependency.roots().forEach(root -> {
 				try {
-					compile(root, monitor);
+					compile(getProject().getFile(root), monitor);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -133,7 +157,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
 		// the visitor does the work.
-		Set<IResource> affectedRoots = new HashSet<>();
+		Set<String> affectedRoots = new HashSet<>();
 		delta.accept(new IResourceDeltaVisitor() {
 			@Override
 			public boolean visit(IResourceDelta delta) throws CoreException {
@@ -172,11 +196,11 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		affectedRoots.forEach(root -> {
 			try {
 				if (!compileDoc) {
-					if (root.getName().equals(mainTex)) {
-						compile(root, monitor);
+					if (root.equals(mainTex)) {
+						compile(getProject().getFile(root), monitor);
 					}
 				} else
-					compile(root, monitor);
+					compile(getProject().getFile(root), monitor);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -196,8 +220,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
 
 		monitor.worked(5);
-		String rname = resource.getName().replaceFirst("\\.tex$", "");
-		dependency.add(rname, resource);
+		String rname = resource.getProjectRelativePath().toString().replaceFirst("\\.tex$", "");
 		dependency.unmark(rname);
 
 		if (model.has("document")) {
@@ -213,7 +236,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		}).forEach(node -> {
 			InvokeNode in = (InvokeNode) node;
 			ArgNode arg = (ArgNode) (in.getArgs().get(0));
-			dependency.include(rname, arg.getContent());
+			dependency.include(rname, rname.replaceFirst(rname + "$", arg.getContent()));
 		});
 
 		monitor.worked(5);

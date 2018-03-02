@@ -13,23 +13,20 @@ import org.eclipse.core.resources.IResource;
 
 public class DependencyMap {
 
-	private Map<String, IResource> resMap = new HashMap<>();
-
 	private Map<String, List<String>> depend = new HashMap<>();
 
 	private Set<String> roots = new HashSet<>();
-
-	public void add(String rname, IResource resource) {
-		resMap.put(rname, resource);
-	}
 
 	public void include(String rname, String include) {
 		depend.putIfAbsent(include, new ArrayList<String>());
 		depend.get(include).add(rname);
 	}
 
+	public void load(String item, List<String> parents) {
+		depend.put(item, parents);
+	}
+
 	public void remove(String rname) {
-		resMap.remove(rname);
 		depend.remove(rname);
 		roots.remove(rname);
 	}
@@ -44,11 +41,11 @@ public class DependencyMap {
 		roots.remove(name);
 	}
 
-	public List<IResource> roots() {
-		return roots.stream().map(resMap::get).collect(Collectors.toList());
+	public List<String> roots() {
+		return new ArrayList<String>(roots);
 	}
 
-	public List<IResource> roots(String rname) {
+	public List<String> roots(String rname) {
 		Set<String> visited = new HashSet<String>();
 		Set<String> found = new HashSet<String>();
 		List<String> head = new ArrayList<String>();
@@ -67,6 +64,6 @@ public class DependencyMap {
 			}
 			head.addAll(depend.getOrDefault(h, Collections.<String>emptyList()));
 		}
-		return found.stream().map(resMap::get).collect(Collectors.toList());
+		return new ArrayList<String>(found);
 	}
 }

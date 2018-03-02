@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IResource;
 import org.junit.Test;
 
 public class DependencyMapTest {
@@ -13,10 +12,6 @@ public class DependencyMapTest {
 	public void testOverall() {
 		DependencyMap dm = new DependencyMap();
 
-		dm.add("a", new DemoResource());
-		dm.add("b", new DemoResource());
-		dm.add("c", new DemoResource());
-		dm.add("d", new DemoResource());
 
 		dm.include("a", "b");
 		dm.include("c", "b");
@@ -25,10 +20,23 @@ public class DependencyMapTest {
 		dm.mark("c");
 		dm.mark("d");
 
-		List<IResource> res = dm.roots();
+		List<String> res = dm.roots();
 		assertEquals(3, res.size());
-		
-		assertEquals(2,dm.roots("b").size());
+
+		assertEquals(2, dm.roots("b").size());
+	}
+
+	@Test
+	public void testNestedInclude() {
+		DependencyMap dm = new DependencyMap();
+
+
+		dm.include("a", "b");
+		dm.include("b", "c");
+
+		dm.mark("a");
+
+		assertEquals(1, dm.roots("c").size());
 	}
 
 }

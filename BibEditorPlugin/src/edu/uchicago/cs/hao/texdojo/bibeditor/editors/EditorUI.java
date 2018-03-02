@@ -179,7 +179,12 @@ public class EditorUI implements PropertyChangeListener {
 			}
 			if ("entries".equals(evt.getPropertyName())) {
 				IndexedPropertyChangeEvent ipc = (IndexedPropertyChangeEvent) evt;
-				table.replace(ipc.getNewValue(), ipc.getIndex());
+				if (ipc.getIndex() == -1) {
+					// Replace all
+					table.setInput(model.getEntries());
+				} else {
+					table.replace(ipc.getNewValue(), ipc.getIndex());
+				}
 			}
 			setDirty(true);
 		}
@@ -287,8 +292,7 @@ public class EditorUI implements PropertyChangeListener {
 	public void setModel(BibModel model) {
 		if (this.model != null)
 			this.model.removePropertyChangeListener(this);
-		this.model.merge(model);
-		this.table.refresh();
+		this.model = model;
 		if (this.model != null)
 			this.model.addPropertyChangeListener(this);
 	}
@@ -401,8 +405,8 @@ public class EditorUI implements PropertyChangeListener {
 	}
 
 	/*
-	 * =======================================================================
-	 * UI Section
+	 * ======================================================================= UI
+	 * Section
 	 * =======================================================================
 	 */
 	private void createTable(Composite form) {
