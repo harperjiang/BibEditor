@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: BibTeX Editor
 Bundle-SymbolicName: edu.uchicago.cs.hao.texdojo.bibeditor;singleton:=true
-Bundle-Version: 0.0.2.beta_20171208
+Bundle-Version: 0.0.2.beta_20171219
 Bundle-Activator: edu.uchicago.cs.hao.texdojo.bibeditor.Activator
 Bundle-Vendor: Hao Jiang
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
- org.junit,
+ org.junit;resolution:=optional,
  org.eclipse.ui.views,
  org.eclipse.ui.console,
  org.apache.httpcomponents.httpclient;bundle-version="4.5.2",
@@ -19,4 +19,4 @@ Require-Bundle: org.eclipse.ui,
  org.slf4j.api;bundle-version="1.7.2",
  org.apache.commons.lang3;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -55,13 +55,11 @@
       </command>
       <command
             categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            defaultHandler="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.ArxivEntryHandler"
             id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand"
             name="Add Article from ArXiv">
       </command>
       <command
             categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            defaultHandler="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.ACMDLEntryHandler"
             id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.acmdlEntryCommand"
             name="Add Article from ACM DL">
       </command>
