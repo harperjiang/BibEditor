@@ -33,6 +33,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.EditorPart;
 
 import edu.uchicago.cs.hao.texdojo.bibeditor.Activator;
@@ -47,14 +48,13 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 	private EditorUI ui;
 
 	private IResourceChangeListener resMonitor;
-	
+
 	public BibEditor() {
 		super();
 		ui = new EditorUI();
 		ui.addPropertyChangeListener(this);
 		resMonitor = new ResourceChangeListener();
 	}
-	
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -72,7 +72,7 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		setPartName(input.getName());
 		setContentDescription(input.getToolTipText());
 		setTitleToolTip(input.getToolTipText());
-		
+
 		IPath path = ((IPathEditorInput) getEditorInput()).getPath();
 		try {
 			model = new BibParser().parse(new FileInputStream(path.toFile()));
@@ -85,8 +85,6 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 				IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE);
 	}
 
-	private ContextManager contextManager;
-
 	@Override
 	public void createPartControl(Composite parent) {
 		ui.createUI(parent);
@@ -95,17 +93,15 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		// make the viewer selection available
 		getSite().setSelectionProvider(ui.getTable());
 
-		contextManager = new ContextManager();
-		getSite().getPage().addPartListener(contextManager);
+		IContextService contextService = getSite().getService(IContextService.class);
+		contextService.activateContext(Constants.CONTEXT_ID);
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
 		ui.dispose();
-		
-		getSite().getPage().removePartListener(contextManager);
-		contextManager.deactivateContext();
+
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resMonitor);
 	}
 
@@ -120,7 +116,6 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 
 		ui.save(((IPathEditorInput) getEditorInput()).getPath().toFile(), preserveCase);
 	}
-
 
 	@Override
 	public void doSaveAs() {
@@ -173,7 +168,8 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 								IPath pathreload = ((IPathEditorInput) getEditorInput()).getPath();
 								try {
 									BibModel newmodel = new BibParser().parse(new FileInputStream(pathreload.toFile()));
-									getModel().update(newmodel.getEntries());;
+									getModel().update(newmodel.getEntries());
+									;
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
