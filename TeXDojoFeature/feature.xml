@@ -2,17 +2,16 @@
 <feature
       id="edu.uchicago.cs.hao.texdojo"
       label="TeXDojo"
-      version="0.0.2.beta_20180302_2"
+      version="0.0.2.beta_20180303"
       provider-name="Hao Jiang"
       plugin="edu.uchicago.cs.hao.texdojo.latexeditor"
       license-feature="edu.uchicago.cs.hao.license"
       license-feature-version="1.0.0.qualifier">
 
    <description url="http://people.cs.uchicago.edu/~hajiang/texdojo/">
-      TeXDojo is a LaTeX/BibTeX editor for viewing and maintaining
-LaTeX files. 
+      TeXDojo is a LaTeX/BibTeX editor for viewing and maintaining LaTeX projects. 
 Current Version is 0.0.2
-The GitHub page for the plug-in is https://github.com/harperjiang/BibEditor.
+The GitHub page for the plug-in is https://github.com/harperjiang/TeXDojo
 Please report any issues or requests you have there.
    </description>
 
@@ -44,6 +43,20 @@ Hao Jiang - initial API and implementation and/or initial documentation
 
    <plugin
          id="edu.uchicago.cs.hao.texdojo.latexeditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="ch.qos.logback.classic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="ch.qos.logback.core"
          download-size="0"
          install-size="0"
          version="0.0.0"

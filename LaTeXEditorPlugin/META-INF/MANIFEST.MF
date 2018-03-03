@@ -2,20 +2,20 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: LaTeX Editor
 Bundle-SymbolicName: edu.uchicago.cs.hao.texdojo.latexeditor;singleton:=true
-Bundle-Version: 0.0.2.beta_20180302_2
+Bundle-Version: 0.0.2.beta_20180303
 Bundle-Activator: edu.uchicago.cs.hao.texdojo.latexeditor.Activator
 Bundle-Vendor: Hao Jiang
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.core.resources,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
  org.eclipse.ui.console,
- edu.uchicago.cs.hao.texdojo.bibeditor;bundle-version="0.0.2",
- org.junit;resolution:=optional,
- org.eclipse.ui.workbench,
- org.eclipse.core.resources,
  org.eclipse.ui.views,
- org.apache.commons.lang3,
+ org.eclipse.ui.workbench,
+ org.junit;resolution:=optional,
+ edu.uchicago.cs.hao.texdojo.bibeditor;bundle-version="0.0.2",
+ org.apache.commons.lang3;bundle-version="3.0.0",
  com.google.gson;bundle-version="2.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
