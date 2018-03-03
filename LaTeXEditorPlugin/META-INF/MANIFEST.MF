@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench,
  org.junit;resolution:=optional,
  edu.uchicago.cs.hao.texdojo.bibeditor;bundle-version="0.0.2",
- org.apache.commons.lang3;bundle-version="3.0.0",
- com.google.gson;bundle-version="2.7.0"
+ org.apache.commons.lang3,
+ com.google.gson
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

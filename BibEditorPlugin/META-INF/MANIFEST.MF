@@ -13,11 +13,11 @@ Require-Bundle: org.eclipse.ui,
  org.junit;resolution:=optional,
  org.eclipse.ui.views,
  org.eclipse.ui.console,
- org.apache.commons.lang3;bundle-version="3.1.0",
+ org.apache.commons.lang3,
  org.apache.httpcomponents.httpclient;bundle-version="4.5.2",
  org.apache.httpcomponents.httpcore;bundle-version="4.4.6",
- ch.qos.logback.classic;bundle-version="1.1.0",
- ch.qos.logback.core;bundle-version="1.1.0",
- org.slf4j.api;bundle-version="1.7.2"
+ org.slf4j.api,
+ ch.qos.logback.classic,
+ ch.qos.logback.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
