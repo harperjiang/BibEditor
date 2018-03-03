@@ -12,7 +12,9 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor;
 
 public abstract class TextHandler extends AbstractHandler {
 
-	protected abstract Object executeWithEditor(ExecutionEvent event, LaTeXEditor editor) throws ExecutionException;
+	protected LaTeXEditor editor;
+	
+	protected abstract Object executeWithEditor(ExecutionEvent event) throws ExecutionException;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -21,7 +23,8 @@ public abstract class TextHandler extends AbstractHandler {
 		IEditorPart editor = window.getActivePage().getActiveEditor();
 
 		if (editor instanceof LaTeXEditor) {
-			return executeWithEditor(event, (LaTeXEditor) editor);
+			this.editor = (LaTeXEditor) editor;
+			return executeWithEditor(event);
 		} else {
 			MessageDialog.openWarning(window.getShell(), "No LaTeX Editor Found",
 					"No LaTeX Editor Found for the command. This is a bug. Please contact author.");
