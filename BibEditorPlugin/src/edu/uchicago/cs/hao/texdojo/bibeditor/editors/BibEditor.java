@@ -33,8 +33,11 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.EditorPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.uchicago.cs.hao.texdojo.bibeditor.Activator;
 import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibModel;
@@ -42,6 +45,8 @@ import edu.uchicago.cs.hao.texdojo.bibeditor.filemodel.BibParser;
 import edu.uchicago.cs.hao.texdojo.bibeditor.preferences.PreferenceConstants;
 
 public class BibEditor extends EditorPart implements PropertyChangeListener {
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private BibModel model;
 
@@ -83,6 +88,9 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(resMonitor,
 				IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE);
+
+		IContextService contextService = getSite().getService(IContextService.class);
+		contextService.activateContext(Constants.CONTEXT_ID);
 	}
 
 	@Override
@@ -92,9 +100,6 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 		getSite().registerContextMenu(ui.getMenuManager(), ui.getTable());
 		// make the viewer selection available
 		getSite().setSelectionProvider(ui.getTable());
-
-		IContextService contextService = getSite().getService(IContextService.class);
-		contextService.activateContext(Constants.CONTEXT_ID);
 	}
 
 	@Override
@@ -149,39 +154,64 @@ public class BibEditor extends EditorPart implements PropertyChangeListener {
 
 					@Override
 					public boolean visit(IResourceDelta delta) throws CoreException {
-						if (delta.getResource().getFullPath().equals(BibEditor.this.getEditorInput())) {
-							// File Changed
-							switch (MessageDialog.open(MessageDialog.QUESTION_WITH_CANCEL,
-									Display.getCurrent().getActiveShell(), "File is changed",
-									"A file change is discovered. Do you want to merge the change?", SWT.NONE, "Merge",
-									"Reload", "Ignore")) {
-							case 0: // Merge
-								IPath path = ((IPathEditorInput) getEditorInput()).getPath();
-								try {
-									BibModel newmodel = new BibParser().parse(new FileInputStream(path.toFile()));
-									getModel().merge(newmodel);
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-								break;
-							case 1: // Reload
-								IPath pathreload = ((IPathEditorInput) getEditorInput()).getPath();
-								try {
-									BibModel newmodel = new BibParser().parse(new FileInputStream(pathreload.toFile()));
-									getModel().update(newmodel.getEntries());
-									;
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-								break;
-							case 2: // Cancel
-
-								break;
-							default:
-								throw new IllegalArgumentException();
-							}
+						IEditorInput input = BibEditor.this.getEditorInput();
+						if (!(input instanceof IPathEditorInput)) {
+							return false;
 						}
-						return false;
+						IPathEditorInput pathInput = (IPathEditorInput) input;
+
+						if (delta.getResource().getLocation().equals(pathInput.getPath())) {
+							IPath pathreload = ((IPathEditorInput) getEditorInput()).getPath();
+							if (isDirty()) {
+								// File Changed
+								PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+									switch (MessageDialog.open(MessageDialog.QUESTION_WITH_CANCEL,
+											Display.getCurrent().getActiveShell(), "File is changed",
+											"A file change is discovered. Do you want to merge the change?", SWT.NONE,
+											"Merge", "Reload", "Ignore")) {
+									case 0: // Merge
+										try {
+											BibModel newmodel = new BibParser()
+													.parse(new FileInputStream(pathreload.toFile()));
+											getModel().merge(newmodel);
+										} catch (Exception e) {
+											logger.warn("Exception when reloading bibfile", e);
+										}
+										break;
+									case 1: // Reload
+										try {
+											BibModel newmodel = new BibParser()
+													.parse(new FileInputStream(pathreload.toFile()));
+											getModel().update(newmodel.getEntries());
+
+										} catch (Exception e) {
+											logger.warn("Exception when reloading bibfile", e);
+										}
+										break;
+									case 2: // Cancel
+
+										break;
+									default:
+										throw new IllegalArgumentException();
+									}
+								});
+							} else {
+								// Reload
+								PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+									try {
+										BibModel newmodel = new BibParser()
+												.parse(new FileInputStream(pathreload.toFile()));
+										getModel().update(newmodel.getEntries());
+										ui.setDirty(false);
+									} catch (Exception e) {
+										logger.warn("Exception when reloading bibfile", e);
+									}
+								});
+
+							}
+							return false;
+						}
+						return delta.getResource().getLocation().isPrefixOf(pathInput.getPath());
 					}
 
 				});
