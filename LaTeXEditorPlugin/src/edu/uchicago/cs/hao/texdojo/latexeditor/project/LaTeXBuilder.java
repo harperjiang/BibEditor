@@ -31,8 +31,8 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
@@ -70,7 +70,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		// Load dependency if any exists
 		IFile config = getProject().getFile(".texdojo");
 		try {
-			this.dependency.load(new FileReader(config.getFullPath().toFile()));
+			this.dependency.load(new FileReader(config.getLocation().toFile()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -90,6 +90,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		try {
 			Writer writer = new FileWriter(getProject().getFile(".texdojo").getLocation().toFile());
 			this.dependency.save(writer);
+			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -161,7 +162,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				try {
 					IResource resource = delta.getResource();
 					if (resource instanceof IFile && resource.getName().endsWith(".tex")) {
-						String rname = resource.getName().replaceFirst("\\.tex$", "");
+						String rname = resource.getProjectRelativePath().removeFileExtension().toString();
 						switch (delta.getKind()) {
 						case IResourceDelta.ADDED:
 							// handle added resource
@@ -217,7 +218,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
 
 		monitor.worked(5);
-		String rname = resource.getProjectRelativePath().toString().replaceFirst("\\.tex$", "");
+		IPath folder = resource.getProjectRelativePath().removeLastSegments(1);
+		String rname = resource.getProjectRelativePath().removeFileExtension().toString();
 		dependency.unmark(rname);
 
 		if (model.has("document")) {
@@ -233,7 +235,9 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		}).forEach(node -> {
 			InvokeNode in = (InvokeNode) node;
 			ArgNode arg = (ArgNode) (in.getArgs().get(0));
-			dependency.include(rname, rname.replaceFirst(rname + "$", arg.getContent()));
+			String includeName = arg.getContent().replaceAll("\\.tex$", "");
+
+			dependency.include(rname, folder.append(includeName).toString());
 		});
 
 		monitor.worked(5);
@@ -274,7 +278,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			removeTempFiles(parent, tempFiles);
 			// Refresh generated pdf resource
 
-			IFile pdfFile = resource.getParent().getFile(new Path(resource.getName().replaceAll("tex$", "pdf")));
+			IFile pdfFile = getProject()
+					.getFile(resource.getProjectRelativePath().removeFileExtension().addFileExtension("pdf"));
 			pdfFile.refreshLocal(1, monitor);
 		}
 	}

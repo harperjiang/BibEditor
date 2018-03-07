@@ -17,12 +17,12 @@ import com.google.gson.JsonParser;
 
 public class DependencyMap {
 
-	private Map<String, List<String>> depend = new HashMap<>();
+	private Map<String, Set<String>> depend = new HashMap<>();
 
 	private Set<String> roots = new HashSet<>();
 
 	public void include(String rname, String include) {
-		depend.putIfAbsent(include, new ArrayList<String>());
+		depend.putIfAbsent(include, new HashSet<String>());
 		depend.get(include).add(rname);
 	}
 
@@ -62,7 +62,7 @@ public class DependencyMap {
 			if (roots.contains(h)) {
 				found.add(h);
 			}
-			head.addAll(depend.getOrDefault(h, Collections.<String>emptyList()));
+			head.addAll(depend.getOrDefault(h, Collections.<String>emptySet()));
 		}
 		return new ArrayList<String>(found);
 	}
@@ -98,7 +98,7 @@ public class DependencyMap {
 
 		JsonObject dep = configData.get(DEP).getAsJsonObject();
 		dep.entrySet().forEach(entry -> {
-			List<String> items = new ArrayList<>();
+			Set<String> items = new HashSet<>();
 			entry.getValue().getAsJsonArray().forEach(item -> items.add(item.getAsString()));
 			depend.put(entry.getKey(), items);
 		});
