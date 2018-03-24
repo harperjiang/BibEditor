@@ -21,6 +21,7 @@ import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITypedRegion;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -132,6 +133,10 @@ public class LaTeXEditor extends TextEditor implements ISelectionChangedListener
 
 	public LaTeXEditorOutlinePage getOutlinePage() {
 		return outlinePage;
+	}
+	
+	public ISourceViewer getInnerSourceViewer() {
+		return super.getSourceViewer();
 	}
 
 	public static IOConsole getConsole() {

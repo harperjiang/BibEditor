@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: LaTeX Editor
 Bundle-SymbolicName: edu.uchicago.cs.hao.texdojo.latexeditor;singleton:=true
-Bundle-Version: 0.0.2.beta_20180303
+Bundle-Version: 0.0.2.beta_20180306
 Bundle-Activator: edu.uchicago.cs.hao.texdojo.latexeditor.Activator
 Bundle-Vendor: Hao Jiang
 Require-Bundle: org.eclipse.ui,

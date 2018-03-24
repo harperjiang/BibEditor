@@ -39,6 +39,12 @@
             id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TextPreferencePage"
             name="Text Editor">
       </page>
+      <page
+            category="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.SpellCheckerPreference"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.SpellCheckerPreferencePage"
+            name="Spell Checker">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -96,6 +102,11 @@
             defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.editors.handlers.TriggerCommentHandler"
             id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.triggerComment"
             name="Trigger Comment">
+      </command>
+      <command
+            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.editors.handlers.SpellCheckHandler"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.spellCheck"
+            name="Spell Check">
       </command>
    </extension>
    <extension
@@ -165,6 +176,25 @@
                </reference>
             </visibleWhen>
          </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="edu.uchicago.cs.hao.texdojo.latexeditor.toolbar.main">
+            <command
+                  commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.spellCheck"
+                  icon="icons/spellcheck.png"
+                  label="Spell Check"
+                  style="toggle">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="edu.uchicago.cs.hao.texdojo.latexeditor.definitions.latexEditorActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+         </toolbar>
       </menuContribution>
       <!--menuContribution
             locationURI="menu:org.eclipse.ui.views.ContentOutline?after=additions">

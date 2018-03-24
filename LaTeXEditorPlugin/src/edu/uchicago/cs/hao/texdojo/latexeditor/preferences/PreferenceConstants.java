@@ -42,4 +42,10 @@ public class PreferenceConstants {
 
 	public static final String P_COLOR_MATHMODE = "colorMathmode";
 
+	public static final String P_SPELLCHECKER = "spellChecker";
+	
+	public static final String P_SPELLCHECKER_EXE = "spellCheckerExe";
+
+	public static final String P_SPELLCHECKER_OPTION = "spellCheckerOption";
+
 }

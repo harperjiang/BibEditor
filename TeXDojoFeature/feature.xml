@@ -2,7 +2,7 @@
 <feature
       id="edu.uchicago.cs.hao.texdojo"
       label="TeXDojo"
-      version="0.0.2.beta_20180303"
+      version="0.0.2.beta_20180306"
       provider-name="Hao Jiang"
       plugin="edu.uchicago.cs.hao.texdojo.latexeditor"
       license-feature="edu.uchicago.cs.hao.license"
@@ -34,6 +34,25 @@ Hao Jiang - initial API and implementation and/or initial documentation
       <update label="TexDojo UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/texdojo/updatesite"/>
    </url>
 
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.apache.commons.lang3" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.httpcomponents.httpclient" version="4.5.2" match="greaterOrEqual"/>
+      <import plugin="org.apache.httpcomponents.httpcore" version="4.4.6" match="greaterOrEqual"/>
+      <import plugin="org.slf4j.api" version="1.7.2" match="greaterOrEqual"/>
+      <import plugin="ch.qos.logback.classic"/>
+      <import plugin="ch.qos.logback.core"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="edu.uchicago.cs.hao.texdojo.bibeditor" version="0.0.2" match="greaterOrEqual"/>
+      <import plugin="com.google.gson" version="2.7.0" match="greaterOrEqual"/>
+   </requires>
+
    <plugin
          id="edu.uchicago.cs.hao.texdojo.bibeditor"
          download-size="0"
@@ -43,20 +62,6 @@ Hao Jiang - initial API and implementation and/or initial documentation
 
    <plugin
          id="edu.uchicago.cs.hao.texdojo.latexeditor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="ch.qos.logback.classic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="ch.qos.logback.core"
          download-size="0"
          install-size="0"
          version="0.0.0"

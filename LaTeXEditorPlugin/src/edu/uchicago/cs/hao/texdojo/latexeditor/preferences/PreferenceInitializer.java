@@ -46,6 +46,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public static final String DEFAULT_COLOR_MATHMODE = StringConverter.asString(new RGB(250, 10, 50));
 
+	public static final String DEFAULT_SPELLCHECKER = "";
+	
+	public static final String DEFAULT_SPELLCHECKER_EXE = "";
+	
+	public static final String DEFAULT_SPELLCHECKER_OPT = "";
+	
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(P_LATEX_EXE, DEFAULT_LATEX_EXE);
@@ -61,6 +67,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(P_COLOR_MATHMODE, DEFAULT_COLOR_MATHMODE);
 		store.setDefault(P_LINE_WRAP, -1);
 		store.setDefault(P_LINE_ALIGN, true);
+		store.setDefault(P_SPELLCHECKER, DEFAULT_SPELLCHECKER);
+		store.setDefault(P_SPELLCHECKER_EXE, DEFAULT_SPELLCHECKER_EXE);
+		store.setDefault(P_SPELLCHECKER_OPTION, DEFAULT_SPELLCHECKER_OPT);
 	}
 
 }

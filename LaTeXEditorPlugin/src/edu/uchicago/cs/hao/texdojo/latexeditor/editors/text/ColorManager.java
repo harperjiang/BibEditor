@@ -20,6 +20,7 @@ import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 
@@ -30,10 +31,19 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
  */
 public class ColorManager {
 
+	public static final String RED = "RED";
+	static final String RED_VAL = StringConverter.asString(new RGB(255, 0, 0));
+
+	public static final String BLACK = "BLACK";
+	static final String BLACK_VAL = StringConverter.asString(new RGB(0, 0, 0));
+
+	public static final String ORANGE = "ORANGE";
+	static final String ORANGE_VAL = StringConverter.asString(new RGB(255, 127, 80));
+
 	static final String keys[] = { P_COLOR_COMMAND, P_COLOR_ARG, P_COLOR_OPTION, P_COLOR_TEXT, P_COLOR_COMMENT,
-			P_COLOR_MATHMODE };
+			P_COLOR_MATHMODE, RED, BLACK ,ORANGE};
 	static final String values[] = { DEFAULT_COLOR_COMMAND, DEFAULT_COLOR_ARG, DEFAULT_COLOR_OPTION, DEFAULT_COLOR_TEXT,
-			DEFAULT_COLOR_COMMENT, DEFAULT_COLOR_MATHMODE };
+			DEFAULT_COLOR_COMMENT, DEFAULT_COLOR_MATHMODE, RED_VAL, BLACK_VAL ,ORANGE_VAL};
 
 	static {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
