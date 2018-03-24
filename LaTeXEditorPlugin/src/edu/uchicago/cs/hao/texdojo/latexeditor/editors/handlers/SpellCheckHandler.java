@@ -88,7 +88,6 @@ public class SpellCheckHandler extends TextHandler {
 						// Silently fails
 					}
 				}
-
 				sourceViewer.setRedraw(true);
 			}
 		} else {

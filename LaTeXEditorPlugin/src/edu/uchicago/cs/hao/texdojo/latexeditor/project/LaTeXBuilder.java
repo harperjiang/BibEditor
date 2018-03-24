@@ -4,13 +4,20 @@ import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceCons
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COMPILE_DOC;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_LATEX_EXE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_MAIN_TEX;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_SPELLCHECKER;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_SPELLCHECKER_EXE;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_SPELLCHECKER_OPTION;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_TEMP_FILE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_BIB_EXE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_COMPILE_DOCUMENT;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_LATEX_EXE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_MAIN_TEX;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_SPELLCHECKER;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_SPELLCHECKER_EXE;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_SPELLCHECKER_OPT;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_TEMP_FILE;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -35,6 +42,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor;
@@ -45,8 +54,13 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.model.InvokeNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXConstant;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXModel;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
+import edu.uchicago.cs.hao.texdojo.latexeditor.spellcheck.SpellChecker;
+import edu.uchicago.cs.hao.texdojo.latexeditor.spellcheck.Suggestion;
+import edu.uchicago.cs.hao.texdojo.latexeditor.spellcheck.aspell.ASpellChecker;
 
 public class LaTeXBuilder extends IncrementalProjectBuilder {
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	public static final String BUILDER_ID = "edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXBuilder";
 
@@ -62,6 +76,20 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			}
 			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
 		} catch (CoreException e) {
+			logger.error("Failed to add marker", e);
+		}
+	}
+
+	private void addMarker(IFile file, String message, int severity, int offset, int length) {
+		try {
+			IMarker marker = file.createMarker(MARKER_TYPE);
+			marker.setAttribute(IMarker.MESSAGE, message);
+			marker.setAttribute(IMarker.SEVERITY, severity);
+			marker.setAttribute(IMarker.CHAR_START, offset);
+			marker.setAttribute(IMarker.CHAR_END, offset + length);
+
+		} catch (CoreException e) {
+			logger.error("Failed to add marker", e);
 		}
 	}
 
@@ -92,7 +120,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			this.dependency.save(writer);
 			writer.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error when building project", e);
 		}
 
 		return null;
@@ -102,6 +130,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		try {
 			file.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
 		} catch (CoreException ce) {
+			logger.error("Error on deleting markers", ce);
 		}
 	}
 
@@ -142,7 +171,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				}
 			});
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Exception on build");
 		}
 	}
 
@@ -186,6 +215,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 					return true;
 				} catch (Exception e) {
 					// TODO Handle Error
+					logger.error("Exception on build", e);
 					return true;
 				}
 			}
@@ -200,7 +230,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				} else
 					compile(getProject().getFile(root + ".tex"), monitor);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Exception on build", e);
 			}
 		});
 	}
@@ -269,6 +299,9 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 						IMarker.SEVERITY_WARNING);
 			});
 
+			// If spell check is enabled
+			spellCheck(inputFile);
+
 			// Detect whether the file contains an bib command
 			LaTeXCompiler.compile(this, executable, bibexe, inputFile, LaTeXEditor.getConsole(),
 					model.has(LaTeXConstant.EXTERNAL_BIB), monitor);
@@ -281,6 +314,43 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			IFile pdfFile = getProject()
 					.getFile(resource.getProjectRelativePath().removeFileExtension().addFileExtension("pdf"));
 			pdfFile.refreshLocal(1, monitor);
+		}
+	}
+
+	private void spellCheck(IFile file) {
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+
+		String spellChecker = prefs.get(P_SPELLCHECKER, DEFAULT_SPELLCHECKER);
+		String spellCheckerExe = prefs.get(P_SPELLCHECKER_EXE, DEFAULT_SPELLCHECKER_EXE);
+		String spellCheckerOption = prefs.get(P_SPELLCHECKER_OPTION, DEFAULT_SPELLCHECKER_OPT);
+
+		SpellChecker checker = null;
+		switch (spellChecker) {
+		case "aspell":
+			checker = new ASpellChecker(spellCheckerExe, spellCheckerOption);
+			break;
+		default:
+			break;
+		}
+		if (checker != null) {
+			// Check all lines
+			try (BufferedReader reader = new BufferedReader(new FileReader(file.getLocation().toFile()))) {
+				String fileLine = null;
+				int charCounter = 0;
+				while ((fileLine = reader.readLine()) != null) {
+					List<Suggestion> suggestions = checker.check(fileLine);
+					for (Suggestion sug : suggestions) {
+						String message = (sug.getSuggestions() == null) ? "Spell Check :" + sug.getOrigin()
+								: "Spell Check :" + sug.getOrigin();
+						addMarker(file, message, IMarker.SEVERITY_WARNING, charCounter + sug.getOffset(),
+								sug.getOrigin().length());
+					}
+					charCounter += fileLine.length() + 1;
+				}
+			} catch (Exception e) {
+				// Silently fails
+				logger.error("Exception on spell check", e);
+			}
 		}
 	}
 
