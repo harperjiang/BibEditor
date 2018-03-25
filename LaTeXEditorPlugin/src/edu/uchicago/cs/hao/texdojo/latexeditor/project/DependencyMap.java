@@ -19,11 +19,16 @@ public class DependencyMap {
 
 	private Map<String, Set<String>> depend = new HashMap<>();
 
+	private Map<String, Set<String>> inverse = new HashMap<>();
+
 	private Set<String> roots = new HashSet<>();
 
 	public void include(String rname, String include) {
 		depend.putIfAbsent(include, new HashSet<String>());
 		depend.get(include).add(rname);
+
+		inverse.putIfAbsent(rname, new HashSet<String>());
+		inverse.get(rname).add(include);
 	}
 
 	public void remove(String rname) {
@@ -39,6 +44,21 @@ public class DependencyMap {
 	// Unmark as root
 	public void unmark(String name) {
 		roots.remove(name);
+	}
+
+	public List<String> children(String root) {
+		List<String> empty = Collections.<String>emptyList();
+		Set<String> eset = Collections.<String>emptySet();
+		if (roots.contains(root)) {
+			List<String> visited = new ArrayList<>();
+			visited.add(root);
+			for (int i = 0; i < visited.size(); i++) {
+				visited.addAll(inverse.getOrDefault(visited.get(i), eset));
+			}
+			return visited;
+		} else {
+			return empty;
+		}
 	}
 
 	public List<String> roots() {

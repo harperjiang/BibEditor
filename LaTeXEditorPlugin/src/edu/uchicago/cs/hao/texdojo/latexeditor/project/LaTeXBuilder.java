@@ -23,10 +23,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.Writer;
+import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -276,7 +279,6 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	void compile(IResource resource, IProgressMonitor monitor) throws Exception {
 		if (resource instanceof IFile) {
 			IFile inputFile = (IFile) resource;
-			deleteMarkers(inputFile);
 
 			// Check to see whether to compile current file
 			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
@@ -287,20 +289,28 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 			LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
 
-			// Make marks for dangling environments
-			// Note this may not be an error as the begin and end may separate in different
-			// files. Thus we just warn it
-			List<LaTeXNode> danglingEnvs = model.find(p -> {
-				return (p instanceof BeginNode || p instanceof EndNode)
-						&& (p.getParent() == null || !p.getParent().getContent().equals(p.getContent()));
-			});
-			danglingEnvs.forEach(d -> {
-				addMarker(inputFile, (d instanceof BeginNode) ? "Dangling begin" : "Dangling end", d.getLine() + 1,
-						IMarker.SEVERITY_WARNING);
-			});
+			SpellChecker schecker = getSpellChecker();
+			for (String child : dependency
+					.children(inputFile.getProjectRelativePath().removeFileExtension().toString())) {
 
-			// If spell check is enabled
-			spellCheck(inputFile);
+				IFile childFile = getProject().getFile(child + ".tex");
+				deleteMarkers(childFile);
+
+				LaTeXModel cmodel = LaTeXModel.parseFromFile(childFile.getContents());
+				// Make marks for dangling environments
+				// Note this may not be an error as the begin and end may separate in different
+				// files. Thus we just warn it
+				List<LaTeXNode> danglingEnvs = cmodel.find(p -> {
+					return (p instanceof BeginNode || p instanceof EndNode)
+							&& (p.getParent() == null || !p.getParent().getContent().equals(p.getContent()));
+				});
+				danglingEnvs.forEach(d -> {
+					addMarker(childFile, (d instanceof BeginNode) ? "Dangling begin" : "Dangling end", d.getLine() + 1,
+							IMarker.SEVERITY_WARNING);
+				});
+				// If spell check is enabled
+				spellCheck(schecker, childFile);
+			}
 
 			// Detect whether the file contains an bib command
 			LaTeXCompiler.compile(this, executable, bibexe, inputFile, LaTeXEditor.getConsole(),
@@ -317,7 +327,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	private void spellCheck(IFile file) {
+	private SpellChecker getSpellChecker() {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 
 		String spellChecker = prefs.get(P_SPELLCHECKER, DEFAULT_SPELLCHECKER);
@@ -332,6 +342,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		default:
 			break;
 		}
+		return checker;
+	}
+
+	private void spellCheck(SpellChecker checker, IFile file) {
 		if (checker != null) {
 			// Check all lines
 			try (BufferedReader reader = new BufferedReader(new FileReader(file.getLocation().toFile()))) {
@@ -341,7 +355,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 					List<Suggestion> suggestions = checker.check(fileLine);
 					for (Suggestion sug : suggestions) {
 						String message = (sug.getSuggestions() == null) ? "Spell Check :" + sug.getOrigin()
-								: "Spell Check :" + sug.getOrigin();
+								: MessageFormat.format("Spell Check : {0}{1}", sug.getOrigin(),
+										Arrays.stream(sug.getSuggestions()).collect(Collectors.joining("\n")));
 						addMarker(file, message, IMarker.SEVERITY_WARNING, charCounter + sug.getOffset(),
 								sug.getOrigin().length());
 					}

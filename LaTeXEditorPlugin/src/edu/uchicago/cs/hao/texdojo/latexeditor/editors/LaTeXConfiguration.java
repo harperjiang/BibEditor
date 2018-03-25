@@ -14,6 +14,7 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.editors;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
+import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
@@ -26,10 +27,12 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.BeginEndStrategy;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LaTeXContentAssistant;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.LineAlignStrategy;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.hover.LaTeXTextHover;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.DoubleClickStrategy;
-import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.TextAttributeScanner;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionDamagerRepairer;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.PartitionScanner;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.text.TextAttributeScanner;
+
 /**
  * 
  * @author Hao Jiang
@@ -45,7 +48,9 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 			new LineAlignStrategy() };
 
 	private IAnnotationHover annotationHover = new DefaultAnnotationHover();
-	
+
+	private ITextHover textHover = null;
+
 	public LaTeXConfiguration() {
 		super();
 	}
@@ -69,10 +74,17 @@ public class LaTeXConfiguration extends SourceViewerConfiguration {
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		return strategies;
 	}
-	
+
 	@Override
 	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
 		return annotationHover;
+	}
+
+	@Override
+	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) {
+		if (textHover == null)
+			textHover = new LaTeXTextHover(sourceViewer);
+		return textHover;
 	}
 
 	@Override
