@@ -9,6 +9,11 @@ To view the generated PDF file, TeXDojo suggests user to install http://borisvl.
 
 ## LaTeX Editor
 LaTeX editor provides features including syntax highlight, auto-completion and text format. LaTeX files will be automatically compiled when file is saved. It also ease editing effort such as block comments on selected lines.
+
+### Update
+* 2018-03-27 LaTeX editor now supports Spell Check based on GNU Aspell. You can install Aspell on your platform and enable spell checking by going to Preference->TeXDojo->LaTeX Editor->Spell Check
+
+
 ## BibTeX Editor
 BibTeX editor provides a table-view for bib entries. It allows user to sort / find the entries by keywords. It can also automatically download bibtex entries from websites such as ArXiv and ACM digital library.
 
