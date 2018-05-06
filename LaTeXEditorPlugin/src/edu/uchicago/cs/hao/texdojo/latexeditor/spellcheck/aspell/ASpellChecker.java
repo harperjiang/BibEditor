@@ -58,7 +58,10 @@ public class ASpellChecker implements SpellChecker {
 	}
 
 	protected String escape(String input) {
-		return input.replace("\\", "\\\\\\\\");
+		String result = input.replace("\\", "\\\\\\\\");
+		result = result.replace("\"","\\\\\"");
+		result = result.replace("$","\\$");
+		return result;
 	}
 	
 	protected Suggestion buildSuggestion(String input) {
