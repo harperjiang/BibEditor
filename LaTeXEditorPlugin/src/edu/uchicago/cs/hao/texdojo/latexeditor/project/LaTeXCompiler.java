@@ -12,15 +12,24 @@
 package edu.uchicago.cs.hao.texdojo.latexeditor.project;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.console.IOConsole;
+
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.InvokeNode;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXModel;
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
 
 /**
  * @author Hao Jiang
@@ -29,12 +38,12 @@ import org.eclipse.ui.console.IOConsole;
 public class LaTeXCompiler {
 
 	public static synchronized void compile(IncrementalProjectBuilder builder, String latexExe, String bibExe,
-			IFile inputFile, IOConsole console, boolean runbib, IProgressMonitor monitor) {
+			IFile inputFile, IOConsole console, IProgressMonitor monitor) {
 		console.clearConsole();
 
 		OutputStream output = console.newOutputStream();
-
-		File parent = new File(inputFile.getLocationURI()).getParentFile();
+		File input = new File(inputFile.getLocationURI());
+		File parent = input.getParentFile();
 
 		String inputFileName = inputFile.getName().replaceAll("\\.tex$", "");
 
@@ -44,18 +53,20 @@ public class LaTeXCompiler {
 		ProcessBuilder bibBuilder = new ProcessBuilder().command(bibExe, inputFileName).directory(parent)
 				.redirectErrorStream(true);
 
-		int totalWork = runbib ? 100 : 25;
+		int totalWork = 100;
 		try {
 			String message = "Compiling " + inputFile.getName();
 			monitor.beginTask(message, totalWork);
 			monitor.subTask(message + " - first pass");
-			
+
 			connect(latexBuilder.start(), console, builder, monitor);
 
 			monitor.worked(25);
 
 			if (monitor.isCanceled())
 				return;
+
+			boolean runbib = checkAuxAndBbl(input);
 
 			if (runbib) {
 				monitor.subTask(message + " - invoking BibTeX");
@@ -127,6 +138,40 @@ public class LaTeXCompiler {
 		if (readcount != -1) {
 			output.write(buffer, 0, readcount);
 			output.flush();
+		}
+	}
+
+	// Check if the entries in aux and bbl match
+	static boolean checkAuxAndBbl(File input) {
+		String auxFile = input.getAbsolutePath().replaceFirst("tex$", "aux");
+		String bblFile = input.getAbsolutePath().replaceFirst("tex$", "bbl");
+		if (!Files.exists(Paths.get(auxFile))) {
+			throw new RuntimeException();
+		}
+		try {
+			// Does aux contains bibcite command
+			LaTeXModel auxModel = LaTeXModel.parseFromFile(new FileInputStream(auxFile));
+			// No citation, no need to invoke bibtex
+			if (!auxModel.has("citation"))
+				return false;
+			// No bbl file, need to run bibtex
+			if (!Files.exists(Paths.get(bblFile)))
+				return true;
+			// Check if all citations are included in bbl
+			LaTeXModel bblModel = LaTeXModel.parseFromFile(new FileInputStream(bblFile));
+			Set<String> dict = bblModel.find(n -> n.has("bibitem")).stream()
+					.map(n -> ((InvokeNode) n).getArgs().get(0).getContent()).collect(Collectors.toSet());
+			return auxModel.find((LaTeXNode n) -> n.has("citation")).stream().anyMatch((LaTeXNode n) -> {
+				InvokeNode ivk = (InvokeNode) n;
+				String[] entries = ivk.getArgs().get(0).getContent().split(",");
+				for (String entry : entries) {
+					if (!dict.contains(entry))
+						return true;
+				}
+				return false;
+			});
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

@@ -54,7 +54,6 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.model.ArgNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.BeginNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.EndNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.InvokeNode;
-import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXConstant;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXModel;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.spellcheck.SpellChecker;
@@ -287,9 +286,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			String executable = prefs.get(P_LATEX_EXE, DEFAULT_LATEX_EXE);
 			String bibexe = prefs.get(P_BIBTEX_EXE, DEFAULT_BIB_EXE);
 
-			LaTeXModel model = LaTeXModel.parseFromFile(inputFile.getContents());
-
 			SpellChecker schecker = getSpellChecker();
+
 			for (String child : dependency
 					.children(inputFile.getProjectRelativePath().removeFileExtension().toString())) {
 
@@ -312,9 +310,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				spellCheck(schecker, childFile);
 			}
 
-			// Detect whether the file contains an bib command
-			LaTeXCompiler.compile(this, executable, bibexe, inputFile, LaTeXEditor.getConsole(),
-					model.has(LaTeXConstant.EXTERNAL_BIB), monitor);
+			LaTeXCompiler.compile(this, executable, bibexe, inputFile, LaTeXEditor.getConsole(), monitor);
 
 			// Remove temporary files under the same folder
 			File parent = new File(inputFile.getLocationURI()).getParentFile();
