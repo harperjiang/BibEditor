@@ -147,7 +147,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 		try {
 			if (!compileDoc) {
-				compile(getProject().getFile(mainTex), monitor);
+				compile(getProject().getFile(mainTex), monitor, true);
 				return;
 			}
 			dependency = new DependencyMap();
@@ -167,7 +167,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			});
 			dependency.roots().forEach(root -> {
 				try {
-					compile(getProject().getFile(root + ".tex"), monitor);
+					compile(getProject().getFile(root + ".tex"), monitor, true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -227,10 +227,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			try {
 				if (!compileDoc) {
 					if (root.equals(mainTex)) {
-						compile(getProject().getFile(root + ".tex"), monitor);
+						compile(getProject().getFile(root + ".tex"), monitor, false);
 					}
 				} else
-					compile(getProject().getFile(root + ".tex"), monitor);
+					compile(getProject().getFile(root + ".tex"), monitor, false);
 			} catch (Exception e) {
 				logger.error("Exception on build", e);
 			}
@@ -275,13 +275,18 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		monitor.worked(5);
 	}
 
-	void compile(IResource resource, IProgressMonitor monitor) throws Exception {
+	void compile(IResource resource, IProgressMonitor monitor, boolean cleanTemp) throws Exception {
 		if (resource instanceof IFile) {
 			IFile inputFile = (IFile) resource;
 
 			// Check to see whether to compile current file
 			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 			String tempFiles = prefs.get(P_TEMP_FILE, DEFAULT_TEMP_FILE);
+
+			if (cleanTemp) {
+				// Remove temporary files for the given file
+				removeTempFiles(new File(inputFile.getLocationURI()), tempFiles);
+			}
 
 			String executable = prefs.get(P_LATEX_EXE, DEFAULT_LATEX_EXE);
 			String bibexe = prefs.get(P_BIBTEX_EXE, DEFAULT_BIB_EXE);
@@ -312,9 +317,6 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 			LaTeXCompiler.compile(this, executable, bibexe, inputFile, LaTeXEditor.getConsole(), monitor);
 
-			// Remove temporary files under the same folder
-			File parent = new File(inputFile.getLocationURI()).getParentFile();
-			removeTempFiles(parent, tempFiles);
 			// Refresh generated pdf resource
 
 			IFile pdfFile = getProject()
@@ -365,22 +367,13 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	private void removeTempFiles(final File dir, String tempFiles) {
+	private void removeTempFiles(final File sourceFile, String tempFiles) {
 		final String[] tfs = tempFiles.split(",");
-		File[] candidates = dir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File d, String name) {
-				if (!dir.equals(d))
-					return false;
-				for (String tf : tfs) {
-					if (name.matches(tf.replace(".", "\\.").replace("*", ".*")))
-						return true;
-				}
-				return false;
-			}
-		});
-		for (File can : candidates) {
-			can.delete();
+		
+		for(String tf: tfs) {
+			File temp = new File(tf.replaceFirst("\\*", sourceFile.getAbsolutePath().replaceFirst("\\.tex$", "")));
+			if(temp.exists())
+				temp.delete();
 		}
 	}
 }
