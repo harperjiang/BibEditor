@@ -37,8 +37,8 @@ import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode;
  */
 public class LaTeXCompiler {
 
-	public static synchronized void compile(IncrementalProjectBuilder builder, String latexExe, String bibExe,
-			IFile inputFile, IOConsole console, IProgressMonitor monitor) {
+	public static synchronized void compile(IncrementalProjectBuilder builder, String latexExe, String latexOpt,
+			String bibExe, IFile inputFile, IOConsole console, IProgressMonitor monitor) {
 		console.clearConsole();
 
 		OutputStream output = console.newOutputStream();
@@ -47,8 +47,9 @@ public class LaTeXCompiler {
 
 		String inputFileName = inputFile.getName().replaceAll("\\.tex$", "");
 
-		ProcessBuilder latexBuilder = new ProcessBuilder().command(latexExe, "-interaction=nonstopmode", inputFileName)
-				.directory(parent).redirectErrorStream(true);
+		ProcessBuilder latexBuilder = new ProcessBuilder()
+				.command(latexExe, "-interaction=nonstopmode", latexOpt, inputFileName).directory(parent)
+				.redirectErrorStream(true);
 
 		ProcessBuilder bibBuilder = new ProcessBuilder().command(bibExe, inputFileName).directory(parent)
 				.redirectErrorStream(true);

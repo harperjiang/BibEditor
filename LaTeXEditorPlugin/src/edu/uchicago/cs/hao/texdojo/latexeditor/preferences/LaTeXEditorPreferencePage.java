@@ -57,6 +57,8 @@ public class LaTeXEditorPreferencePage extends FieldEditorPreferencePage impleme
 
 		addField(new StringFieldEditor(PreferenceConstants.P_LATEX_EXE, "Path for pdflatex executable",
 				getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.P_LATEX_EXE_OPT, "Options for pdflatex executable",
+				getFieldEditorParent()));
 		addField(new StringFieldEditor(PreferenceConstants.P_BIBTEX_EXE, "Path for bibtex executable",
 				getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.P_COMPILE_DOC,

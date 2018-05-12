@@ -18,6 +18,8 @@ public class PreferenceConstants {
 
 	public static final String P_LATEX_EXE = "pdflatexExecutable";
 
+	public static final String P_LATEX_EXE_OPT = "pdflatexOption";
+
 	public static final String P_BIBTEX_EXE = "bibtexExecutable";
 
 	public static final String P_TEMP_FILE = "tempFiles";

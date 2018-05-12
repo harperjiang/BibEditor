@@ -25,6 +25,8 @@ import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceCons
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public static final String DEFAULT_LATEX_EXE = "pdflatex";
+	
+	public static final String DEFAULT_LATEX_EXE_OPT = "";
 
 	public static final String DEFAULT_BIB_EXE = "bibtex";
 
@@ -47,14 +49,15 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public static final String DEFAULT_COLOR_MATHMODE = StringConverter.asString(new RGB(250, 10, 50));
 
 	public static final String DEFAULT_SPELLCHECKER = "";
-	
+
 	public static final String DEFAULT_SPELLCHECKER_EXE = "";
-	
+
 	public static final String DEFAULT_SPELLCHECKER_OPT = "";
-	
+
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(P_LATEX_EXE, DEFAULT_LATEX_EXE);
+		store.setDefault(P_LATEX_EXE_OPT, DEFAULT_LATEX_EXE_OPT);
 		store.setDefault(P_BIBTEX_EXE, DEFAULT_BIB_EXE);
 		store.setDefault(P_TEMP_FILE, DEFAULT_TEMP_FILE);
 		store.setDefault(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
