@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.icepdf.ri.common.ComponentKeyBinding;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
+import org.icepdf.ri.util.PropertiesManager;
 
 public class IcePdfRenderer extends AbstractPdfRenderer {
 
@@ -27,8 +28,15 @@ public class IcePdfRenderer extends AbstractPdfRenderer {
 		// build a controller
 		controller = new SwingController();
 
-		// Build a SwingViewFactory configured with the controller
-		SwingViewBuilder factory = new SwingViewBuilder(controller);
+		// Build a SwingViewFactory configured with the controller PropertiesManager
+		PropertiesManager properties = PropertiesManager.getInstance();
+
+		// Change the value of a couple default viewer Properties.
+		// Note: this should be done before the factory is initialized.
+		properties.setBoolean(PropertiesManager.PROPERTY_SHOW_TOOLBAR_ANNOTATION, false);
+		properties.setBoolean(PropertiesManager.PROPERTY_SHOW_TOOLBAR_UTILITY, Boolean.FALSE);
+		properties.setBoolean(PropertiesManager.PROPERTY_SHOW_TOOLBAR_FIT, Boolean.FALSE);
+		SwingViewBuilder factory = new SwingViewBuilder(controller, properties);
 
 		// Use the factory to build a JPanel that is pre-configured
 		// with a complete, active Viewer UI.
