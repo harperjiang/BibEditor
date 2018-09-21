@@ -108,4 +108,18 @@ public abstract class LaTeXNode {
 	public List<LaTeXNode> find(Predicate<LaTeXNode> p) {
 		return p.test(this) ? Collections.singletonList(this) : Collections.emptyList();
 	}
+
+	public void traverse(NodeCallback callback) {
+		callback.apply(this);
+	}
+
+	@FunctionalInterface
+	public static interface NodeCallback {
+		void apply(LaTeXNode n);
+	}
+	
+	@Override
+	public String toString() {
+		return content;
+	}
 }

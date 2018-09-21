@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import edu.uchicago.cs.hao.texdojo.latexeditor.model.LaTeXNode.NodeCallback;
 import edu.uchicago.cs.hao.texdojo.latexeditor.parser.LaTeXParser;
 
 /**
@@ -51,6 +52,10 @@ public class LaTeXModel {
 		}).collect(Collectors.toList());
 	}
 
+	public void traverse(NodeCallback callback) {
+		nodes.forEach(node -> node.traverse(callback));
+	}
+
 	public void organize() {
 		nodes = new LaTeXOrganizer().parse(nodes);
 	}
@@ -71,5 +76,4 @@ public class LaTeXModel {
 			return new LaTeXModel();
 		}
 	}
-
 }

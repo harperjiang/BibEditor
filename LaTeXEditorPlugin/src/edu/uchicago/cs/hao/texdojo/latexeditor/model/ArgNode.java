@@ -20,4 +20,9 @@ public class ArgNode extends LaTeXNode {
 	public ArgNode(String arg, int offset, int length, int line) {
 		super(arg, offset, length, line);
 	}
+
+	@Override
+	public String toString() {
+		return String.format("{%s}", getContent());
+	}
 }

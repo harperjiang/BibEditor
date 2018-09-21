@@ -22,4 +22,9 @@ public class CommentNode extends LaTeXNode {
 	public CommentNode(String data, int offset, int length, int line) {
 		super(data, offset, length, line);
 	}
+
+	@Override
+	public String toString() {
+		return String.format("\\%%s", getContent());
+	}
 }

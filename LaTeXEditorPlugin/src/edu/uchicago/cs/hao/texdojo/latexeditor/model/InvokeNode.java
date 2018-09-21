@@ -14,6 +14,7 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Hao Jiang
@@ -57,4 +58,15 @@ public class InvokeNode extends LaTeXNode {
 		return command;
 	}
 
+	public void traverse(NodeCallback callback) {
+		callback.apply(this);
+		command.traverse(callback);
+		args.forEach(arg -> arg.traverse(callback));
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s%s", command.toString(),
+				args.stream().map(n -> n.toString()).collect(Collectors.joining("")));
+	}
 }

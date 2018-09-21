@@ -60,4 +60,18 @@ public class GroupNode extends LaTeXNode {
 			return node.find(p).stream();
 		}).collect(Collectors.toList());
 	}
+
+	@Override
+	public void traverse(NodeCallback callback) {
+		callback.apply(this);
+		callback.apply(this.begin);
+		children.stream().forEach(n -> callback.apply(n));
+		callback.apply(this.end);
+	}
+
+	@Override
+	public String toString() {
+		String childrenStr = children.stream().map(n -> n.toString()).collect(Collectors.joining(""));
+		return String.format("\\begin{%s}%s\\end{%s}", begin.getContent(), childrenStr, begin.getContent());
+	}
 }

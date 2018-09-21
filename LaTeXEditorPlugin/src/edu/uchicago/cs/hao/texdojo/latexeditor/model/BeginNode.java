@@ -32,4 +32,9 @@ public class BeginNode extends LaTeXNode {
 		this.setLength(getLength() + arg.getLength());
 		arg.setParent(this);
 	}
+
+	@Override
+	public String toString() {
+		return String.format("\\begin{%s}", getContent());
+	}
 }

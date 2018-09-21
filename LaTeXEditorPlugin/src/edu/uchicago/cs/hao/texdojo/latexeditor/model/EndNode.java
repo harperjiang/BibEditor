@@ -27,4 +27,8 @@ public class EndNode extends LaTeXNode {
 		arg.setParent(this);
 	}
 
+	@Override
+	public String toString() {
+		return String.format("\\end{%s}", getContent());
+	}
 }

@@ -40,12 +40,13 @@ public class LineAlignStrategy implements IAutoEditStrategy {
 	Map<IDocument, Map<Integer, IRegion>> insertedCarriages = new HashMap<IDocument, Map<Integer, IRegion>>();
 
 	public int getLineWrapLimit() {
-		long current = System.currentTimeMillis();
-		if (current - lastFetch > 1000) {
-			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
-			lineWrapLimit = prefs.getInt(PreferenceConstants.P_LINE_WRAP, -1);
-		}
-		return lineWrapLimit;
+//		long current = System.currentTimeMillis();
+//		if (current - lastFetch > 1000) {
+//			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+//			lineWrapLimit = prefs.getInt(PreferenceConstants.P_LINE_WRAP, -1);
+//		}
+//		return lineWrapLimit;
+		return -1;
 	}
 
 	public boolean getLineAlign() {

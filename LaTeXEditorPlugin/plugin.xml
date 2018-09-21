@@ -108,6 +108,11 @@
             id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.spellCheck"
             name="Spell Check">
       </command>
+      <command
+            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.editors.handlers.TextFormatterHandler"
+            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.triggerFormatter"
+            name="Format Code">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -224,6 +229,12 @@
             contextId="edu.uchicago.cs.hao.texdojo.latexeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+/">
+      </key>
+      <key
+            commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.triggerFormatter"
+            contextId="edu.uchicago.cs.hao.texdojo.latexeditor.editorContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+F">
       </key>
    </extension>
    <extension

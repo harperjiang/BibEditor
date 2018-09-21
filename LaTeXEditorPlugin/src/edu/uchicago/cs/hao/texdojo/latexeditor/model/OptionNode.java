@@ -20,4 +20,9 @@ public class OptionNode extends LaTeXNode {
 	public OptionNode(String content, int offset, int length, int line) {
 		super(content, offset, length, line);
 	}
+
+	@Override
+	public String toString() {
+		return String.format("[%s]", getContent());
+	}
 }
