@@ -3,6 +3,7 @@ package edu.uchicago.cs.hao.texdojo.latexeditor.project;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_BIBTEX_EXE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COMPILE_DOC;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_LATEX_EXE;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_LATEX_EXE_OPT;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_MAIN_TEX;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_SPELLCHECKER;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_SPELLCHECKER_EXE;
@@ -11,6 +12,7 @@ import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceCons
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_BIB_EXE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_COMPILE_DOCUMENT;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_LATEX_EXE;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_LATEX_EXE_OPT;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_MAIN_TEX;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_SPELLCHECKER;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_SPELLCHECKER_EXE;
@@ -289,6 +291,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			}
 
 			String executable = prefs.get(P_LATEX_EXE, DEFAULT_LATEX_EXE);
+			String opt = prefs.get(P_LATEX_EXE_OPT, DEFAULT_LATEX_EXE_OPT);
 			String bibexe = prefs.get(P_BIBTEX_EXE, DEFAULT_BIB_EXE);
 
 			SpellChecker schecker = getSpellChecker();
@@ -315,7 +318,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				spellCheck(schecker, childFile);
 			}
 
-			LaTeXCompiler.compile(this, executable, bibexe, inputFile, LaTeXEditor.getConsole(), monitor);
+			LaTeXCompiler.compile(this, executable, opt, bibexe, inputFile, LaTeXEditor.getConsole(), monitor);
 
 			// Refresh generated pdf resource
 

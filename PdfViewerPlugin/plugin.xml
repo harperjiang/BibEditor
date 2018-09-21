@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="edu.uchicago.cs.hao.texdojo.pdfviewer.editor.PdfViewer"
+            extensions="pdf"
+            icon="resource/pdf.png"
+            id="edu.uchicago.cs.hao.texdojo.pdfviewer.PdfViewer"
+            name="TeXDojo Pdf Viewer">
+      </editor>
+   </extension>
+
+</plugin>
