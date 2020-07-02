@@ -33,6 +33,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public static final String DEFAULT_TEMP_FILE = "*.aux,*.log";
 
 	public static final boolean DEFAULT_COMPILE_DOCUMENT = true;
+	
+	public static final boolean DEFAULT_USE_MAKE = false;
 
 	public static final String DEFAULT_MAIN_TEX = "main.tex";
 
@@ -60,6 +62,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(P_LATEX_EXE_OPT, DEFAULT_LATEX_EXE_OPT);
 		store.setDefault(P_BIBTEX_EXE, DEFAULT_BIB_EXE);
 		store.setDefault(P_TEMP_FILE, DEFAULT_TEMP_FILE);
+		store.setDefault(P_USE_MAKE, DEFAULT_USE_MAKE);
 		store.setDefault(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
 		store.setDefault(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 		store.setDefault(P_COLOR_COMMAND, DEFAULT_COLOR_COMMAND);

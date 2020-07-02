@@ -61,12 +61,12 @@ public class LaTeXEditorPreferencePage extends FieldEditorPreferencePage impleme
 				getFieldEditorParent()));
 		addField(new StringFieldEditor(PreferenceConstants.P_BIBTEX_EXE, "Path for bibtex executable",
 				getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.P_USE_MAKE, "Use Makefile when available", 
+				getFieldEditorParent()));
 		addField(new BooleanFieldEditor(PreferenceConstants.P_COMPILE_DOC,
 				"Compile all .tex files containing \\begin{document}", getFieldEditorParent()));
 		addField(new StringFieldEditor(PreferenceConstants.P_MAIN_TEX, "Main tex file (when above is unselected)",
 				getFieldEditorParent()));
-
-		
 	}
 
 	/*

@@ -3,7 +3,7 @@
    <description name="TeXDojo UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/texdojo/updatesite">
       TeXDojo UpdateSite
    </description>
-   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.2.201805120959.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.2.201805120959">
+   <feature url="features/edu.uchicago.cs.hao.texdojo_0.0.4.201906031734.jar" id="edu.uchicago.cs.hao.texdojo" version="0.0.4.201906031734">
       <category name="edu.uchicago.cs.hao.texdojo"/>
    </feature>
    <category-def name="edu.uchicago.cs.hao.texdojo" label="TeXDojo"/>

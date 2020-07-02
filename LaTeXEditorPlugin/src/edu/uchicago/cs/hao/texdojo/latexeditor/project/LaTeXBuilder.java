@@ -9,6 +9,7 @@ import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceCons
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_SPELLCHECKER_EXE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_SPELLCHECKER_OPTION;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_TEMP_FILE;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceConstants.P_USE_MAKE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_BIB_EXE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_COMPILE_DOCUMENT;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_LATEX_EXE;
@@ -18,13 +19,14 @@ import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInit
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_SPELLCHECKER_EXE;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_SPELLCHECKER_OPT;
 import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_TEMP_FILE;
+import static edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer.DEFAULT_USE_MAKE;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -33,7 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -98,7 +100,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	}
 
 	@Override
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) 
+			throws CoreException {
 		// Load dependency if any exists
 		IFile config = getProject().getFile(".texdojo");
 		try {
@@ -144,9 +147,15 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		// Check to see whether to compile current file
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 
+		boolean useMakefile = prefs.getBoolean(P_USE_MAKE, DEFAULT_USE_MAKE);
 		boolean compileDoc = prefs.getBoolean(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
 		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
+		if(useMakefile && getProject().getFile("Makefile").exists()) {
+			compileWithMake();
+			return;
+		}
+		
 		try {
 			if (!compileDoc) {
 				compile(getProject().getFile(mainTex), monitor, true);
@@ -183,10 +192,16 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 		// Check to see whether to compile current file
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
-
+		
+		boolean useMakefile = prefs.getBoolean(P_USE_MAKE, DEFAULT_USE_MAKE);
 		boolean compileDoc = prefs.getBoolean(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
 		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
+		if(useMakefile && getProject().getFile("Makefile").exists()) {
+			compileWithMake();
+			return;
+		}
+		
 		// the visitor does the work.
 		Set<String> affectedRoots = new HashSet<>();
 		delta.accept(new IResourceDeltaVisitor() {
@@ -317,7 +332,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				// If spell check is enabled
 				spellCheck(schecker, childFile);
 			}
-
+			
 			LaTeXCompiler.compile(this, executable, opt, bibexe, inputFile, LaTeXEditor.getConsole(), monitor);
 
 			// Refresh generated pdf resource
@@ -326,6 +341,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 					.getFile(resource.getProjectRelativePath().removeFileExtension().addFileExtension("pdf"));
 			pdfFile.refreshLocal(1, monitor);
 		}
+	}
+	
+	void compileWithMake() {
+		
 	}
 
 	private SpellChecker getSpellChecker() {
