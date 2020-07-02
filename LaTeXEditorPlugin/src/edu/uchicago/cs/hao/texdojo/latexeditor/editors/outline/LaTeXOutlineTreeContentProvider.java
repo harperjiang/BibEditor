@@ -17,31 +17,22 @@ public class LaTeXOutlineTreeContentProvider implements ITreeContentProvider {
 			LaTeXDocModel model = (LaTeXDocModel) inputElement;
 			List<LaTeXOutlineTreeNode> roots = new ArrayList<LaTeXOutlineTreeNode>();
 			LaTeXOutlineTreeNode current = null;
-			// Search for document node
-			GroupNode document = null;
 
 			for (LaTeXNode node : model.nodes()) {
-				if (node instanceof GroupNode && "document".equals(node.getContent())) {
-					document = (GroupNode) node;
-					break;
+				LaTeXOutlineTreeNode treeNode = LaTeXOutlineTreeNode.from(node);
+				if (treeNode != null) {
+					while (current != null && current.getLevel() >= treeNode.getLevel()) {
+						current = current.getParent();
+					}
+					if (current == null) {
+						roots.add(treeNode);
+					} else {
+						current.add(treeNode);
+					}
+					current = treeNode;
 				}
 			}
 
-			if (document != null)
-				for (LaTeXNode node : document.getChildren()) {
-					LaTeXOutlineTreeNode treeNode = LaTeXOutlineTreeNode.from(node);
-					if (treeNode != null) {
-						while (current != null && current.getLevel() >= treeNode.getLevel()) {
-							current = current.getParent();
-						}
-						if (current == null) {
-							roots.add(treeNode);
-						} else {
-							current.add(treeNode);
-						}
-						current = treeNode;
-					}
-				}
 			return roots.toArray();
 		}
 		return null;
