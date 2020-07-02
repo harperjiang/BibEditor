@@ -77,21 +77,20 @@ public class LaTeXCompiler {
 
 				if (monitor.isCanceled())
 					return;
-
 				monitor.subTask(message + " - second pass");
 				connect(latexBuilder.start(), console, builder, monitor);
 				monitor.worked(25);
 
 				if (monitor.isCanceled())
 					return;
-
-				monitor.subTask(message + " - final pass");
-				connect(latexBuilder.start(), console, builder, monitor);
-				monitor.worked(25);
-
-				if (monitor.isCanceled())
-					return;
 			}
+
+			monitor.subTask(message + " - final pass");
+			connect(latexBuilder.start(), console, builder, monitor);
+			monitor.worked(25);
+
+			if (monitor.isCanceled())
+				return;
 
 			monitor.done();
 		} catch (Exception e) {
