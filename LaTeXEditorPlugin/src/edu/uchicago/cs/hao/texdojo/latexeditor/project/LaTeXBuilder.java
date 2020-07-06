@@ -48,6 +48,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,8 +101,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	}
 
 	@Override
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) 
-			throws CoreException {
+	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		// Load dependency if any exists
 		IFile config = getProject().getFile(".texdojo");
 		try {
@@ -150,11 +151,11 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		boolean compileDoc = prefs.getBoolean(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
 		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
-		if(useMakefile && getProject().getFile("Makefile").exists()) {
+		if (useMakefile && getProject().getFile("Makefile").exists()) {
 			compileWithMake();
 			return;
 		}
-		
+
 		try {
 			if (!compileDoc) {
 				compile(getProject().getFile(mainTex), monitor, true);
@@ -168,8 +169,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 							scan(resource, monitor);
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
 						// TODO Handle Error
+						throw new RuntimeException(e);
 					}
 					// return true to continue visiting children.
 					return true;
@@ -179,11 +180,13 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				try {
 					compile(getProject().getFile(root + ".tex"), monitor, true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				}
 			});
 		} catch (Exception e) {
 			logger.error("Exception on build");
+			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Error while compling", e.getMessage());
 		}
 	}
 
@@ -191,16 +194,16 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 		// Check to see whether to compile current file
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
-		
+
 		boolean useMakefile = prefs.getBoolean(P_USE_MAKE, DEFAULT_USE_MAKE);
 		boolean compileDoc = prefs.getBoolean(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
 		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
-		if(useMakefile && getProject().getFile("Makefile").exists()) {
+		if (useMakefile && getProject().getFile("Makefile").exists()) {
 			compileWithMake();
 			return;
 		}
-		
+
 		// the visitor does the work.
 		Set<String> affectedRoots = new HashSet<>();
 		delta.accept(new IResourceDeltaVisitor() {
@@ -234,6 +237,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				} catch (Exception e) {
 					// TODO Handle Error
 					logger.error("Exception on build", e);
+					MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+							"Error while scanning changes", e.getMessage());
 					return true;
 				}
 			}
@@ -249,6 +254,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 					compile(getProject().getFile(root + ".tex"), monitor, false);
 			} catch (Exception e) {
 				logger.error("Exception on build", e);
+				MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+						"Error while compling components", e.getMessage());
 			}
 		});
 	}
@@ -331,7 +338,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				// If spell check is enabled
 				spellCheck(schecker, childFile);
 			}
-			
+
 			LaTeXCompiler.compile(this, executable, opt, bibexe, inputFile, LaTeXEditor.getConsole(), monitor);
 
 			// Refresh generated pdf resource
@@ -341,9 +348,9 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			pdfFile.refreshLocal(1, monitor);
 		}
 	}
-	
+
 	void compileWithMake() {
-		
+
 	}
 
 	private SpellChecker getSpellChecker() {
@@ -390,10 +397,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 
 	private void removeTempFiles(final File sourceFile, String tempFiles) {
 		final String[] tfs = tempFiles.split(",");
-		
-		for(String tf: tfs) {
+
+		for (String tf : tfs) {
 			File temp = new File(tf.replaceFirst("\\*", sourceFile.getAbsolutePath().replaceFirst("\\.tex$", "")));
-			if(temp.exists())
+			if (temp.exists())
 				temp.delete();
 		}
 	}
