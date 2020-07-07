@@ -49,12 +49,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.Activator;
 import edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor;
+import edu.uchicago.cs.hao.texdojo.latexeditor.inmem.DependencyMap;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.ArgNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.BeginNode;
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.EndNode;
@@ -103,33 +105,38 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		// Load dependency if any exists
-		IFile config = getProject().getFile(".texdojo");
 		try {
-			this.dependency.load(new FileReader(config.getLocation().toFile()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		if (kind == FULL_BUILD) {
-			fullBuild(monitor);
-		} else {
-			IResourceDelta delta = getDelta(getProject());
-			if (delta == null) {
+			if (kind == FULL_BUILD) {
 				fullBuild(monitor);
 			} else {
-				incrementalBuild(delta, monitor);
-			}
-		}
+				IFile config = getProject().getFile(".texdojo");
+				this.dependency.load(new FileReader(config.getLocation().toFile()));
 
-		// Write dependency to file
-		try {
+				IResourceDelta delta = getDelta(getProject());
+				if (delta == null) {
+					fullBuild(monitor);
+				} else {
+					incrementalBuild(delta, monitor);
+				}
+			}
+
+			// Write dependency to file
+
 			Writer writer = new FileWriter(getProject().getFile(".texdojo").getLocation().toFile());
 			this.dependency.save(writer);
 			writer.close();
-		} catch (Exception e) {
-			logger.error("Error when building project", e);
-		}
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+							"Error while building project", e.getMessage());
+				}
+			});
+
+		}
 		return null;
 	}
 
@@ -137,13 +144,13 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		try {
 			file.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
 		} catch (CoreException ce) {
-			logger.error("Error on deleting markers", ce);
+			throw new RuntimeException("Error on deleting markers", ce);
 		}
 	}
 
 	private DependencyMap dependency = new DependencyMap();
 
-	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
+	protected void fullBuild(final IProgressMonitor monitor) throws Exception {
 		// Check to see whether to compile current file
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 
@@ -156,38 +163,31 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			return;
 		}
 
-		try {
-			if (!compileDoc) {
-				compile(getProject().getFile(mainTex), monitor, true);
-				return;
-			}
-			dependency = new DependencyMap();
-			getProject().accept(new IResourceVisitor() {
-				public boolean visit(IResource resource) {
-					try {
-						if (resource instanceof IFile && resource.getName().endsWith(".tex")) {
-							scan(resource, monitor);
-						}
-					} catch (Exception e) {
-						// TODO Handle Error
-						throw new RuntimeException(e);
-					}
-					// return true to continue visiting children.
-					return true;
-				}
-			});
-			dependency.roots().forEach(root -> {
+		if (!compileDoc) {
+			compile(getProject().getFile(mainTex), monitor, true);
+			return;
+		}
+		dependency = new DependencyMap();
+		getProject().accept(new IResourceVisitor() {
+			public boolean visit(IResource resource) {
 				try {
-					compile(getProject().getFile(root + ".tex"), monitor, true);
+					if (resource instanceof IFile && resource.getName().endsWith(".tex")) {
+						scan(resource, monitor);
+					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-			});
-		} catch (Exception e) {
-			logger.error("Exception on build");
-			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					"Error while compling", e.getMessage());
-		}
+				// return true to continue visiting children.
+				return true;
+			}
+		});
+		dependency.roots().forEach(root -> {
+			try {
+				compile(getProject().getFile(root + ".tex"), monitor, true);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	protected void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException {
@@ -237,8 +237,14 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				} catch (Exception e) {
 					// TODO Handle Error
 					logger.error("Exception on build", e);
-					MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-							"Error while scanning changes", e.getMessage());
+					Display.getDefault().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+									"Error while scanning changes", e.getMessage());
+						}
+					});
+
 					return true;
 				}
 			}
@@ -253,9 +259,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 				} else
 					compile(getProject().getFile(root + ".tex"), monitor, false);
 			} catch (Exception e) {
-				logger.error("Exception on build", e);
-				MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-						"Error while compling components", e.getMessage());
+				throw new RuntimeException(e);
 			}
 		});
 	}
@@ -295,6 +299,19 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 			dependency.include(rname, folder.append(includeName).toString());
 		});
 
+		model.find(node -> {
+			if (node instanceof InvokeNode) {
+				return !StringUtils.isEmpty(node.getContent()) && (node.getContent().equals("bibliography"));
+			}
+			return false;
+		}).forEach(node -> {
+			InvokeNode in = (InvokeNode) node;
+			ArgNode arg = (ArgNode) (in.getArgs().get(0));
+			String includeName = arg.getContent();
+
+			dependency.ref(rname, folder.append(includeName).toString());
+		});
+
 		monitor.worked(5);
 	}
 
@@ -321,6 +338,9 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 					.children(inputFile.getProjectRelativePath().removeFileExtension().toString())) {
 
 				IFile childFile = getProject().getFile(child + ".tex");
+				if (!childFile.exists()) {
+					continue;
+				}
 				deleteMarkers(childFile);
 
 				LaTeXModel cmodel = LaTeXModel.parseFromFile(childFile.getContents());
@@ -350,7 +370,8 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	}
 
 	void compileWithMake() {
-
+		MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Not Implemented",
+				"Compiling with Makefile not implemented");
 	}
 
 	private SpellChecker getSpellChecker() {

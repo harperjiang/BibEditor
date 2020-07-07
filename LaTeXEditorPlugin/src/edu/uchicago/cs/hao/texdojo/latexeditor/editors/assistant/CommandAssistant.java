@@ -11,15 +11,12 @@
 
 package edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -29,6 +26,12 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Point;
+
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.model.AssistEntry;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.model.AssistIndex;
+import edu.uchicago.cs.hao.texdojo.latexeditor.editors.assistant.model.BibCache;
+import edu.uchicago.cs.hao.texdojo.latexeditor.inmem.DependencyMap;
+import edu.uchicago.cs.hao.texdojo.latexeditor.util.PlatformUtil;
 
 public class CommandAssistant implements IContentAssistProcessor {
 
@@ -57,6 +60,9 @@ public class CommandAssistant implements IContentAssistProcessor {
 					return noInputProposals(offset);
 				if (qualifier.startsWith("\\begin{"))
 					return envProposals(qualifier.substring(7), offset);
+				if (qualifier.startsWith("\\cite{")) {
+					return citeProposals(qualifier.substring(6), offset);
+				}
 				return findProposals(qualifier, offset);
 			}
 		} catch (BadLocationException e) {
@@ -115,6 +121,41 @@ public class CommandAssistant implements IContentAssistProcessor {
 		}
 	}
 
+	BibCache cache = new BibCache();
+
+	/**
+	 * Return available cite names as proposal
+	 * 
+	 * @param offset
+	 * @return
+	 */
+	private ICompletionProposal[] citeProposals(String qualifier, int offset) {
+		IPath file = PlatformUtil.getOpenFile();
+		IProject project = PlatformUtil.getOpenProject();
+		DependencyMap map = DependencyMap.load(project);
+		// Get bib file
+		String relFile = file.makeRelativeTo(project.getLocation()).removeFileExtension().toOSString();
+		String bib = map.ref(relFile);
+		IFile bibfile = project.getFile(bib + ".bib");
+		if (!bibfile.exists()) {
+			return new ICompletionProposal[0];
+		}
+		// Collect all bib entries
+		AssistIndex model = cache.get(bibfile.getLocation().toFile());
+
+		int qlen = qualifier.length();
+		List<AssistEntry> candidates = model.find(qualifier);
+
+		ICompletionProposal[] proposals = new ICompletionProposal[candidates.size()];
+
+		for (int i = 0; i < candidates.size(); i++) {
+			AssistEntry entry = candidates.get(i);
+			proposals[i] = new CompletionProposal(entry.getKey() + "}", offset - qlen, qlen,
+					entry.getKey().length() + 1, null, entry.toString(), null, null);
+		}
+		return proposals;
+	}
+
 	/**
 	 * Return available environment names as proposal
 	 * 
@@ -123,18 +164,15 @@ public class CommandAssistant implements IContentAssistProcessor {
 	 */
 	private ICompletionProposal[] envProposals(String qualifier, int offset) {
 		int qlen = qualifier.length();
-		List<String> candidates = new ArrayList<String>();
-		for (String env : envs) {
-			if (env.startsWith(qualifier))
-				candidates.add(env);
-		}
+		List<AssistEntry> candidates = envs.find(qualifier);
 
 		ICompletionProposal[] proposals = new ICompletionProposal[candidates.size()];
 
 		for (int i = 0; i < candidates.size(); i++) {
-			String env = candidates.get(i);
-			String text = MessageFormat.format("{0}'}'\n\n\\end'{'{0}'}'\n", env);
-			proposals[i] = new CompletionProposal(text, offset - qlen, qlen, env.length() + 2, null, env, null, null);
+			AssistEntry env = candidates.get(i);
+			String key = env.getKey();
+			String text = MessageFormat.format("{0}'}'\n\n\\end'{'{0}'}'\n", key);
+			proposals[i] = new CompletionProposal(text, offset - qlen, qlen, key.length() + 2, null, key, null, null);
 		}
 		return proposals;
 	}
@@ -153,43 +191,26 @@ public class CommandAssistant implements IContentAssistProcessor {
 			qualifier = qualifier.substring(1);
 		}
 		String lqualifier = qualifier.toLowerCase();
+		int qlen = lqualifier.length();
 
-		List<ICompletionProposal> props = new ArrayList<ICompletionProposal>();
-		int qlen = qualifier.length();
-
-		// Search through all proposals
-		int index = Collections.binarySearch(commands, new Command(lqualifier, null), new Comparator<Command>() {
-			@Override
-			public int compare(Command o1, Command o2) {
-				return o1.key.toLowerCase().compareTo(o2.key.toLowerCase());
-			}
-		});
-		if (index >= 0) {
-			return new ICompletionProposal[] { fromCommand(commands.get(index), includeBs, documentOffset, qlen) };
-		} else {
-			int ins = -index - 1;
-			// Forward to the last
-			while (ins < commands.size() && commands.get(ins).key.toLowerCase().startsWith(lqualifier)) {
-				props.add(fromCommand(commands.get(ins), includeBs, documentOffset, qlen));
-				ins++;
-			}
-
-			ICompletionProposal[] proparray = new ICompletionProposal[props.size()];
-			props.toArray(proparray);
-			return proparray;
+		List<AssistEntry> entries = commands.find(lqualifier);
+		ICompletionProposal[] props = new ICompletionProposal[entries.size()];
+		for (int i = 0; i < entries.size(); ++i) {
+			props[i] = fromCommand(entries.get(i), includeBs, documentOffset, qlen);
 		}
+		return props;
 	}
 
-	protected ICompletionProposal fromCommand(Command cmd, boolean includeBs, int documentOffset, int qlen) {
+	protected ICompletionProposal fromCommand(AssistEntry cmd, boolean includeBs, int documentOffset, int qlen) {
 		String text = null;
 		String display = null;
 
 		if (includeBs) {
-			text = "\\" + cmd.key;
-			display = MessageFormat.format("\\{0} {1}", cmd.key, cmd.display);
+			text = "\\" + cmd.getKey();
+			display = MessageFormat.format("\\{0} {1}", cmd.getKey(), cmd.getDescription());
 		} else {
-			text = cmd.key;
-			display = MessageFormat.format("{0} {1}", cmd.key, cmd.display);
+			text = cmd.getKey();
+			display = MessageFormat.format("{0} {1}", cmd.getKey(), cmd.getDescription());
 		}
 		// Construct proposal
 		CompletionProposal proposal = new CompletionProposal(text, documentOffset - qlen, qlen, text.length(), null,
@@ -266,24 +287,12 @@ public class CommandAssistant implements IContentAssistProcessor {
 		return results;
 	}
 
-	private static class Command {
-		String key;
-		String display;
-
-		Command(String key, String display) {
-			this.key = key;
-			this.display = display;
-		}
-
-	}
-
 	static final String[] dicts = { "dicts/dict_math", "dicts/dict_common" };
 
 	static final String env_dict = "dicts/dict_env";
 
-	List<Command> commands = new ArrayList<Command>();
-
-	List<String> envs = new ArrayList<String>();
+	AssistIndex commands = new AssistIndex();
+	AssistIndex envs = new AssistIndex();
 
 	public CommandAssistant() {
 		loadCommandDicts();
@@ -291,71 +300,34 @@ public class CommandAssistant implements IContentAssistProcessor {
 	}
 
 	private void loadCommandDicts() {
-		BufferedReader br = null;
 		for (String dict : dicts) {
 			try {
-				br = new BufferedReader(new InputStreamReader(
-						Thread.currentThread().getContextClassLoader().getResourceAsStream(dict), "UTF-8"));
-				String line = null;
-				while ((line = br.readLine()) != null) {
-					if (line.trim().length() != 0) {
-						if (!line.startsWith("#")) {
-							String[] parts = line.split("\\s+");
-							if (parts.length >= 2)
-								commands.add(new Command(parts[0], parts[1]));
-							else if (parts.length == 1) {
-								commands.add(new Command(parts[0], ""));
-							}
-						}
+				commands.loadFromFile(dict, (line) -> {
+					String[] parts = line.split("\\s+");
+					if (parts.length >= 2)
+						return new AssistEntry(parts[0], parts[1]);
+					else if (parts.length == 1) {
+						return new AssistEntry(parts[0], "");
 					}
-				}
+					return null;
+				});
 			} catch (Exception e) {
 				// Eat exception, just no completion
-			} finally {
-				try {
-					if (null != br)
-						br.close();
-				} catch (IOException e) {
-
-				}
+				e.printStackTrace();
 			}
 		}
-		commands.sort(new Comparator<Command>() {
-			@Override
-			public int compare(Command o1, Command o2) {
-				return o1.key.compareTo(o2.key);
-			}
-		});
 	}
 
 	private void loadEnvDict() {
-		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new InputStreamReader(
-					Thread.currentThread().getContextClassLoader().getResourceAsStream(env_dict), "UTF-8"));
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				if (line.trim().length() != 0) {
-					if (!line.startsWith("#")) {
-						envs.add(line.trim());
-					}
-				}
-			}
+			envs.loadFromFile(env_dict, (line) -> {
+				return new AssistEntry(line.trim(), "");
+			});
+
 		} catch (Exception e) {
 			// Eat exception, just no completion
-		} finally {
-			try {
-				if (null != br)
-					br.close();
-			} catch (IOException e) {
-
-			}
+			e.printStackTrace();
 		}
-		envs.sort(new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				return o1.compareTo(o2);
-			}
-		});
 	}
+
 }

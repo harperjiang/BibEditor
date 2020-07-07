@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import edu.uchicago.cs.hao.texdojo.latexeditor.inmem.DependencyMap;
+
 public class DependencyMapTest {
 
 	@Test

@@ -1,5 +1,7 @@
-package edu.uchicago.cs.hao.texdojo.latexeditor.project;
+package edu.uchicago.cs.hao.texdojo.latexeditor.inmem;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -10,6 +12,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -23,12 +28,18 @@ public class DependencyMap {
 
 	private Set<String> roots = new HashSet<>();
 
+	private Map<String, String> refs = new HashMap<>();
+
 	public void include(String rname, String include) {
 		depend.putIfAbsent(include, new HashSet<String>());
 		depend.get(include).add(rname);
 
 		inverse.putIfAbsent(rname, new HashSet<String>());
 		inverse.get(rname).add(include);
+	}
+
+	public void ref(String rname, String bib) {
+		refs.put(rname, bib);
 	}
 
 	public void remove(String rname) {
@@ -45,6 +56,10 @@ public class DependencyMap {
 	public void unmark(String name) {
 		roots.remove(name);
 	}
+
+	/// ======================================================
+	/// Methods for lookup
+	/// ======================================================
 
 	public List<String> children(String root) {
 		List<String> empty = Collections.<String>emptyList();
@@ -87,16 +102,34 @@ public class DependencyMap {
 		return new ArrayList<String>(found);
 	}
 
+	public String ref(String file) {
+		List<String> roots = roots(file);
+		List<String> children = new ArrayList<>();
+		for (String root : roots) {
+			children.addAll(children(root));
+		}
+		for (String child : children) {
+			if (refs.containsKey(child)) {
+				return refs.get(child);
+			}
+		}
+		return null;
+	}
+
 	private String ROOT = "root";
 
 	private String DEP = "dep";
+
+	private String REF = "ref";
 
 	public void save(Writer writer) throws IOException {
 		JsonObject obj = new JsonObject();
 		JsonArray ro = new JsonArray();
 		JsonObject dep = new JsonObject();
+		JsonObject ref = new JsonObject();
 		obj.add(ROOT, ro);
 		obj.add(DEP, dep);
+		obj.add(REF, ref);
 
 		roots.forEach(s -> ro.add(s));
 
@@ -105,6 +138,9 @@ public class DependencyMap {
 			entry.getValue().forEach(s -> deplist.add(s));
 			dep.add(entry.getKey(), deplist);
 		});
+		refs.entrySet().forEach(entry -> {
+			ref.addProperty(entry.getKey(), entry.getValue());
+		});
 
 		writer.write(obj.toString());
 	}
@@ -112,6 +148,7 @@ public class DependencyMap {
 	public void load(Reader reader) {
 		this.depend.clear();
 		this.roots.clear();
+		this.refs.clear();
 		JsonObject configData = new JsonParser().parse(reader).getAsJsonObject();
 
 		configData.get(ROOT).getAsJsonArray().forEach(e -> roots.add(e.getAsString()));
@@ -122,5 +159,22 @@ public class DependencyMap {
 			entry.getValue().getAsJsonArray().forEach(item -> items.add(item.getAsString()));
 			depend.put(entry.getKey(), items);
 		});
+
+		JsonObject ref = configData.get(REF).getAsJsonObject();
+		ref.entrySet().forEach(entry -> {
+			refs.put(entry.getKey(), entry.getValue().getAsString());
+		});
 	}
+
+	public static DependencyMap load(IProject project) {
+		IFile depfile = project.getFile(".texdojo");
+		DependencyMap map = new DependencyMap();
+		try {
+			map.load(new FileReader(depfile.getLocation().toFile()));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		return map;
+	}
+
 }

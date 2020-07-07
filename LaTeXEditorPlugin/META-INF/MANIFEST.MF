@@ -14,10 +14,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views,
  org.eclipse.ui.workbench,
  org.junit;resolution:=optional,
- edu.uchicago.cs.hao.texdojo.bibeditor;bundle-version="0.0.2",
+ edu.uchicago.cs.hao.texdojo.bibeditor,
  com.google.gson,
  org.slf4j.api,
- org.apache.commons.lang;bundle-version="2.6.0"
+ org.apache.commons.lang
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: edu.uchicago.cs.hao.texdojo.latexeditor

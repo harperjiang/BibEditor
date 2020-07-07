@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IOConsole;
 
 import edu.uchicago.cs.hao.texdojo.latexeditor.model.InvokeNode;
@@ -145,10 +147,11 @@ public class LaTeXCompiler {
 	static boolean checkAuxAndBbl(File input) {
 		String auxFile = input.getAbsolutePath().replaceFirst("tex$", "aux");
 		String bblFile = input.getAbsolutePath().replaceFirst("tex$", "bbl");
-		if (!Files.exists(Paths.get(auxFile))) {
-			throw new RuntimeException();
-		}
+
 		try {
+			if (!Files.exists(Paths.get(auxFile))) {
+				throw new RuntimeException();
+			}
 			// Does aux contains bibcite command
 			LaTeXModel auxModel = LaTeXModel.parseFromFile(new FileInputStream(auxFile));
 			// No citation, no need to invoke bibtex
@@ -171,6 +174,8 @@ public class LaTeXCompiler {
 				return false;
 			});
 		} catch (Exception e) {
+			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Error while checking aux and bbl", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
