@@ -40,8 +40,10 @@ public class LaTeXEditorOutlinePage extends ContentOutlinePage implements LaTeXD
 
 	@Override
 	public void modelChanged(LaTeXDocModelEvent event) {
-		getTreeViewer().refresh();
-		getTreeViewer().expandAll();
+		if (getTreeViewer() != null) {
+			getTreeViewer().refresh();
+			getTreeViewer().expandAll();
+		}
 	}
 
 	@Override

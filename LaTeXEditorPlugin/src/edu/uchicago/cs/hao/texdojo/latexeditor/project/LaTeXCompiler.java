@@ -101,7 +101,7 @@ public class LaTeXCompiler {
 		return;
 	}
 
-	static final long TIMEOUT = 120000L;
+	static final long TIMEOUT = 300000L;
 
 	static void connect(Process p, IOConsole console, IncrementalProjectBuilder builder, IProgressMonitor monitor)
 			throws IOException, InterruptedException {
@@ -114,7 +114,8 @@ public class LaTeXCompiler {
 			copyStream(console.getInputStream(), p.getOutputStream());
 			Thread.sleep(checkInterval);
 			consumed += checkInterval;
-			if (monitor.isCanceled() || builder.isInterrupted() || consumed >= TIMEOUT) {
+			if (monitor.isCanceled() || builder.isInterrupted()) {
+				// Do not use timeout for now
 				p.destroy();
 				p.waitFor();
 			}
