@@ -106,19 +106,19 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		// Load dependency if any exists
 		try {
-			if (kind == FULL_BUILD) {
+//			if (kind == FULL_BUILD) {
 				fullBuild(monitor);
-			} else {
-				IFile config = getProject().getFile(".texdojo");
-				this.dependency.load(new FileReader(config.getLocation().toFile()));
-
-				IResourceDelta delta = getDelta(getProject());
-				if (delta == null) {
-					fullBuild(monitor);
-				} else {
-					incrementalBuild(delta, monitor);
-				}
-			}
+//			} else {
+//				IFile config = getProject().getFile(".texdojo");
+//				this.dependency.load(new FileReader(config.getLocation().toFile()));
+//
+//				IResourceDelta delta = getDelta(getProject());
+//				if (delta == null) {
+//					fullBuild(monitor);
+//				} else {
+//					incrementalBuild(delta, monitor);
+//				}
+//			}
 
 			// Write dependency to file
 
