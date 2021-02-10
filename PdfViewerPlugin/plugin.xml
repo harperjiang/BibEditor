@@ -4,10 +4,10 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="edu.uchicago.cs.hao.texdojo.pdfviewer.editor.PdfViewer"
+            class="hao.texdojo.pdfviewer.editor.PdfViewer"
             extensions="pdf"
             icon="resource/pdf.png"
-            id="edu.uchicago.cs.hao.texdojo.pdfviewer.PdfViewer"
+            id="hao.texdojo.pdfviewer.PdfViewer"
             name="TeXDojo Pdf Viewer">
       </editor>
    </extension>

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Pdf Viewer
-Bundle-SymbolicName: edu.uchicago.cs.hao.texdojo.pdfviewer;singleton:=true
+Bundle-SymbolicName: hao.texdojo.pdfviewer;singleton:=true
 Bundle-Version: 0.0.2.qualifier
-Bundle-Activator: edu.uchicago.cs.hao.texdojo.pdfviewer.Activator
+Bundle-Activator: hao.texdojo.pdfviewer.Activator
 Bundle-Vendor: Hao Jiang
 Require-Bundle: org.eclipse.ui,
   org.eclipse.core.runtime

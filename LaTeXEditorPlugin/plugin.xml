@@ -9,108 +9,108 @@
             extensions="tex"
             icon="icons/tex_icon.png"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor">
+            class="hao.texdojo.latexeditor.editors.LaTeXEditor"
+            id="hao.texdojo.latexeditor.editors.LaTeXEditor">
       </editor>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="edu.uchicago.cs.hao.texdojo.preferences.PreferencePage"
-            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            category="hao.texdojo.preferences.PreferencePage"
+            class="hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            id="hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
             name="LaTeX Editor">
       </page>
       <page
-            category="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
-            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TempFilePreferencePage"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TempFilePreferencePage"
+            category="hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            class="hao.texdojo.latexeditor.preferences.TempFilePreferencePage"
+            id="hao.texdojo.latexeditor.preferences.TempFilePreferencePage"
             name="Temp Files">
       </page>
       <page
-            category="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
-            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.ColorPreferencePage"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.ColorPreferencePage"
+            category="hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            class="hao.texdojo.latexeditor.preferences.ColorPreferencePage"
+            id="hao.texdojo.latexeditor.preferences.ColorPreferencePage"
             name="Syntax Color">
       </page>
       <page
-            category="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
-            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TextPreferencePage"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.TextPreferencePage"
+            category="hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            class="hao.texdojo.latexeditor.preferences.TextPreferencePage"
+            id="hao.texdojo.latexeditor.preferences.TextPreferencePage"
             name="Text Editor">
       </page>
       <page
-            category="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
-            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.SpellCheckerPreference"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.SpellCheckerPreferencePage"
+            category="hao.texdojo.latexeditor.preferences.LaTeXEditorPreferencePage"
+            class="hao.texdojo.latexeditor.preferences.SpellCheckerPreference"
+            id="hao.texdojo.latexeditor.preferences.SpellCheckerPreferencePage"
             name="Spell Checker">
       </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="edu.uchicago.cs.hao.texdojo.latexeditor.preferences.PreferenceInitializer">
+            class="hao.texdojo.latexeditor.preferences.PreferenceInitializer">
       </initializer>
    </extension>
    <extension
-         id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXBuilder"
+         id="hao.texdojo.latexeditor.LaTeXBuilder"
          name="LaTeX Builder"
          point="org.eclipse.core.resources.builders">
       <builder
             hasNature="true">
          <run
-               class="edu.uchicago.cs.hao.texdojo.latexeditor.project.LaTeXBuilder">
+               class="hao.texdojo.latexeditor.project.LaTeXBuilder">
          </run>
       </builder>
    </extension>
    <extension
-         id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature"
+         id="hao.texdojo.latexeditor.LaTeXNature"
          name="LaTeX Project Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="edu.uchicago.cs.hao.texdojo.latexeditor.project.LaTeXNature">
+               class="hao.texdojo.latexeditor.project.LaTeXNature">
          </run>
       </runtime>
       <builder
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXBuilder">
+            id="hao.texdojo.latexeditor.LaTeXBuilder">
       </builder>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <category
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.categories.LaTeXNature"
+            id="hao.texdojo.latexeditor.categories.LaTeXNature"
             name="LaTeX Project Nature commands">
       </category>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.latexeditor.categories.LaTeXNature"
-            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.project.AddRemoveLaTeXNatureHandler"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.addRemoveLaTeXNature"
+            categoryId="hao.texdojo.latexeditor.categories.LaTeXNature"
+            defaultHandler="hao.texdojo.latexeditor.project.AddRemoveLaTeXNatureHandler"
+            id="hao.texdojo.latexeditor.commands.addRemoveLaTeXNature"
             name="Add/RemoveLaTeX Project Nature">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.latexeditor.categories.OutlineButton"
-            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.editors.outline.ViewFiguresHandler"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.viewFigure"
+            categoryId="hao.texdojo.latexeditor.categories.OutlineButton"
+            defaultHandler="hao.texdojo.latexeditor.editors.outline.ViewFiguresHandler"
+            id="hao.texdojo.latexeditor.commands.viewFigure"
             name="View Figures/Tables">
       </command>
       <category
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.categories.OutlineButton"
+            id="hao.texdojo.latexeditor.categories.OutlineButton"
             name="LaTeX Editor Outline">
       </category>
       <command
-            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.editors.handlers.TriggerCommentHandler"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.triggerComment"
+            defaultHandler="hao.texdojo.latexeditor.editors.handlers.TriggerCommentHandler"
+            id="hao.texdojo.latexeditor.commands.triggerComment"
             name="Trigger Comment">
       </command>
       <command
-            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.editors.handlers.SpellCheckHandler"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.spellCheck"
+            defaultHandler="hao.texdojo.latexeditor.editors.handlers.SpellCheckHandler"
+            id="hao.texdojo.latexeditor.commands.spellCheck"
             name="Spell Check">
       </command>
       <command
-            defaultHandler="edu.uchicago.cs.hao.texdojo.latexeditor.editors.handlers.TextFormatterHandler"
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.commands.triggerFormatter"
+            defaultHandler="hao.texdojo.latexeditor.editors.handlers.TextFormatterHandler"
+            id="hao.texdojo.latexeditor.commands.triggerFormatter"
             name="Format Code">
       </command>
    </extension>
@@ -119,7 +119,7 @@
       <menuContribution
             locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.addRemoveLaTeXNature"
+               commandId="hao.texdojo.latexeditor.commands.addRemoveLaTeXNature"
                label="Disable LaTeX builder"
                style="push">
             <visibleWhen
@@ -134,7 +134,7 @@
                            type="org.eclipse.core.resources.IProject">
                         <test
                               property="org.eclipse.core.resources.projectNature"
-                              value="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature">
+                              value="hao.texdojo.latexeditor.LaTeXNature">
                         </test>
                      </adapt>
                   </iterate>
@@ -142,7 +142,7 @@
             </visibleWhen>
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.addRemoveLaTeXNature"
+               commandId="hao.texdojo.latexeditor.commands.addRemoveLaTeXNature"
                label="Enable LaTeX builder"
                style="push">
             <visibleWhen
@@ -158,7 +158,7 @@
                         <not>
                            <test
                                  property="org.eclipse.core.resources.projectNature"
-                                 value="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXNature">
+                                 value="hao.texdojo.latexeditor.LaTeXNature">
                            </test>
                         </not>
                      </adapt>
@@ -170,14 +170,14 @@
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.views.ContentOutline?after=additions">
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.viewFigure"
+               commandId="hao.texdojo.latexeditor.commands.viewFigure"
                icon="icons/figure_icon.png"
                label="View Figures/Tables"
                style="toggle">
             <visibleWhen
                   checkEnabled="false">
                <reference
-                     definitionId="edu.uchicago.cs.hao.texdojo.latexeditor.definitions.latexEditorActive">
+                     definitionId="hao.texdojo.latexeditor.definitions.latexEditorActive">
                </reference>
             </visibleWhen>
          </command>
@@ -186,13 +186,13 @@
             allPopups="false"
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
-               id="edu.uchicago.cs.hao.texdojo.latexeditor.toolbar.main">
+               id="hao.texdojo.latexeditor.toolbar.main">
          </toolbar>
       </menuContribution>
       <!--menuContribution
             locationURI="menu:org.eclipse.ui.views.ContentOutline?after=additions">
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.viewFigure"
+               commandId="hao.texdojo.latexeditor.commands.viewFigure"
                icon="icons/figure_icon.png"
                label="View Figures/Tables"
                style="toggle">
@@ -200,7 +200,7 @@
       </menuContribution-->
    </extension>
    <extension
-         id="edu.uchicago.cs.hao.texdojo.latexeditor.LaTeXProblem"
+         id="hao.texdojo.latexeditor.LaTeXProblem"
          name="LaTeX Problem"
          point="org.eclipse.core.resources.markers">
       <super
@@ -213,11 +213,11 @@
    <extension
          point="org.eclipse.core.expressions.definitions">
       <definition
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.definitions.latexEditorActive">
+            id="hao.texdojo.latexeditor.definitions.latexEditorActive">
          <with
                variable="activeEditorId">
             <equals
-                  value="edu.uchicago.cs.hao.texdojo.latexeditor.editors.LaTeXEditor">
+                  value="hao.texdojo.latexeditor.editors.LaTeXEditor">
             </equals>
          </with>
       </definition>
@@ -225,14 +225,14 @@
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.triggerComment"
-            contextId="edu.uchicago.cs.hao.texdojo.latexeditor.editorContext"
+            commandId="hao.texdojo.latexeditor.commands.triggerComment"
+            contextId="hao.texdojo.latexeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+/">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.texdojo.latexeditor.commands.triggerFormatter"
-            contextId="edu.uchicago.cs.hao.texdojo.latexeditor.editorContext"
+            commandId="hao.texdojo.latexeditor.commands.triggerFormatter"
+            contextId="hao.texdojo.latexeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+F">
       </key>
@@ -240,7 +240,7 @@
    <extension
          point="org.eclipse.ui.contexts">
       <context
-            id="edu.uchicago.cs.hao.texdojo.latexeditor.editorContext"
+            id="hao.texdojo.latexeditor.editorContext"
             name="TeXDojo LaTeX Editor"
             parentId="org.eclipse.ui.contexts.window">
       </context>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="edu.uchicago.cs.hao.texdojo"
+      id="hao.texdojo"
       label="TeXDojo"
-      version="0.0.4.qualifier"
+      version="0.1.0.qualifier"
       provider-name="Hao Jiang"
-      plugin="edu.uchicago.cs.hao.texdojo.latexeditor"
-      license-feature="edu.uchicago.cs.hao.license"
+      plugin="hao.texdojo.latexeditor"
+      license-feature="hao.license"
       license-feature-version="1.0.0.qualifier">
 
    <description url="http://people.cs.uchicago.edu/~hajiang/texdojo/">
-      TeXDojo is a LaTeX/BibTeX editor for viewing and maintaining LaTeX projects. 
-Current Version is 0.0.2
+      TeXDojo is a LaTeX/BibTeX editor for developing LaTeX projects. 
+Current Version is 0.1.0
 The GitHub page for the plug-in is https://github.com/harperjiang/TeXDojo
 Please report any issues or requests you have there.
    </description>
@@ -32,6 +32,7 @@ Hao Jiang - initial API and implementation and/or initial documentation
 
    <url>
       <update label="TexDojo UpdateSite" url="http://people.cs.uchicago.edu/~hajiang/texdojo/updatesite"/>
+      <discovery label="GitHub Repository" url="https://github.com/harperjiang/TeXDojo"/>
    </url>
 
    <requires>
@@ -42,33 +43,31 @@ Hao Jiang - initial API and implementation and/or initial documentation
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.apache.commons.lang3" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.apache.httpcomponents.httpclient" version="4.5.2" match="greaterOrEqual"/>
       <import plugin="org.apache.httpcomponents.httpcore" version="4.4.6" match="greaterOrEqual"/>
       <import plugin="org.slf4j.api" version="1.7.2" match="greaterOrEqual"/>
       <import plugin="ch.qos.logback.classic"/>
       <import plugin="ch.qos.logback.core"/>
       <import plugin="org.eclipse.ui.workbench"/>
-      <import plugin="edu.uchicago.cs.hao.texdojo.bibeditor" version="0.0.2" match="greaterOrEqual"/>
       <import plugin="com.google.gson" version="2.7.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="edu.uchicago.cs.hao.texdojo.bibeditor"
+         id="hao.texdojo.bibeditor"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="edu.uchicago.cs.hao.texdojo.latexeditor"
+         id="hao.texdojo.latexeditor"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="edu.uchicago.cs.hao.texdojo.pdfviewer"
+         id="hao.texdojo.pdfviewer"
          download-size="0"
          install-size="0"
          version="0.0.0"

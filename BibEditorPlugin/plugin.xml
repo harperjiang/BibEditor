@@ -5,139 +5,139 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.editors.BibEditor"
+            class="hao.texdojo.bibeditor.editors.BibEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             extensions="bib"
             icon="icons/bib_icon.png"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.editors.BibEditor"
+            id="hao.texdojo.bibeditor.editors.BibEditor"
             name="BibTex Editor">
       </editor>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <category
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
+            id="hao.texdojo.bibeditor.commands.category"
             name="BibTex Editor Category">
       </category>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
+            categoryId="hao.texdojo.bibeditor.commands.category"
+            id="hao.texdojo.bibeditor.commands.addEntryCommand"
             name="&amp;Add Entry">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
+            categoryId="hao.texdojo.bibeditor.commands.category"
+            id="hao.texdojo.bibeditor.commands.removeEntryCommand"
             name="&amp;Remove Entry">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand"
+            categoryId="hao.texdojo.bibeditor.commands.category"
+            id="hao.texdojo.bibeditor.commands.copyCiteCommand"
             name="&amp;Copy Cite Command">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
+            categoryId="hao.texdojo.bibeditor.commands.category"
+            id="hao.texdojo.bibeditor.commands.searchPdfCommand"
             name="Search &amp;Google for PDF file">
       </command>
       <command
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand"
+            id="hao.texdojo.bibeditor.commands.findCommand"
             name="Find By &amp;Keyword">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyEntryCommand"
+            categoryId="hao.texdojo.bibeditor.commands.category"
+            id="hao.texdojo.bibeditor.commands.copyEntryCommand"
             name="Copy Entry">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.pasteEntryCommand"
+            categoryId="hao.texdojo.bibeditor.commands.category"
+            id="hao.texdojo.bibeditor.commands.pasteEntryCommand"
             name="Paste Entry">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand"
+            categoryId="hao.texdojo.bibeditor.commands.category"
+            id="hao.texdojo.bibeditor.commands.arxivEntryCommand"
             name="Add Article from ArXiv">
       </command>
       <command
-            categoryId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.category"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.commands.acmdlEntryCommand"
+            categoryId="hao.texdojo.bibeditor.commands.category"
+            id="hao.texdojo.bibeditor.commands.acmdlEntryCommand"
             name="Add Article from ACM DL">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.AddEntryHandler"
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand">
+            class="hao.texdojo.bibeditor.handlers.AddEntryHandler"
+            commandId="hao.texdojo.bibeditor.commands.addEntryCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.RemoveEntryHandler"
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand">
+            class="hao.texdojo.bibeditor.handlers.RemoveEntryHandler"
+            commandId="hao.texdojo.bibeditor.commands.removeEntryCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.CopyCiteHandler"
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand">
+            class="hao.texdojo.bibeditor.handlers.CopyCiteHandler"
+            commandId="hao.texdojo.bibeditor.commands.copyCiteCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.SearchPdfHandler"
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand">
+            class="hao.texdojo.bibeditor.handlers.SearchPdfHandler"
+            commandId="hao.texdojo.bibeditor.commands.searchPdfCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.FindKeywordHandler"
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand">
+            class="hao.texdojo.bibeditor.handlers.FindKeywordHandler"
+            commandId="hao.texdojo.bibeditor.commands.findCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.CopyEntryHandler"
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyEntryCommand">
+            class="hao.texdojo.bibeditor.handlers.CopyEntryHandler"
+            commandId="hao.texdojo.bibeditor.commands.copyEntryCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.PasteEntryHandler"
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.pasteEntryCommand">
+            class="hao.texdojo.bibeditor.handlers.PasteEntryHandler"
+            commandId="hao.texdojo.bibeditor.commands.pasteEntryCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.ArxivEntryHandler"
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand">
+            class="hao.texdojo.bibeditor.handlers.ArxivEntryHandler"
+            commandId="hao.texdojo.bibeditor.commands.arxivEntryCommand">
       </handler>
       <handler
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.handlers.ACMDLEntryHandler"
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.acmdlEntryCommand">
+            class="hao.texdojo.bibeditor.handlers.ACMDLEntryHandler"
+            commandId="hao.texdojo.bibeditor.commands.acmdlEntryCommand">
       </handler>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand"
-            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
+            commandId="hao.texdojo.bibeditor.commands.findCommand"
+            contextId="hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+F">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
-            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
+            commandId="hao.texdojo.bibeditor.commands.removeEntryCommand"
+            contextId="hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="DEL">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand"
-            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
+            commandId="hao.texdojo.bibeditor.commands.copyCiteCommand"
+            contextId="hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+C">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
-            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
+            commandId="hao.texdojo.bibeditor.commands.searchPdfCommand"
+            contextId="hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+S">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyEntryCommand"
-            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
+            commandId="hao.texdojo.bibeditor.commands.copyEntryCommand"
+            contextId="hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+C">
       </key>
       <key
-            commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.pasteEntryCommand"
-            contextId="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
+            commandId="hao.texdojo.bibeditor.commands.pasteEntryCommand"
+            contextId="hao.texdojo.bibeditor.editorContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+V">
       </key>
@@ -147,20 +147,20 @@
       <!--menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
-               id="edu.uchicago.cs.hao.texdojo.bibeditor.menus.mainMenu"
+               id="hao.texdojo.bibeditor.menus.mainMenu"
                label="BibTex Editor"
                mnemonic="M">
             <command
-                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
+                  commandId="hao.texdojo.bibeditor.commands.addEntryCommand"
                   icon="icons/toolbar_plus.gif"
-                  id="edu.uchicago.cs.hao.texdojo.bibeditor.menus.addEntryCommand"
+                  id="hao.texdojo.bibeditor.menus.addEntryCommand"
                   label="Add BibTex Entry"
                   mnemonic="S">
             </command>
             <command
-                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
+                  commandId="hao.texdojo.bibeditor.commands.removeEntryCommand"
                   icon="icons/toolbar_minus.gif"
-                  id="edu.uchicago.cs.hao.texdojo.bibeditor.menus.removeEntryCommand"
+                  id="hao.texdojo.bibeditor.menus.removeEntryCommand"
                   label="Remove BibTex Entry"
                   style="push">
             </command>
@@ -169,19 +169,19 @@
       <!--menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
-               id="edu.uchicago.cs.hao.texdojo.bibeditor.toolbars.mainToolbar">
+               id="hao.texdojo.bibeditor.toolbars.mainToolbar">
             <command
-                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
+                  commandId="hao.texdojo.bibeditor.commands.addEntryCommand"
                   icon="icons/toolbar_plus.gif"
-                  id="edu.uchicago.cs.hao.texdojo.bibeditor.toolbars.addEntryCommand"
+                  id="hao.texdojo.bibeditor.toolbars.addEntryCommand"
                   label="Add BibTex Entry"
                   style="push"
                   tooltip="Add BibTex Entry">
             </command>
             <command
-                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
+                  commandId="hao.texdojo.bibeditor.commands.removeEntryCommand"
                   icon="icons/toolbar_minus.gif"
-                  id="edu.uchicago.cs.hao.texdojo.bibeditor.toolbars.addEntryCommand"
+                  id="hao.texdojo.bibeditor.toolbars.addEntryCommand"
                   label="Remove BibTex Entry"
                   style="push"
                   tooltip="Remove BibTex Entry">
@@ -190,34 +190,34 @@
       </menuContribution-->
       <menuContribution
             allPopups="true"
-            locationURI="popup:edu.uchicago.cs.hao.texdojo.bibeditor.editors.BibEditor?after=additions">
+            locationURI="popup:hao.texdojo.bibeditor.editors.BibEditor?after=additions">
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.addEntryCommand"
+               commandId="hao.texdojo.bibeditor.commands.addEntryCommand"
                label="&amp;Add BibTex Entry"
                style="push">
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand"
+               commandId="hao.texdojo.bibeditor.commands.arxivEntryCommand"
                label="Add Article from ArXiv"
                style="push">
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.removeEntryCommand"
+               commandId="hao.texdojo.bibeditor.commands.removeEntryCommand"
                label="&amp;Remove BibTex Entry"
                style="push">
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.copyCiteCommand"
+               commandId="hao.texdojo.bibeditor.commands.copyCiteCommand"
                label="Copy &amp;Cite Command"
                style="push">
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
+               commandId="hao.texdojo.bibeditor.commands.searchPdfCommand"
                label="Search &amp;Google for PDF files"
                style="push">
          </command>
          <command
-               commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.findCommand"
+               commandId="hao.texdojo.bibeditor.commands.findCommand"
                label="Find By &amp;Keyword"
                style="push">
          </command>
@@ -226,40 +226,40 @@
             allPopups="false"
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
-               id="edu.uchicago.cs.hao.texdojo.bibeditor.toolbar.main">
+               id="hao.texdojo.bibeditor.toolbar.main">
             <command
-                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.searchPdfCommand"
+                  commandId="hao.texdojo.bibeditor.commands.searchPdfCommand"
                   icon="icons/toolbar_google.png"
                   label="Search &amp;Google for PDF files"
                   style="push">
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="edu.uchicago.cs.hao.texdojo.bibeditor.definitions.bibEditorActive">
+                        definitionId="hao.texdojo.bibeditor.definitions.bibEditorActive">
                   </reference>
                </visibleWhen>
             </command>
             <command
-                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.arxivEntryCommand"
+                  commandId="hao.texdojo.bibeditor.commands.arxivEntryCommand"
                   icon="icons/arxiv_icon.png"
                   label="Add Article from ArXiv"
                   style="push">
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="edu.uchicago.cs.hao.texdojo.bibeditor.definitions.bibEditorActive">
+                        definitionId="hao.texdojo.bibeditor.definitions.bibEditorActive">
                   </reference>
                </visibleWhen>
             </command>
             <command
-                  commandId="edu.uchicago.cs.hao.texdojo.bibeditor.commands.acmdlEntryCommand"
+                  commandId="hao.texdojo.bibeditor.commands.acmdlEntryCommand"
                   icon="icons/acmdl_icon.png"
                   label="Add Article from ACM DL"
                   style="push">
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="edu.uchicago.cs.hao.texdojo.bibeditor.definitions.bibEditorActive">
+                        definitionId="hao.texdojo.bibeditor.definitions.bibEditorActive">
                   </reference>
                </visibleWhen>
             </command>
@@ -270,11 +270,11 @@
    <extension
   point="org.eclipse.core.expressions.definitions">
   <definition
-    id="edu.uchicago.cs.hao.texdojo.bibeditor.definitions.bibEditorActive">
+    id="hao.texdojo.bibeditor.definitions.bibEditorActive">
     <with
       variable="activeEditorId">
       <equals
-                        value="edu.uchicago.cs.hao.texdojo.bibeditor.editors.BibEditor">
+                        value="hao.texdojo.bibeditor.editors.BibEditor">
                   </equals>
     </with>
   </definition>
@@ -282,27 +282,27 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="edu.uchicago.cs.hao.texdojo.preferences.PreferencePage"
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.BibEditorPreferencePage"
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.BibEditorPreferencePage"
+            category="hao.texdojo.preferences.PreferencePage"
+            class="hao.texdojo.bibeditor.preferences.BibEditorPreferencePage"
+            id="hao.texdojo.bibeditor.preferences.BibEditorPreferencePage"
             name="BibTeX Editor">
       </page>
       <page
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.TeXDojoPreferencePage"
-            id="edu.uchicago.cs.hao.texdojo.preferences.PreferencePage"
+            class="hao.texdojo.bibeditor.preferences.TeXDojoPreferencePage"
+            id="hao.texdojo.preferences.PreferencePage"
             name="TeXDojo">
       </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="edu.uchicago.cs.hao.texdojo.bibeditor.preferences.PreferenceInitializer">
+            class="hao.texdojo.bibeditor.preferences.PreferenceInitializer">
       </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.contexts">
       <context
-            id="edu.uchicago.cs.hao.texdojo.bibeditor.editorContext"
+            id="hao.texdojo.bibeditor.editorContext"
             name="TeXDojo BibTex Editor"
             parentId="org.eclipse.ui.contexts.window">
       </context>
