@@ -30,8 +30,6 @@ public class PreferenceConstants {
 	
 	public static final String P_MAIN_TEX = "mainTex";
 
-	public static final String P_LINE_WRAP = "lineWrap";
-
 	public static final String P_LINE_ALIGN = "lineAlign";
 
 	public static final String P_COLOR_COMMAND = "colorCommand";
