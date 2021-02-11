@@ -62,7 +62,7 @@ public class LaTeXCompiler {
 			monitor.beginTask(message, totalWork);
 			monitor.subTask(message + " - first pass");
 
-			connect(latexBuilder.start(), console, builder, monitor);
+			connect(latexBuilder.start(), console, monitor);
 
 			monitor.worked(25);
 
@@ -74,13 +74,13 @@ public class LaTeXCompiler {
 			if (runbib) {
 				monitor.subTask(message + " - invoking BibTeX");
 
-				connect(bibBuilder.start(), console, builder, monitor);
+				connect(bibBuilder.start(), console, monitor);
 				monitor.worked(25);
 
 				if (monitor.isCanceled())
 					return;
 				monitor.subTask(message + " - second pass");
-				connect(latexBuilder.start(), console, builder, monitor);
+				connect(latexBuilder.start(), console, monitor);
 				monitor.worked(25);
 
 				if (monitor.isCanceled())
@@ -88,7 +88,7 @@ public class LaTeXCompiler {
 			}
 
 			monitor.subTask(message + " - final pass");
-			connect(latexBuilder.start(), console, builder, monitor);
+			connect(latexBuilder.start(), console, monitor);
 			monitor.worked(25);
 
 			if (monitor.isCanceled())
@@ -105,7 +105,7 @@ public class LaTeXCompiler {
 
 	static final long TIMEOUT = 300000L;
 
-	static void connect(Process p, IOConsole console, IncrementalProjectBuilder builder, IProgressMonitor monitor)
+	static void connect(Process p, IOConsole console, IProgressMonitor monitor)
 			throws IOException, InterruptedException {
 		OutputStream output = console.newOutputStream();
 
@@ -118,7 +118,8 @@ public class LaTeXCompiler {
 			consumed += checkInterval;
 			if (monitor.isCanceled()) {
 				// Do not use timeout for now
-				// Note builder frequently got interruption. We ignore it here to complete the build
+				// Note builder frequently got interruption. We ignore it here to complete the
+				// build
 				p.destroy();
 				p.waitFor();
 			}

@@ -25,6 +25,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -51,6 +53,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.IOConsole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +109,10 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		// Load dependency if any exists
 		try {
-			if (kind == FULL_BUILD || kind == CLEAN_BUILD) {
+			if (kind == FULL_BUILD) {
+				fullBuild(monitor);
+			} else if (kind == CLEAN_BUILD) {
+				clean(monitor);
 				fullBuild(monitor);
 			} else {
 				IFile config = getProject().getFile(".texdojo");
@@ -157,7 +163,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
 		if (useMakefile && (getProject().getFile("Makefile").exists() || getProject().getFile("makefile").exists())) {
-			compileWithMake();
+			compileWithMake(monitor);
 			return;
 		}
 
@@ -198,7 +204,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
 		if (useMakefile && (getProject().getFile("Makefile").exists() || getProject().getFile("makefile").exists())) {
-			compileWithMake();
+			compileWithMake(monitor);
 			return;
 		}
 
@@ -265,6 +271,14 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		// delete markers set and files created
 		getProject().deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+		boolean useMakefile = prefs.getBoolean(P_USE_MAKE, DEFAULT_USE_MAKE);
+
+		if (useMakefile && (getProject().getFile("Makefile").exists() || getProject().getFile("makefile").exists())) {
+			cleanWithMake(monitor);
+			return;
+		}
 	}
 
 	void scan(IResource resource, IProgressMonitor monitor) throws Exception {
@@ -367,9 +381,37 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	void compileWithMake() {
-		MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Not Implemented",
-				"Compiling with Makefile not implemented");
+	void compileWithMake(IProgressMonitor monitor) {
+		IOConsole console = LaTeXEditor.getConsole();
+		console.clearConsole();
+
+		OutputStream output = console.newOutputStream();
+		// Simply call make
+		ProcessBuilder makeBuilder = new ProcessBuilder().command("make")
+				.directory(new File(getProject().getLocationURI())).redirectErrorStream(true);
+		try {
+			LaTeXCompiler.connect(makeBuilder.start(), console, monitor);
+		} catch (Exception e) {
+			e.printStackTrace(new PrintStream(output));
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Error Invoking Make", e.getMessage());
+		}
+	}
+
+	void cleanWithMake(IProgressMonitor monitor) {
+		IOConsole console = LaTeXEditor.getConsole();
+		console.clearConsole();
+
+		OutputStream output = console.newOutputStream();
+		ProcessBuilder makeBuilder = new ProcessBuilder().command("make", "clean")
+				.directory(new File(getProject().getLocationURI())).redirectErrorStream(true);
+		try {
+			LaTeXCompiler.connect(makeBuilder.start(), console, monitor);
+		} catch (Exception e) {
+			e.printStackTrace(new PrintStream(output));
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Error Invoking Make", e.getMessage());
+		}
 	}
 
 	private SpellChecker getSpellChecker() {
