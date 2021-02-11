@@ -34,6 +34,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 import hao.texdojo.latexeditor.Activator;
 import hao.texdojo.latexeditor.ImageResource;
+import hao.texdojo.latexeditor.project.AddRemoveLaTeXNatureHandler;
 import hao.texdojo.latexeditor.project.LaTeXNature;
 
 /**
@@ -178,14 +179,11 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 		newProject = newProjectHandle;
 
 		// Setup nature
-		LaTeXNature nature = new LaTeXNature();
-		nature.setProject(newProject);
 		try {
-			nature.configure();
+			AddRemoveLaTeXNatureHandler.toggleNature(newProject);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-
 		return newProject;
 	}
 
