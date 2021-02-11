@@ -97,6 +97,8 @@ public class LaTeXCompiler {
 			monitor.done();
 		} catch (Exception e) {
 			e.printStackTrace(new PrintStream(output));
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Error Invoking Latex Compiler", e.getMessage());
 		}
 		return;
 	}
@@ -114,8 +116,9 @@ public class LaTeXCompiler {
 			copyStream(console.getInputStream(), p.getOutputStream());
 			Thread.sleep(checkInterval);
 			consumed += checkInterval;
-			if (monitor.isCanceled() || builder.isInterrupted()) {
+			if (monitor.isCanceled()) {
 				// Do not use timeout for now
+				// Note builder frequently got interruption. We ignore it here to complete the build
 				p.destroy();
 				p.waitFor();
 			}
