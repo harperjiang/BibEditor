@@ -17,7 +17,6 @@ import static hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_CO
 import static hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_MATHMODE;
 import static hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_OPTION;
 import static hao.texdojo.latexeditor.preferences.PreferenceConstants.P_COLOR_TEXT;
-import static hao.texdojo.latexeditor.preferences.PreferenceConstants.P_LINE_WRAP;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -56,9 +55,6 @@ public class PreferenceChangeMonitor implements IPreferenceChangeListener {
 					latexEditor.refresh();
 				}
 			}
-		}
-		if(P_LINE_WRAP.equals(event.getKey())) {
-			
 		}
 	}
 

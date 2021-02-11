@@ -245,5 +245,19 @@
             parentId="org.eclipse.ui.contexts.window">
       </context>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="hao.texdojo.latexeditor"
+            name="TeXDojo">
+      </category>
+      <wizard
+            category="hao.texdojo.latexeditor"
+            class="hao.texdojo.latexeditor.wizards.NewProjectWizard"
+            icon="icons/newprj_wiz.png"
+            id="hao.texdojo.latexeditor.wizards.NewProjectWizard"
+            name="New TeXDojo Project">
+      </wizard>
+   </extension>
 
 </plugin>

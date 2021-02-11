@@ -1,6 +1,5 @@
 package hao.texdojo.latexeditor.editors.handlers;
 
-import static hao.texdojo.latexeditor.preferences.PreferenceConstants.P_LINE_WRAP;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -9,12 +8,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 
-import hao.texdojo.latexeditor.Activator;
 import hao.texdojo.latexeditor.model.GroupNode;
 import hao.texdojo.latexeditor.model.InvokeNode;
 import hao.texdojo.latexeditor.model.LaTeXModel;
@@ -24,15 +18,12 @@ public class TextFormatterHandler extends TextHandler {
 
 	@Override
 	protected Object executeWithEditor(ExecutionEvent event) throws ExecutionException {
-		IDocumentProvider dp = editor.getDocumentProvider();
-		IDocument doc = dp.getDocument(editor.getEditorInput());
-		if (doc != null) {
-			// Format the entire document
-
-			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
-			int lineLimit = prefs.getInt(P_LINE_WRAP, -1);
-			doc.set(format(doc.get(), lineLimit));
-		}
+//		IDocumentProvider dp = editor.getDocumentProvider();
+//		IDocument doc = dp.getDocument(editor.getEditorInput());
+//		if (doc != null) {
+//			// Format the entire document
+//			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(Activator.PLUGIN_ID);
+//		}
 		return null;
 	}
 

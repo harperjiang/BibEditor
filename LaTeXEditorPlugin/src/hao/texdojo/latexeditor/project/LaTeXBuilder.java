@@ -156,7 +156,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		boolean compileDoc = prefs.getBoolean(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
 		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
-		if (useMakefile && getProject().getFile("Makefile").exists()) {
+		if (useMakefile && (getProject().getFile("Makefile").exists() || getProject().getFile("makefile").exists())) {
 			compileWithMake();
 			return;
 		}
@@ -197,7 +197,7 @@ public class LaTeXBuilder extends IncrementalProjectBuilder {
 		boolean compileDoc = prefs.getBoolean(P_COMPILE_DOC, DEFAULT_COMPILE_DOCUMENT);
 		String mainTex = prefs.get(P_MAIN_TEX, DEFAULT_MAIN_TEX);
 
-		if (useMakefile && getProject().getFile("Makefile").exists()) {
+		if (useMakefile && (getProject().getFile("Makefile").exists() || getProject().getFile("makefile").exists())) {
 			compileWithMake();
 			return;
 		}

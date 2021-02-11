@@ -96,6 +96,8 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	protected void initImages() {
+		getImageRegistry().put(ImageResource.ICON_PROJECT, new Image(Display.getCurrent(),
+				Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/newprj_wiz.png")));
 		getImageRegistry().put(ImageResource.ICON_CHAPTER, new Image(Display.getCurrent(),
 				Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/chapter_icon.png")));
 		getImageRegistry().put(ImageResource.ICON_LIST, new Image(Display.getCurrent(),
